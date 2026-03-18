@@ -36,6 +36,32 @@ export class UsersService {
     });
   }
 
+  async getUserStats(userId: string) {
+    const [matchesPlayed, gamesPlayed, gamesWon] = await Promise.all([
+      // Unique sessions (matches) the user participated in
+      this.prisma.session.count({
+        where: {
+          OR: [{ userAId: userId }, { userBId: userId }],
+          status: { in: ['CONNECTED', 'ENDED'] }
+        }
+      }),
+      // Total individual games played
+      this.prisma.gamePlayer.count({
+        where: { userId }
+      }),
+      // Games won
+      this.prisma.game.count({
+        where: { winnerUserId: userId, status: 'COMPLETED' }
+      })
+    ]);
+
+    const winRate = gamesPlayed > 0
+      ? Math.round((gamesWon / gamesPlayed) * 100)
+      : 0;
+
+    return { matchesPlayed, gamesPlayed, gamesWon, winRate };
+  }
+
   async updateLocation(userId: string, latitude: number, longitude: number) {
     return this.prisma.user.update({
       where: { id: userId },

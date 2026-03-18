@@ -4,33 +4,23 @@
   "private": true,
   "workspaces": [
     "api",
-    "web",
     "shared"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\" --names \"API,WEB\" --prefix-colors \"cyan,yellow\"",
-    "dev:web-only": "npm --workspace web run dev",
-    "dev:kill-ports": "lsof -ti:3000 | xargs kill -9 2>/dev/null; lsof -ti:3001 | xargs kill -9 2>/dev/null; true",
+    "dev": "npm --workspace api run start:dev",
     "dev:api": "npm --workspace api run start:dev",
-    "dev:web": "npm --workspace web run dev",
-    "dev:vercel": "concurrently \"npm run dev:vercel:api\" \"npm run dev:vercel:web\" --names \"VERCEL-API,VERCEL-WEB\" --prefix-colors \"cyan,yellow\"",
-    "dev:vercel:api": "cd api && vercel dev --listen 3001",
-    "dev:vercel:web": "cd web && NEXT_PUBLIC_API_URL=http://localhost:3001 NEXT_PUBLIC_WS_URL=wss://omegle-gameapi-production.up.railway.app vercel dev --listen 3000",
-    "dev:vercel:web:railway": "cd web && NEXT_PUBLIC_API_URL=https://omegle-gameapi-production.up.railway.app NEXT_PUBLIC_WS_URL=wss://omegle-gameapi-production.up.railway.app vercel dev --listen 3000",
-    "dev:railway": "cd web && NEXT_PUBLIC_API_URL=https://omegle-gameapi-production.up.railway.app NEXT_PUBLIC_WS_URL=wss://omegle-gameapi-production.up.railway.app npm run dev",
     "start": "npm run dev",
     "build:api": "npm --workspace api run build",
-    "build:web": "npm --workspace web run build",
-    "build": "npm run build:api && npm run build:web",
+    "build": "npm run build:api",
     "lint:api": "npm --workspace api run lint",
-    "lint:web": "npm --workspace web run lint",
-    "lint": "npm run lint:api && npm run lint:web",
+    "lint": "npm run lint:api",
     "prisma:generate": "npm --workspace api run prisma:generate",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
     "setup": "npm install && npm run docker:up && npm run prisma:generate",
-    "reset:db": "cd api && npx prisma migrate reset --force"
+    "reset:db": "cd api && npx prisma migrate reset --force",
+    "set-admin": "npm --workspace api run set-admin"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",

@@ -7,3 +7,6 @@ node_modules/
 .next/
 dist/
 .DS_Store
+# Keep these out of git
+api/dist/
+check-enum.js

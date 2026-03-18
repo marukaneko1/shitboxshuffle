@@ -32,6 +32,12 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get("me/stats")
+  async myStats(@CurrentUser() user: JwtPayload) {
+    return this.usersService.getUserStats(user.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch("me/location")
   async updateLocation(@CurrentUser() user: JwtPayload, @Body() dto: UpdateLocationDto) {
     return this.usersService.updateLocation(user.sub, dto.latitude, dto.longitude);

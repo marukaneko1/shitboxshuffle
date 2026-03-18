@@ -1,0 +1,16 @@
+node_modules
+**/node_modules
+**/.env
+**/dist
+**/.git
+.gitignore
+*.md
+docker-compose.yml
+*.html
+penguin-knockout.html
+shitbox-combined_2.html
+session.html
+admin.html
+**/*.log
+**/coverage
+**/.nyc_output

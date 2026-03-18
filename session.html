@@ -524,38 +524,108 @@ nav {
 .chess-move-entry .move-notation { color: var(--ivory-60); }
 
 /* ═══════════ TRIVIA ═══════════ */
-.trivia-wrapper { width: 100%; max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; flex: 1; justify-content: center; min-height: 0; }
+.trivia-wrapper { width: 100%; max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; flex: 1; justify-content: center; min-height: 0; position: relative; }
 .trivia-phase-header { text-align: center; }
-.trivia-phase-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); opacity: 0.7; margin-bottom: 6px; }
+.trivia-phase-label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); opacity: 0.85; margin-bottom: 6px; }
 .trivia-phase-title { font-family: 'Cormorant Garamond',serif; font-size: 24px; font-weight: 700; font-style: italic; color: var(--ivory); }
+.trivia-streak-badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; padding: 3px 10px; border-radius: 20px; margin-top: 6px; min-height: 20px; }
+.trivia-streak-badge.on-fire { background: rgba(251,146,60,0.12); border: 1px solid rgba(251,146,60,0.35); color: #fb923c; }
+.trivia-streak-badge.unstoppable { background: rgba(201,162,39,0.12); border: 1px solid rgba(201,162,39,0.35); color: var(--gold-bright); animation: streakPulse 0.9s ease-in-out infinite alternate; }
+/* Scores */
 .trivia-scores { display: flex; gap: 16px; justify-content: center; }
-.trivia-score-card { flex: 1; max-width: 160px; padding: 14px 12px; border: 1px solid var(--border); border-radius: 8px; background: rgba(255,255,255,0.01); text-align: center; }
+.trivia-score-card { flex: 1; max-width: 160px; padding: 14px 12px; border: 1px solid var(--border); border-radius: 8px; background: rgba(255,255,255,0.01); text-align: center; position: relative; overflow: visible; }
+.trivia-score-me { border-color: rgba(201,162,39,0.2); }
 .trivia-score-name { font-size: 11px; color: var(--ivory-40); margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .trivia-score-val { font-size: 28px; font-weight: 600; color: var(--ivory); }
-.trivia-question-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 32px 28px; text-align: center; }
+/* Score delta popup */
+.score-delta-pop { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 14px; font-weight: 700; pointer-events: none; animation: floatUp 1.1s ease-out forwards; white-space: nowrap; z-index: 20; }
+.score-delta-pop.correct-pop { color: var(--gold-bright); }
+.score-delta-pop.wrong-pop { color: #f87171; }
+/* VS Panel */
+.trivia-vs-panel { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; }
+.trivia-vs-side { flex: 1; text-align: center; }
+.trivia-vs-player { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ivory-40); margin-bottom: 4px; }
+.trivia-vs-pick { font-size: 14px; color: var(--ivory-40); min-height: 20px; transition: all 0.4s; }
+.trivia-vs-side.locked .trivia-vs-pick { color: var(--gold); font-weight: 600; }
+.trivia-vs-center { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--ivory-20); padding: 0 8px; flex-shrink: 0; }
+/* Selection timer bar */
+.trivia-sel-timer-bar-wrap { height: 3px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+.trivia-sel-timer-bar { height: 100%; background: var(--gold); border-radius: 2px; animation: shrinkBar 30s linear forwards; transform-origin: left; }
+/* Theme grid */
+.trivia-theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media (max-width: 500px) { .trivia-theme-grid { grid-template-columns: repeat(2, 1fr); } }
+.trivia-theme-btn {
+  padding: 16px 10px 14px; border: 1px solid var(--border); border-radius: 10px;
+  background: rgba(255,255,255,0.02); color: var(--ivory-60); cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s, opacity 0.2s;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  text-align: center; animation: cardDrop 0.35s ease both;
+}
+.trivia-theme-btn:hover:not(:disabled) { transform: scale(1.04); border-color: var(--gold-dim); background: rgba(201,162,39,0.07); color: var(--ivory); box-shadow: 0 0 18px rgba(201,162,39,0.1); }
+.trivia-theme-btn.selected { border-color: var(--gold); background: rgba(201,162,39,0.12); color: var(--gold); box-shadow: 0 0 22px rgba(201,162,39,0.15); animation: selectedBounce 0.45s ease both; }
+.trivia-theme-btn.dimmed { opacity: 0.3; pointer-events: none; }
+.trivia-theme-btn:disabled:not(.selected) { cursor: default; }
+.theme-emoji { font-size: 26px; line-height: 1.2; }
+.theme-label { font-size: 13px; font-weight: 600; }
+.theme-desc { font-size: 10px; color: var(--ivory-40); line-height: 1.3; }
+.trivia-theme-btn.selected .theme-desc { color: rgba(201,162,39,0.55); }
+.trivia-waiting-msg { text-align: center; font-size: 13px; color: var(--ivory-40); padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+/* Question card */
+.trivia-question-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 26px 22px; text-align: center; }
 .trivia-q-num { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ivory-20); margin-bottom: 8px; }
-.trivia-q-text { font-size: clamp(16px, 2vw, 20px); color: var(--ivory); line-height: 1.5; }
-.trivia-answers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.trivia-q-text { font-size: clamp(15px, 2vw, 19px); color: var(--ivory); line-height: 1.5; }
+/* Timer bar */
+.trivia-timer-wrap { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.trivia-timer-bar { height: 100%; width: 100%; background: var(--gold); border-radius: 3px; transition: background 0.4s; }
+.trivia-timer-bar.warning { background: #f59e0b; }
+.trivia-timer-bar.danger { background: #ef4444; animation: timerPulse 0.5s ease-in-out infinite alternate; }
+/* Opponent status */
+.trivia-opponent-status { text-align: center; font-size: 12px; color: var(--ivory-40); min-height: 16px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+/* Answer buttons */
+.trivia-answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .trivia-answer-btn {
-  padding: 18px 16px; border: 1px solid var(--border); border-radius: 8px;
-  background: rgba(255,255,255,0.02); color: var(--ivory-80); font-size: clamp(13px, 1.4vw, 16px);
-  cursor: pointer; transition: all 0.25s; text-align: left; line-height: 1.4;
+  padding: 15px 14px; border: 1px solid var(--border); border-radius: 8px;
+  background: rgba(255,255,255,0.02); color: var(--ivory-80); font-size: clamp(12px, 1.4vw, 15px);
+  cursor: pointer; transition: border-color 0.2s, background 0.2s, color 0.2s; text-align: left; line-height: 1.4;
+  display: flex; align-items: center; gap: 10px;
+  animation: answerSlideUp 0.3s ease both;
 }
 .trivia-answer-btn:hover:not(:disabled) { border-color: var(--gold-dim); background: rgba(201,162,39,0.06); color: var(--ivory); }
-.trivia-answer-btn.correct { border-color: rgba(74,222,128,0.5); background: rgba(74,222,128,0.08); color: var(--green); }
-.trivia-answer-btn.wrong { border-color: rgba(212,69,58,0.4); background: rgba(212,69,58,0.06); color: var(--red); }
+.trivia-answer-btn.correct { border-color: rgba(74,222,128,0.5); background: rgba(74,222,128,0.08); color: #4ade80; animation: correctPulse 0.55s ease; }
+.trivia-answer-btn.wrong { border-color: rgba(248,113,113,0.45); background: rgba(248,113,113,0.06); color: #f87171; animation: wrongShake 0.4s ease; }
+.trivia-answer-btn.correct-reveal { border-color: rgba(74,222,128,0.25); background: rgba(74,222,128,0.04); color: rgba(74,222,128,0.65); }
+.trivia-answer-btn.selected-for-check { border-color: var(--gold-dim); background: rgba(201,162,39,0.06); }
 .trivia-answer-btn:disabled { cursor: default; }
-.trivia-theme-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
-.trivia-theme-btn {
-  padding: 18px 14px; border: 1px solid var(--border); border-radius: 8px;
-  background: rgba(255,255,255,0.02); color: var(--ivory-60); cursor: pointer;
-  transition: all 0.25s; display: flex; flex-direction: column; gap: 6px;
-  font-size: 14px; font-weight: 500;
-}
-.trivia-theme-btn:hover { border-color: var(--gold-dim); color: var(--ivory); background: rgba(201,162,39,0.06); }
-.trivia-theme-btn.selected { border-color: var(--gold); background: rgba(201,162,39,0.1); color: var(--gold); }
-.trivia-theme-btn .theme-emoji { font-size: 24px; }
-.trivia-waiting-msg { text-align: center; font-size: 13px; color: var(--ivory-40); padding: 16px; }
+.ans-label { min-width: 22px; height: 22px; border-radius: 4px; background: rgba(255,255,255,0.06); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--ivory-40); }
+.trivia-answer-btn.correct .ans-label { background: rgba(74,222,128,0.15); color: #4ade80; }
+.trivia-answer-btn.wrong .ans-label { background: rgba(248,113,113,0.15); color: #f87171; }
+.ans-text { flex: 1; }
+/* Waiting dot */
+.waiting-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); display: inline-block; animation: waitBlink 1s ease-in-out infinite; flex-shrink: 0; }
+/* Game end */
+.trivia-confetti { position: absolute; top: 0; left: 0; width: 100%; height: 200px; pointer-events: none; overflow: hidden; z-index: 5; }
+.confetti-piece { position: absolute; top: -12px; animation: confettiFall linear forwards; }
+.trivia-end-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 22px 20px; }
+.trivia-end-scores { display: flex; flex-direction: column; gap: 14px; }
+.trivia-end-player { display: flex; align-items: center; gap: 12px; }
+.trivia-end-player.is-me .trivia-end-name { color: var(--gold); }
+.trivia-end-name { font-size: 13px; font-weight: 500; color: var(--ivory-60); min-width: 60px; }
+.trivia-end-bar-wrap { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+.trivia-end-bar { height: 100%; background: var(--gold); border-radius: 4px; width: 0; transition: width 1.2s cubic-bezier(0.25,1,0.5,1); }
+.trivia-end-player.is-me .trivia-end-bar { background: linear-gradient(90deg, var(--gold), var(--gold-bright)); }
+.trivia-end-score { font-size: 14px; font-weight: 600; color: var(--ivory); min-width: 55px; text-align: right; }
+/* Keyframes */
+@keyframes cardDrop { from { opacity:0; transform:translateY(-14px) scale(0.93); } to { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes selectedBounce { 0%{transform:scale(1)} 40%{transform:scale(1.07)} 70%{transform:scale(0.97)} 100%{transform:scale(1)} }
+@keyframes shrinkBar { from{width:100%} to{width:0%} }
+@keyframes answerSlideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes correctPulse { 0%{box-shadow:0 0 0 0 rgba(74,222,128,0.45)} 60%{box-shadow:0 0 0 10px rgba(74,222,128,0)} 100%{box-shadow:0 0 0 0 rgba(74,222,128,0)} }
+@keyframes wrongShake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+@keyframes floatUp { 0%{opacity:1;transform:translateX(-50%) translateY(0)} 100%{opacity:0;transform:translateX(-50%) translateY(-42px)} }
+@keyframes timerPulse { from{opacity:1} to{opacity:0.45} }
+@keyframes streakPulse { from{box-shadow:0 0 0 0 rgba(201,162,39,0.25)} to{box-shadow:0 0 10px 4px rgba(201,162,39,0.08)} }
+@keyframes waitBlink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+@keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:0.95} 100%{transform:translateY(380px) rotate(720deg);opacity:0} }
 
 /* ═══════════ TRUTHS & LIE ═══════════ */
 .tal-wrapper { width: 100%; max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; flex: 1; justify-content: center; min-height: 0; }
@@ -1470,6 +1540,7 @@ nav {
             <div class="trivia-phase-header">
               <div class="trivia-phase-label" id="triviaPhaseLabel">Theme Selection</div>
               <div class="trivia-phase-title" id="triviaPhaseTitleEl">Choose your category</div>
+              <div class="trivia-streak-badge" id="triviaStreakBadge"></div>
             </div>
             <div class="trivia-scores" id="triviaScores"></div>
             <div id="triviaBody"></div>
@@ -1880,9 +1951,13 @@ nav {
 // ══════════════════════════════════════════
 //  CONFIG
 // ══════════════════════════════════════════
-const API_URL = 'http://localhost:3001';
-const WS_URL  = 'http://localhost:3001';
-const APP_URL = 'http://localhost:8080';
+// Auto-detects local vs production — update the two PROD_ values after Railway setup
+const _IS_LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
+const PROD_API_URL = 'https://REPLACE_WITH_RAILWAY_URL.up.railway.app'; // ← update after Railway setup
+const PROD_APP_URL = 'https://REPLACE_WITH_YOUR_DOMAIN.com';            // ← update after Railway setup
+const API_URL = _IS_LOCAL ? 'http://localhost:3001' : PROD_API_URL;
+const WS_URL  = API_URL;
+const APP_URL = _IS_LOCAL ? 'http://localhost:8080' : PROD_APP_URL;
 
 // ══════════════════════════════════════════
 //  STATE
@@ -1942,10 +2017,14 @@ function decodeJwt(t) {
     agoraAppId = d.appId || null;
   } catch(e) {}
 
-  // Try to refresh token
+  // Refresh token only if close to expiring (< 5 min remaining)
   try {
-    const r = await fetch(API_URL + '/api/auth/refresh', { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'} });
-    if (r.ok) { const d = await r.json(); if (d.accessToken) { myToken = d.accessToken; localStorage.setItem('accessToken', myToken); } }
+    const _p = JSON.parse(atob(myToken.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+    const _msLeft = (_p.exp * 1000) - Date.now();
+    if (_msLeft < 5 * 60 * 1000) {
+      const r = await fetch(API_URL + '/api/auth/refresh', { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'} });
+      if (r.ok) { const d = await r.json(); if (d.accessToken) { myToken = d.accessToken; localStorage.setItem('accessToken', myToken); } }
+    }
   } catch(e) {}
 
   startSessionTimer();

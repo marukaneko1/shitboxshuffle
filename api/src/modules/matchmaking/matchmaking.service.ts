@@ -552,6 +552,8 @@ export class MatchmakingService implements OnModuleDestroy {
     });
     if (!user) return false;
     if (user.isBanned) return false;
+    // In development, skip subscription and age verification so local accounts can match freely
+    if (process.env.NODE_ENV === 'development') return true;
     if (!user.is18PlusVerified) return false;
     if (user.subscription?.status !== "ACTIVE") return false;
     return true;
