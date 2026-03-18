@@ -22,10 +22,18 @@ import { TruthsAndLieService } from "../games/truths-and-lie/truths-and-lie.serv
 import { BilliardsService } from "../games/billiards/billiards.service";
 import { PokerService } from "../games/poker/poker.service";
 import { TwentyOneQuestionsService } from "../games/twenty-one-questions/twenty-one-questions.service";
+import { ConnectFourService } from "../games/connect-four/connect-four.service";
+import { CheckersService } from "../games/checkers/checkers.service";
+import { MemoryService } from "../games/memory/memory.service";
+import { UnoService } from "../games/uno/uno.service";
+import { GeoGuesserService } from "../games/geoguesser/geoguesser.service";
+import { TanksService } from "../games/tanks/tanks.service";
+import { PenguinKnockoutService } from "../games/penguin-knockout/penguin-knockout.service";
 import { VideoService } from "../video/video.service";
 import { WalletService } from "../wallet/wallet.service";
 import { ReportsService } from "../reports/reports.service";
 import { RoomsService } from "../rooms/rooms.service";
+import { PrismaService } from "../../prisma/prisma.service";
 import { v4 as uuidv4 } from "uuid";
 import { GameType, RoundStatus } from "@prisma/client";
 import { Position, PieceType } from "../games/chess/chess.types";
@@ -44,7 +52,9 @@ import {
   TriviaAnswerDto,
   TruthsAndLieSubmitStatementsDto,
   TruthsAndLieSubmitGuessDto,
-  TwentyOneQuestionsNextDto
+  TwentyOneQuestionsNextDto,
+  TanksInputDto,
+  PenguinMoveDto
 } from "./dto";
 
 // SECURITY: Dynamic CORS based on environment - DO NOT use origin: "*" in production
@@ -89,6 +99,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   // Track voting timers for rooms
   private votingTimers = new Map<string, NodeJS.Timeout>();
 
+  // Track tanks game loop intervals
+  private tanksGameLoops = new Map<string, NodeJS.Timeout>();
+
   constructor(
     private readonly matchmakingService: MatchmakingService,
     private readonly sessionsService: SessionsService,
@@ -100,11 +113,19 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
     private readonly billiardsService: BilliardsService,
     private readonly pokerService: PokerService,
     private readonly twentyOneQuestionsService: TwentyOneQuestionsService,
+    private readonly connectFourService: ConnectFourService,
+    private readonly checkersService: CheckersService,
+    private readonly memoryService: MemoryService,
+    private readonly unoService: UnoService,
+    private readonly geoGuesserService: GeoGuesserService,
+    private readonly tanksService: TanksService,
+    private readonly penguinKnockoutService: PenguinKnockoutService,
     private readonly videoService: VideoService,
     private readonly walletService: WalletService,
     private readonly reportsService: ReportsService,
     private readonly roomsService: RoomsService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly prisma: PrismaService
   ) {}
 
   handleConnection(client: Socket) {
@@ -132,18 +153,21 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
         clearInterval(interval);
         this.matchingIntervals.delete(userId);
       }
-      // Note: leaveQueue is also called in client.once("disconnect") handler
-      // We'll let that handle it to avoid duplicate calls
-      // Only call here if we're sure the client.once handler won't fire
-      // Actually, handleDisconnect is called for ALL disconnects, so we should call it
-      // But the client.once handler will also fire, causing duplicate calls
-      // Let's add a small delay to see if user reconnects before removing from queue
+
+      // Notify any active session rooms that this peer left
+      const rooms = Array.from(client.rooms) as string[];
+      rooms.forEach(room => {
+        if (room.startsWith('session:')) {
+          // Emit to everyone else in the session room (not this disconnecting client)
+          client.to(room).emit('session.peerLeft', { userId, sessionId: room.replace('session:', '') });
+        }
+      });
+
       setTimeout(() => {
-        // Only remove if user hasn't reconnected (check if interval still exists)
         if (!this.matchingIntervals.has(userId)) {
           this.matchmakingService.leaveQueue(userId);
         }
-      }, 1000); // Wait 1 second before removing - gives time for reconnection
+      }, 1000);
     }
   }
 
@@ -165,6 +189,18 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       clearTimeout(timer);
     }
     this.triviaQuestionTimers.clear();
+
+    // Cleanup GeoGuesser round timers
+    for (const [gameId, timer] of this.geoGuesserRoundTimers.entries()) {
+      clearTimeout(timer);
+    }
+    this.geoGuesserRoundTimers.clear();
+
+    // Cleanup tanks game loops
+    for (const [gameId, interval] of this.tanksGameLoops.entries()) {
+      clearInterval(interval);
+    }
+    this.tanksGameLoops.clear();
   }
 
   @UseGuards(WsJwtGuard)
@@ -383,10 +419,33 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
         }
       }
       
+      // Fetch both users' display info for the session UI
+      const [myProfile, peerProfile] = await Promise.all([
+        this.prisma.user.findUnique({
+          where: { id: user.sub },
+          select: { id: true, displayName: true, username: true, wallet: { select: { balanceTokens: true } } }
+        }),
+        this.prisma.user.findUnique({
+          where: { id: peerId },
+          select: { id: true, displayName: true, username: true, wallet: { select: { balanceTokens: true } } }
+        })
+      ]);
+
       // Emit session.ready to the joining client
       client.emit("session.ready", {
         sessionId: session.id,
-        peer: { id: peerId },
+        peer: {
+          id: peerId,
+          displayName: peerProfile?.displayName || peerProfile?.username || 'Opponent',
+          username: peerProfile?.username || null,
+          tokens: peerProfile?.wallet?.balanceTokens ?? 0
+        },
+        me: {
+          id: user.sub,
+          displayName: myProfile?.displayName || myProfile?.username || 'You',
+          username: myProfile?.username || null,
+          tokens: myProfile?.wallet?.balanceTokens ?? 0
+        },
         video: videoToken
       });
       
@@ -409,9 +468,14 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
           const user = (client as any).user;
           if (user && user.sub) {
             const peerId = session.userAId === user.sub ? session.userBId : session.userAId;
+            const [myP, peerP] = await Promise.all([
+              this.prisma.user.findUnique({ where: { id: user.sub }, select: { displayName: true, username: true, wallet: { select: { balanceTokens: true } } } }),
+              this.prisma.user.findUnique({ where: { id: peerId }, select: { displayName: true, username: true, wallet: { select: { balanceTokens: true } } } })
+            ]);
             client.emit("session.ready", {
               sessionId: session.id,
-              peer: { id: peerId },
+              peer: { id: peerId, displayName: peerP?.displayName || peerP?.username || 'Opponent', username: peerP?.username || null, tokens: peerP?.wallet?.balanceTokens ?? 0 },
+              me: { id: user.sub, displayName: myP?.displayName || myP?.username || 'You', username: myP?.username || null, tokens: myP?.wallet?.balanceTokens ?? 0 },
               video: null
             });
             return;
@@ -493,22 +557,71 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
         if (questionsState) {
           finalState = questionsState as any;
         }
+      } else if (startedGame.type === GameType.TANKS && finalState) {
+        const tanksState = this.tanksService.getState(startedGame.id);
+        if (tanksState) {
+          finalState = tanksState as any;
+        }
+      } else if (startedGame.type === GameType.GEO_GUESSER && finalState) {
+        // Update GeoGuesser player display names in state
+        const ggState = this.geoGuesserService.getState(startedGame.id);
+        if (ggState) {
+          for (const player of ggState.players) {
+            const gp = startedGame.players.find(p => p.userId === player.userId);
+            if (gp) player.displayName = gp.user.displayName || player.displayName;
+          }
+          this.geoGuesserService.setState(startedGame.id, ggState);
+          finalState = ggState as any;
+        }
       }
       
-      // Emit game started event with full game data
-      this.server.to(`session:${body.sessionId}`).emit("game.started", {
-        gameId: startedGame.id,
-        gameType: startedGame.type,
-        state: finalState,
-        players: startedGame.players.map(p => ({
-          odUserId: p.userId,
-          side: p.side,
-          displayName: p.user.displayName
-        }))
-      });
+      // For UNO, send each player their own sanitized state (hides opponent's hand)
+      if (startedGame.type === GameType.UNO && finalState) {
+        const sessionSockets = await this.server.in(`session:${body.sessionId}`).fetchSockets();
+        for (const s of sessionSockets) {
+          const su = (s as any).user;
+          if (su) {
+            const sanitized = this.unoService.sanitizeForPlayer(finalState as any, su.sub);
+            s.emit("game.started", {
+              gameId: startedGame.id,
+              gameType: startedGame.type,
+              state: sanitized,
+              players: startedGame.players.map(p => ({
+                odUserId: p.userId,
+                side: p.side,
+                displayName: p.user.displayName
+              }))
+            });
+          }
+        }
+      } else {
+        // Emit game started event with full game data
+        this.server.to(`session:${body.sessionId}`).emit("game.started", {
+          gameId: startedGame.id,
+          gameType: startedGame.type,
+          state: finalState,
+          players: startedGame.players.map(p => ({
+            odUserId: p.userId,
+            side: p.side,
+            displayName: p.user.displayName
+          }))
+        });
+      }
       
       // For trivia, game starts in themeSelection phase - no need to start questions yet
       // Questions will start after both players select themes
+
+      // For GeoGuesser, start round 1 immediately after a short delay
+      if (startedGame.type === GameType.GEO_GUESSER) {
+        setTimeout(() => {
+          this.startGeoGuesserRound(startedGame.id, `session:${body.sessionId}`);
+        }, 3000);
+      }
+
+      // For Tanks, start the real-time game loop
+      if (startedGame.type === GameType.TANKS) {
+        this.startTanksGameLoop(startedGame.id, `session:${body.sessionId}`);
+      }
       
       this.logger.log(`Game ${startedGame.id} (${startedGame.type}) started for session ${body.sessionId}`);
     } catch (error: any) {
@@ -710,6 +823,182 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
           
           this.logger.log(`Chess game ${body.gameId} ended - Winner: ${result.winner || "Draw"}`);
         }
+      } else if (game.type === GameType.CONNECT_FOUR) {
+        if (body.colIndex === undefined) {
+          client.emit("game.error", { message: "Column index required for Connect Four" });
+          return;
+        }
+
+        const result = await this.connectFourService.makeMove(body.gameId, user.sub, body.colIndex);
+
+        if (!result.success) {
+          client.emit("game.error", { message: result.error });
+          return;
+        }
+
+        this.server.to(`game:${body.gameId}`).emit("game.stateUpdate", {
+          gameId: body.gameId,
+          state: result.state,
+          lastMove: { col: body.colIndex, row: result.state?.moveHistory?.slice(-1)[0]?.row }
+        });
+
+        if (result.winner !== null || result.isDraw) {
+          const winnerPlayer = result.winner
+            ? game.players.find(p => p.userId === result.winner)
+            : null;
+
+          this.server.to(`game:${body.gameId}`).emit("game.end", {
+            gameId: body.gameId,
+            winnerId: result.winner,
+            winnerName: winnerPlayer?.user.displayName || null,
+            isDraw: result.isDraw,
+            reason: result.isDraw ? "draw" : "win",
+            winningCells: result.winningCells
+          });
+
+          this.logger.log(`Connect Four game ${body.gameId} ended - Winner: ${result.winner || "Draw"}`);
+        }
+      } else if (game.type === GameType.CHECKERS) {
+        if (!body.from || !body.to) {
+          client.emit("game.error", { message: "From and to positions required for Checkers" });
+          return;
+        }
+
+        const result = await this.checkersService.makeMove(
+          body.gameId,
+          user.sub,
+          body.from as any,
+          body.to as any
+        );
+
+        if (!result.success) {
+          client.emit("game.error", { message: result.error });
+          return;
+        }
+
+        this.server.to(`game:${body.gameId}`).emit("game.stateUpdate", {
+          gameId: body.gameId,
+          state: result.state,
+          lastMove: { from: body.from, to: body.to }
+        });
+
+        if (result.winner !== null || result.isDraw) {
+          const winnerPlayer = result.winner
+            ? game.players.find(p => p.userId === result.winner)
+            : null;
+
+          this.server.to(`game:${body.gameId}`).emit("game.end", {
+            gameId: body.gameId,
+            winnerId: result.winner,
+            winnerName: winnerPlayer?.user.displayName || null,
+            isDraw: result.isDraw,
+            reason: result.isDraw ? "draw" : "win"
+          });
+
+          this.logger.log(`Checkers game ${body.gameId} ended - Winner: ${result.winner || "Draw"}`);
+        }
+      } else if (game.type === GameType.MEMORY_CARDS) {
+        if (body.cardIndex === undefined) {
+          client.emit("game.error", { message: "Card index required for Memory Cards" });
+          return;
+        }
+
+        const result = await this.memoryService.makeMove(body.gameId, user.sub, body.cardIndex);
+
+        if (!result.success) {
+          client.emit("game.error", { message: result.error });
+          return;
+        }
+
+        this.server.to(`game:${body.gameId}`).emit("game.stateUpdate", {
+          gameId: body.gameId,
+          state: result.state
+        });
+
+        if (result.winner !== undefined || result.isDraw) {
+          const winnerPlayer = result.winner
+            ? game.players.find(p => p.userId === result.winner)
+            : null;
+
+          this.server.to(`game:${body.gameId}`).emit("game.end", {
+            gameId: body.gameId,
+            winnerId: result.winner,
+            winnerName: winnerPlayer?.user.displayName || null,
+            isDraw: result.isDraw,
+            reason: result.isDraw ? "draw" : "win"
+          });
+
+          this.logger.log(`Memory Cards game ${body.gameId} ended - Winner: ${result.winner || "Draw"}`);
+        } else if (result.pendingFlipBack) {
+          // Server-side 1.5s timer to auto-flip cards back
+          const gameIdForTimer = body.gameId;
+          const roomKey = `game:${gameIdForTimer}`;
+          setTimeout(async () => {
+            try {
+              const flipResult = await this.memoryService.flipBack(gameIdForTimer);
+              if (flipResult) {
+                this.server.to(roomKey).emit("game.stateUpdate", {
+                  gameId: gameIdForTimer,
+                  state: flipResult.state
+                });
+              }
+            } catch (err) {
+              this.logger.error(`Memory flip-back error for game ${gameIdForTimer}:`, err);
+            }
+          }, 1500);
+        }
+      } else if (game.type === GameType.UNO) {
+        if (!body.unoMoveType) {
+          client.emit("game.error", { message: "unoMoveType required for UNO" });
+          return;
+        }
+
+        const result = await this.unoService.makeMove(body.gameId, user.sub, {
+          type: body.unoMoveType,
+          cardId: body.unoCardId,
+          chosenColor: body.unoChosenColor as any,
+        });
+
+        if (!result.success) {
+          client.emit("game.error", { message: result.error });
+          return;
+        }
+
+        // Send each player their own sanitized state so neither can see the other's hand
+        const unoGameSockets = await this.server.in(`game:${body.gameId}`).fetchSockets();
+        if (unoGameSockets.length > 0) {
+          for (const s of unoGameSockets) {
+            const su = (s as any).user;
+            if (su) {
+              s.emit("game.stateUpdate", {
+                gameId: body.gameId,
+                state: this.unoService.sanitizeForPlayer(result.state!, su.sub)
+              });
+            }
+          }
+        } else {
+          // Fallback: broadcast full state (client renders only own hand)
+          this.server.to(`game:${body.gameId}`).emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: result.state
+          });
+        }
+
+        if (result.winner !== null || result.isDraw) {
+          const winnerPlayer = result.winner
+            ? game.players.find(p => p.userId === result.winner)
+            : null;
+
+          this.server.to(`game:${body.gameId}`).emit("game.end", {
+            gameId: body.gameId,
+            winnerId: result.winner,
+            winnerName: winnerPlayer?.user.displayName || null,
+            isDraw: result.isDraw,
+            reason: result.isDraw ? "draw" : "win",
+          });
+
+          this.logger.log(`UNO game ${body.gameId} ended - Winner: ${result.winner || "Draw"}`);
+        }
       } else {
         client.emit("game.error", { message: "Game type not supported yet" });
       }
@@ -719,11 +1008,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
     }
   }
   
-  // Prisma instance for direct db access in chess moves
-  private get prisma() {
-    return (this.gamesService as any).prisma;
-  }
-
   @UseGuards(WsJwtGuard)
   @SubscribeMessage("game.forfeit")
   async handleGameForfeit(
@@ -782,6 +1066,48 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
         });
         
         this.logger.log(`Chess game ${body.gameId} forfeited by ${user.sub}`);
+      } else if (game.type === GameType.CHECKERS) {
+        const result = await this.checkersService.forfeitGame(body.gameId, user.sub);
+        const winnerPlayer = game.players.find(p => p.userId === result.winnerId);
+
+        this.server.to(`game:${body.gameId}`).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winnerId,
+          winnerName: winnerPlayer?.user.displayName || null,
+          isDraw: false,
+          reason: "forfeit",
+          forfeitedBy: user.sub
+        });
+
+        this.logger.log(`Checkers game ${body.gameId} forfeited by ${user.sub}`);
+      } else if (game.type === GameType.MEMORY_CARDS) {
+        const result = await this.memoryService.forfeitGame(body.gameId, user.sub);
+        const winnerPlayer = game.players.find(p => p.userId === result.winnerId);
+
+        this.server.to(`game:${body.gameId}`).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winnerId,
+          winnerName: winnerPlayer?.user.displayName || null,
+          isDraw: false,
+          reason: "forfeit",
+          forfeitedBy: user.sub
+        });
+
+        this.logger.log(`Memory Cards game ${body.gameId} forfeited by ${user.sub}`);
+      } else if (game.type === GameType.UNO) {
+        const result = await this.unoService.forfeitGame(body.gameId, user.sub);
+        const winnerPlayer = game.players.find(p => p.userId === result.winnerId);
+
+        this.server.to(`game:${body.gameId}`).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winnerId,
+          winnerName: winnerPlayer?.user.displayName || null,
+          isDraw: false,
+          reason: "forfeit",
+          forfeitedBy: user.sub
+        });
+
+        this.logger.log(`UNO game ${body.gameId} forfeited by ${user.sub}`);
       } else {
         client.emit("game.error", { message: "Game type not supported yet" });
       }
@@ -799,7 +1125,10 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   ) {
     const user = (client as any).user;
     await this.sessionsService.endSession(body.sessionId, user.sub, "USER_LEFT");
-    this.server.to(`session:${body.sessionId}`).emit("session.end", { sessionId: body.sessionId });
+    // Notify the other player that this user left (not the sender)
+    client.to(`session:${body.sessionId}`).emit("session.peerLeft", { userId: user.sub, sessionId: body.sessionId });
+    // Also emit session.end to the whole room (including sender) for cleanup
+    this.server.to(`session:${body.sessionId}`).emit("session.end", { sessionId: body.sessionId, leavingUserId: user.sub });
   }
 
   @UseGuards(WsJwtGuard)
@@ -1213,7 +1542,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
     });
 
     // Update database
-    (this.gamesService as any).prisma.game.update({
+    this.prisma.game.update({
       where: { id: gameId },
       data: { state: updatedState as any }
     }).catch((err: any) => this.logger.error("Failed to update game state:", err));
@@ -1274,7 +1603,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
     });
 
     // Update state in database
-    (this.gamesService as any).prisma.game.update({
+    this.prisma.game.update({
       where: { id: gameId },
       data: { state: endedState as any }
     }).catch((err: any) => this.logger.error("Failed to update game state:", err));
@@ -1308,7 +1637,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
         });
 
         // Update database
-        (this.gamesService as any).prisma.game.update({
+        this.prisma.game.update({
           where: { id: gameId },
           data: { state: nextState as any }
         }).catch((err: any) => this.logger.error("Failed to update game state:", err));
@@ -1338,7 +1667,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
     const endResult = this.triviaService.getGameEndResult(finishedState);
 
     // Update database
-    (this.gamesService as any).prisma.game.update({
+    this.prisma.game.update({
       where: { id: gameId },
       data: {
         status: "COMPLETED" as any,
@@ -1405,7 +1734,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
 
       // Update state in database
-      await (this.gamesService as any).prisma.game.update({
+      await this.prisma.game.update({
         where: { id: body.gameId },
         data: { state: result.state as any }
       });
@@ -1475,7 +1804,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       this.assertPlayerInGame(game, user.sub);
 
       // Get user display name
-      const userRecord = await (this.gamesService as any).prisma.user.findUnique({
+      const userRecord = await this.prisma.user.findUnique({
         where: { id: user.sub },
         select: { displayName: true }
       });
@@ -1524,7 +1853,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       });
 
       // Update state in database
-      await (this.gamesService as any).prisma.game.update({
+      await this.prisma.game.update({
         where: { id: body.gameId },
         data: { state: result.state as any }
       });
@@ -1581,7 +1910,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
 
       // Update state in database
-      await (this.gamesService as any).prisma.game.update({
+      await this.prisma.game.update({
         where: { id: body.gameId },
         data: { state: result as any }
       });
@@ -1653,7 +1982,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       this.truthsAndLieService.clearTimer(body.gameId);
 
       // Update state in database
-      await (this.gamesService as any).prisma.game.update({
+      await this.prisma.game.update({
         where: { id: body.gameId },
         data: { state: result as any }
       });
@@ -1722,7 +2051,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
 
       // Update state in database
-      await (this.gamesService as any).prisma.game.update({
+      await this.prisma.game.update({
         where: { id: body.gameId },
         data: { state: result.state as any }
       });
@@ -1799,7 +2128,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
         );
 
         // Update database
-        (this.gamesService as any).prisma.game.update({
+        this.prisma.game.update({
           where: { id: gameId },
           data: { state: result as any }
         }).catch((err: any) => this.logger.error("Failed to update game state:", err));
@@ -1869,7 +2198,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
 
       // Update state in database
-      await (this.gamesService as any).prisma.game.update({
+      await this.prisma.game.update({
         where: { id: body.gameId },
         data: { state: result.state as any }
       });
@@ -1991,7 +2320,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
 
       // Update state in database
-      await (this.gamesService as any).prisma.game.update({
+      await this.prisma.game.update({
         where: { id: body.gameId },
         data: { state: result.state as any }
       });
@@ -2057,7 +2386,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       this.logger.log(`[handlePokerAction] Next to act: ${result.nextAction?.currentPlayerId?.slice(-6)}`);
 
       // Update state in database
-      await (this.gamesService as any).prisma.game.update({
+      await this.prisma.game.update({
         where: { id: body.gameId },
         data: { state: result.state as any }
       });
@@ -2139,7 +2468,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       const playersWithChips = newState.players.filter((p: any) => p.chips > 0);
       if (playersWithChips.length < 2) {
         // Game is over - mark as completed
-        await (this.gamesService as any).prisma.game.update({
+        await this.prisma.game.update({
           where: { id: body.gameId },
           data: { 
             state: newState as any,
@@ -2171,7 +2500,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       }
 
       // Update state in database
-      await (this.gamesService as any).prisma.game.update({
+      await this.prisma.game.update({
         where: { id: body.gameId },
         data: { state: newState as any }
       });
@@ -2212,7 +2541,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       this.pokerService.cleanupGame(body.gameId);
 
       // Update game status in database
-      await (this.gamesService as any).prisma.game.update({
+      await this.prisma.game.update({
         where: { id: body.gameId },
         data: { 
           status: "COMPLETED",
@@ -2232,6 +2561,332 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
     } catch (error: any) {
       this.logger.error("Poker end game error:", error);
       client.emit("game.error", { message: error.message || "Failed to end game" });
+    }
+  }
+
+  // ==================== GEOGUESSER GAME HANDLERS ====================
+
+  private geoGuesserRoundTimers = new Map<string, NodeJS.Timeout>();
+
+  private startGeoGuesserRound(gameId: string, roomKey: string) {
+    const state = this.geoGuesserService.startRound(gameId);
+    if (!state) return;
+
+    const currentRound = state.rounds[state.currentRound - 1];
+
+    this.server.to(roomKey).emit("geoGuesser.roundStart", {
+      gameId,
+      roundNumber: state.currentRound,
+      totalRounds: state.totalRounds,
+      location: currentRound.location,
+      panoramaPov: currentRound.panoramaPov,
+      roundDurationSeconds: state.roundDurationSeconds,
+      roundStartedAt: state.roundStartedAt,
+    });
+
+    // Server-side timer: end round when time expires
+    const timer = setTimeout(async () => {
+      this.geoGuesserRoundTimers.delete(gameId);
+      await this.endGeoGuesserRound(gameId, roomKey);
+    }, state.roundDurationSeconds * 1000);
+
+    this.geoGuesserRoundTimers.set(gameId, timer);
+  }
+
+  private async endGeoGuesserRound(gameId: string, roomKey: string) {
+    const result = this.geoGuesserService.endRound(gameId);
+
+    // Persist round state to DB
+    const state = this.geoGuesserService.getState(gameId);
+    if (state) {
+      await this.geoGuesserService.persistRoundEnd(gameId, state);
+    }
+
+    this.server.to(roomKey).emit("geoGuesser.roundResult", {
+      gameId,
+      roundNumber: result.roundNumber,
+      location: result.location,
+      guesses: result.guesses,
+      scores: result.scores,
+      isGameOver: result.isGameOver,
+    });
+
+    if (result.isGameOver) {
+      // Finalize game in DB
+      await this.geoGuesserService.finalizeGame(gameId, result.winnerId ?? null);
+
+      this.server.to(roomKey).emit("geoGuesser.gameEnd", {
+        gameId,
+        winnerId: result.winnerId ?? null,
+        isDraw: result.isDraw,
+        finalScores: result.scores,
+      });
+
+      this.server.to(roomKey).emit("game.end", {
+        gameId,
+        winnerId: result.winnerId ?? null,
+        isDraw: result.isDraw,
+        reason: "game_over",
+      });
+
+      this.logger.log(`GeoGuesser game ${gameId} ended. Winner: ${result.winnerId ?? "draw"}`);
+    } else {
+      // Start next round after a 5-second results viewing window
+      setTimeout(() => {
+        this.startGeoGuesserRound(gameId, roomKey);
+      }, 5000);
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage("geoGuesser.guess")
+  async handleGeoGuesserGuess(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; lat: number; lng: number }
+  ) {
+    const user = (client as any).user;
+
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.GEO_GUESSER) {
+        client.emit("game.error", { message: "Not a GeoGuesser game" });
+        return;
+      }
+
+      this.assertPlayerInGame(game, user.sub);
+
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
+
+      const { guess, roundComplete } = this.geoGuesserService.submitGuess(
+        body.gameId,
+        user.sub,
+        body.lat,
+        body.lng
+      );
+
+      // Tell all players that this user has locked in their guess
+      this.server.to(roomKey).emit("geoGuesser.playerGuessed", {
+        gameId: body.gameId,
+        userId: user.sub,
+        pointsEarned: guess.pointsEarned,
+      });
+
+      if (roundComplete) {
+        // Cancel the server-side timer — both players submitted before time ran out
+        const timer = this.geoGuesserRoundTimers.get(body.gameId);
+        if (timer) {
+          clearTimeout(timer);
+          this.geoGuesserRoundTimers.delete(body.gameId);
+        }
+        await this.endGeoGuesserRound(body.gameId, roomKey);
+      }
+    } catch (error: any) {
+      this.logger.error("GeoGuesser guess error:", error);
+      client.emit("game.error", { message: error.message || "Failed to submit guess" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage("geoGuesser.forfeit")
+  async handleGeoGuesserForfeit(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string }
+  ) {
+    const user = (client as any).user;
+
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.GEO_GUESSER) {
+        client.emit("game.error", { message: "Not a GeoGuesser game" });
+        return;
+      }
+
+      this.assertPlayerInGame(game, user.sub);
+
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
+
+      // Cancel round timer
+      const timer = this.geoGuesserRoundTimers.get(body.gameId);
+      if (timer) {
+        clearTimeout(timer);
+        this.geoGuesserRoundTimers.delete(body.gameId);
+      }
+
+      // Determine the winner as the other player
+      const state = this.geoGuesserService.getState(body.gameId);
+      const winnerId = state?.players.find(p => p.userId !== user.sub)?.userId ?? null;
+
+      await this.geoGuesserService.finalizeGame(body.gameId, winnerId);
+
+      this.server.to(roomKey).emit("geoGuesser.gameEnd", {
+        gameId: body.gameId,
+        winnerId,
+        isDraw: false,
+        finalScores: state?.players ?? [],
+      });
+
+      this.server.to(roomKey).emit("game.end", {
+        gameId: body.gameId,
+        winnerId,
+        reason: "forfeit",
+      });
+
+      this.logger.log(`GeoGuesser game ${body.gameId} forfeited by ${user.sub}`);
+    } catch (error: any) {
+      this.logger.error("GeoGuesser forfeit error:", error);
+      client.emit("game.error", { message: error.message || "Failed to forfeit game" });
+    }
+  }
+
+  // ─── Tanks ────────────────────────────────────────────────────────────────
+
+  private startTanksGameLoop(gameId: string, roomKey: string): void {
+    const interval = setInterval(async () => {
+      try {
+        const result = this.tanksService.tick(gameId);
+        if (!result || !result.state) return;
+
+        this.server.to(roomKey).emit('tanks.tick', result.state);
+
+        if (result.state.phase === 'ended') {
+          clearInterval(interval);
+          this.tanksGameLoops.delete(gameId);
+
+          this.server.to(roomKey).emit('tanks.gameEnd', {
+            gameId,
+            winnerId: result.state.winnerId,
+            isDraw: result.state.isDraw,
+          });
+
+          this.server.to(roomKey).emit('game.end', {
+            gameId,
+            winnerId: result.state.winnerId,
+            isDraw: result.state.isDraw,
+          });
+
+          try {
+            await this.prisma.game.update({
+              where: { id: gameId },
+              data: {
+                status: 'COMPLETED' as any,
+                winnerUserId: result.state.winnerId,
+                state: result.state as any,
+                endedAt: new Date(),
+              },
+            });
+          } catch (dbErr) {
+            this.logger.error('Failed to persist tanks game end:', dbErr);
+          }
+
+          this.tanksService.deleteState(gameId);
+        }
+      } catch (err) {
+        this.logger.error(`Tanks game loop error for ${gameId}:`, err);
+      }
+    }, 50);
+
+    this.tanksGameLoops.set(gameId, interval);
+    this.logger.log(`Tanks game loop started for game ${gameId}`);
+  }
+
+  @UseGuards(WsJwtGuard)
+  @UsePipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
+    exceptionFactory: (errors) => new WsException(errors)
+  }))
+  @SubscribeMessage('tanks.input')
+  async handleTanksInput(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: TanksInputDto
+  ) {
+    const user = (client as any).user;
+    try {
+      this.tanksService.applyInput(body.gameId, user.sub, {
+        keys: body.keys,
+        turretAngle: body.turretAngle,
+        shooting: body.shooting,
+      });
+    } catch (err: any) {
+      client.emit('game.error', { message: err.message || 'Input error' });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @UsePipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
+    exceptionFactory: (errors) => new WsException(errors)
+  }))
+  @SubscribeMessage('penguin.move')
+  async handlePenguinMove(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: PenguinMoveDto
+  ) {
+    const user = (client as any).user;
+    const roomKey = `game:${body.gameId}`;
+
+    try {
+      const result = await this.penguinKnockoutService.submitMove(
+        body.gameId,
+        user.sub,
+        { direction: body.direction as any, power: body.power as any }
+      );
+
+      if (!result.success) {
+        client.emit('game.error', { message: result.error || 'Move failed' });
+        return;
+      }
+
+      if (result.waitingForOpponent) {
+        // Acknowledge to submitting player; opponent gets notified when they also submit
+        client.emit('penguin.moveAcknowledged', { gameId: body.gameId });
+        // Broadcast to the room so opponent knows a move was submitted (without revealing it)
+        this.server.to(roomKey).emit('penguin.opponentReady', { gameId: body.gameId, userId: user.sub });
+        return;
+      }
+
+      // Both submitted — broadcast full resolution
+      if (result.winner !== undefined && result.winner !== null) {
+        this.server.to(roomKey).emit('game.stateUpdate', {
+          gameId: body.gameId,
+          state: result.state,
+          roundResolution: result.roundResolution,
+        });
+        this.server.to(roomKey).emit('game.end', {
+          gameId: body.gameId,
+          winnerId: result.winner,
+          isDraw: result.isDraw,
+          reason: 'win',
+          state: result.state,
+        });
+      } else if (result.isDraw) {
+        this.server.to(roomKey).emit('game.stateUpdate', {
+          gameId: body.gameId,
+          state: result.state,
+          roundResolution: result.roundResolution,
+        });
+        this.server.to(roomKey).emit('game.end', {
+          gameId: body.gameId,
+          winnerId: null,
+          isDraw: true,
+          reason: 'draw',
+          state: result.state,
+        });
+      } else {
+        this.server.to(roomKey).emit('game.stateUpdate', {
+          gameId: body.gameId,
+          state: result.state,
+          roundResolution: result.roundResolution,
+        });
+      }
+    } catch (err: any) {
+      this.logger.error('penguin.move error:', err);
+      client.emit('game.error', { message: err.message || 'Move failed' });
     }
   }
 }

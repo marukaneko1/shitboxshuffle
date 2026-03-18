@@ -8,6 +8,13 @@ import { TruthsAndLieService } from "./truths-and-lie/truths-and-lie.service";
 import { BilliardsService } from "./billiards/billiards.service";
 import { PokerService } from "./poker/poker.service";
 import { TwentyOneQuestionsService } from "./twenty-one-questions/twenty-one-questions.service";
+import { ConnectFourService } from "./connect-four/connect-four.service";
+import { CheckersService } from "./checkers/checkers.service";
+import { MemoryService } from "./memory/memory.service";
+import { UnoService } from "./uno/uno.service";
+import { GeoGuesserService } from "./geoguesser/geoguesser.service";
+import { TanksService } from "./tanks/tanks.service";
+import { PenguinKnockoutService } from "./penguin-knockout/penguin-knockout.service";
 
 @Injectable()
 export class GamesService {
@@ -19,7 +26,14 @@ export class GamesService {
     private readonly truthsAndLieService: TruthsAndLieService,
     private readonly billiardsService: BilliardsService,
     private readonly pokerService: PokerService,
-    private readonly twentyOneQuestionsService: TwentyOneQuestionsService
+    private readonly twentyOneQuestionsService: TwentyOneQuestionsService,
+    private readonly connectFourService: ConnectFourService,
+    private readonly checkersService: CheckersService,
+    private readonly memoryService: MemoryService,
+    private readonly unoService: UnoService,
+    private readonly geoGuesserService: GeoGuesserService,
+    private readonly tanksService: TanksService,
+    private readonly penguinKnockoutService: PenguinKnockoutService
   ) {}
 
   async createGame(sessionId: string, type: GameType, playerIds: string[]) {
@@ -63,6 +77,49 @@ export class GamesService {
         userId,
         side: `player${idx + 1}`
       }));
+    } else if (type === GameType.CONNECT_FOUR) {
+      // Randomly assign R (red, goes first) and Y (yellow)
+      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      sideMappings = [
+        { userId: shuffled[0], side: "R" },
+        { userId: shuffled[1], side: "Y" }
+      ];
+    } else if (type === GameType.CHECKERS) {
+      // Randomly assign B (Black, goes first) and R (Red)
+      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      sideMappings = [
+        { userId: shuffled[0], side: "B" },
+        { userId: shuffled[1], side: "R" }
+      ];
+    } else if (type === GameType.MEMORY_CARDS) {
+      // Randomly assign player1 (goes first) and player2
+      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      sideMappings = [
+        { userId: shuffled[0], side: "player1" },
+        { userId: shuffled[1], side: "player2" }
+      ];
+    } else if (type === GameType.UNO) {
+      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      sideMappings = [
+        { userId: shuffled[0], side: "player1" },
+        { userId: shuffled[1], side: "player2" }
+      ];
+    } else if (type === GameType.GEO_GUESSER) {
+      sideMappings = playerIds.map((userId, idx) => ({
+        userId,
+        side: `player${idx + 1}`
+      }));
+    } else if (type === GameType.TANKS) {
+      sideMappings = playerIds.map((userId, idx) => ({
+        userId,
+        side: `player${idx + 1}`
+      }));
+    } else if (type === GameType.PENGUIN_KNOCKOUT) {
+      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      sideMappings = [
+        { userId: shuffled[0], side: "player1" },
+        { userId: shuffled[1], side: "player2" }
+      ];
     } else {
       // For TicTacToe or others: X goes first
       sideMappings = playerIds.map((userId, idx) => ({
@@ -159,6 +216,42 @@ export class GamesService {
       state = this.twentyOneQuestionsService.initializeState(gameId, playerIds);
       // Store state in twenty-one-questions service
       this.twentyOneQuestionsService.setState(gameId, state);
+    } else if (game.type === GameType.CONNECT_FOUR) {
+      const playerR = game.players.find(p => p.side === "R")?.userId;
+      const playerY = game.players.find(p => p.side === "Y")?.userId;
+      if (!playerR || !playerY) throw new BadRequestException("Invalid player configuration for Connect Four");
+      state = this.connectFourService.initializeState(playerR, playerY);
+    } else if (game.type === GameType.CHECKERS) {
+      const playerB = game.players.find(p => p.side === "B")?.userId;
+      const playerR = game.players.find(p => p.side === "R")?.userId;
+      if (!playerB || !playerR) throw new BadRequestException("Invalid player configuration for Checkers");
+      state = this.checkersService.initializeState(playerB, playerR);
+    } else if (game.type === GameType.MEMORY_CARDS) {
+      const player1 = game.players.find(p => p.side === "player1")?.userId;
+      const player2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!player1 || !player2) throw new BadRequestException("Invalid player configuration for Memory Cards");
+      state = this.memoryService.initializeState(player1, player2);
+    } else if (game.type === GameType.UNO) {
+      const player1 = game.players.find(p => p.side === "player1")?.userId;
+      const player2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!player1 || !player2) throw new BadRequestException("Invalid player configuration for UNO");
+      state = this.unoService.initializeState(player1, player2);
+    } else if (game.type === GameType.GEO_GUESSER) {
+      const player1 = game.players.find(p => p.side === "player1");
+      const player2 = game.players.find(p => p.side === "player2");
+      if (!player1 || !player2) throw new BadRequestException("Invalid player configuration for GeoGuesser");
+      state = this.geoGuesserService.initializeState(player1.userId, player2.userId);
+      this.geoGuesserService.setState(game.id, state);
+    } else if (game.type === GameType.TANKS) {
+      const playerIds = game.players.map(p => p.userId);
+      state = this.tanksService.initializeState(game.id, playerIds);
+      this.tanksService.setState(game.id, state);
+    } else if (game.type === GameType.PENGUIN_KNOCKOUT) {
+      const player1 = game.players.find(p => p.side === "player1")?.userId;
+      const player2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!player1 || !player2) throw new BadRequestException("Invalid player configuration for Penguin Knockout");
+      state = this.penguinKnockoutService.initializeState(player1, player2);
+      this.penguinKnockoutService.setState(game.id, state);
     }
 
     // Update game to active with initial state

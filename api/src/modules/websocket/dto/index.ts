@@ -8,6 +8,8 @@ export * from "./billiards-action.dto";
 export * from "./trivia-action.dto";
 export * from "./truths-and-lie.dto";
 export * from "./twenty-one-questions.dto";
+export * from "./tanks-action.dto";
+export * from "./penguin-knockout.dto";
 
 
 

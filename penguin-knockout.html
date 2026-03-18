@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penguin Knockout — Shitbox Shuffle</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#08070a;--surface:#0e0d12;--surface-elevated:#141318;--surface-hover:#1a1820;
+  --border:rgba(255,215,120,0.08);--border-hover:rgba(255,215,120,0.18);
+  --gold:#c9a227;--gold-light:#e8d48a;--gold-dim:rgba(201,162,39,0.5);--gold-glow:rgba(201,162,39,0.12);
+  --ivory:#f4f0e8;--ivory-80:rgba(244,240,232,0.8);--ivory-60:rgba(244,240,232,0.6);
+  --ivory-40:rgba(244,240,232,0.4);--ivory-20:rgba(244,240,232,0.2);--ivory-10:rgba(244,240,232,0.1);--ivory-05:rgba(244,240,232,0.05);
+  --ice:#b8dff0;--ice-dim:rgba(184,223,240,0.15);--ice-glow:rgba(184,223,240,0.08);
+  --blue:#60a5fa;--blue-dim:rgba(96,165,250,0.12);
+  --red:#d4453a;--red-dim:rgba(212,69,58,0.15);
+  --green:#4ade80;--green-dim:rgba(74,222,128,0.12);
+  --nav-h:64px;
+}
+html{background:var(--void)}
+body{min-height:100vh;background:var(--void);color:var(--ivory);font-family:'IBM Plex Sans',sans-serif;overflow-x:hidden}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 50% 60% at 50% 0%,rgba(184,223,240,0.04) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 30% at 80% 80%,rgba(201,162,39,0.025) 0%,transparent 50%);
+  pointer-events:none;z-index:0
+}
+
+/* ── NAV ───────────────────────────────────────────── */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  height:var(--nav-h);padding:0 32px;
+  border-bottom:1px solid var(--border);
+  background:rgba(8,7,10,0.96);backdrop-filter:blur(20px);
+  position:fixed;top:0;left:0;right:0;z-index:100
+}
+.nav-brand{display:flex;align-items:center;gap:14px}
+.nav-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:var(--ivory)}
+.nav-title em{font-style:italic;color:var(--gold)}
+.nav-chip{font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:var(--ice);padding:3px 9px;border:1px solid rgba(184,223,240,0.2);border-radius:3px;background:rgba(184,223,240,0.05)}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-meta{font-size:11px;color:var(--ivory-40);letter-spacing:0.04em}
+.nav-meta span{color:var(--ivory-80);font-weight:500}
+.btn-nav{padding:6px 16px;border-radius:5px;font-family:'Bebas Neue';font-size:12px;letter-spacing:0.1em;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--ivory-60);transition:all .2s}
+.btn-nav:hover{border-color:var(--border-hover);color:var(--ivory)}
+
+/* ── LAYOUT ────────────────────────────────────────── */
+.page{
+  display:grid;
+  grid-template-columns:1fr 340px;
+  grid-template-rows:auto;
+  gap:0;
+  margin-top:var(--nav-h);
+  min-height:calc(100vh - var(--nav-h));
+  position:relative;z-index:1;
+  max-width:1280px;margin-left:auto;margin-right:auto;
+  padding:28px 24px 24px;
+  gap:20px;
+}
+
+/* ── ARENA PANEL ───────────────────────────────────── */
+.arena-panel{
+  display:flex;flex-direction:column;gap:16px;
+}
+.arena-eyebrow{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);opacity:0.7}
+.arena-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--ivory);line-height:1}
+.arena-title em{font-style:italic;color:var(--ice)}
+
+.canvas-wrap{
+  position:relative;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  aspect-ratio:1/1;
+  max-width:560px;
+  align-self:flex-start;
+}
+.canvas-wrap::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(184,223,240,0.2),transparent);
+  z-index:1;
+}
+#gameCanvas{
+  display:block;width:100%;height:100%;
+  image-rendering:pixelated;
+}
+
+/* Phase overlay */
+.phase-overlay{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(8,7,10,0.88);backdrop-filter:blur(8px);
+  z-index:10;
+  flex-direction:column;gap:12px;
+  pointer-events:none;
+  opacity:0;transition:opacity .35s;
+}
+.phase-overlay.show{opacity:1;pointer-events:auto}
+.overlay-eyebrow{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--ice);opacity:0.7}
+.overlay-heading{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:var(--ivory);text-align:center;line-height:1.1}
+.overlay-heading em{color:var(--gold);font-style:italic}
+.overlay-sub{font-size:13px;color:var(--ivory-40);text-align:center;line-height:1.6;max-width:300px}
+.btn-overlay{
+  margin-top:8px;padding:12px 36px;
+  border-radius:6px;font-family:'Bebas Neue';font-size:17px;letter-spacing:0.12em;
+  cursor:pointer;border:1px solid var(--gold);
+  background:var(--gold);color:var(--void);
+  transition:all .25s;
+}
+.btn-overlay:hover{background:var(--gold-light);box-shadow:0 0 28px rgba(201,162,39,0.25)}
+
+/* Round info bar */
+.round-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+}
+.round-stat{display:flex;flex-direction:column;gap:2px}
+.round-stat-label{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ivory-20)}
+.round-stat-val{font-family:'Bebas Neue';font-size:22px;letter-spacing:0.06em;color:var(--ivory)}
+.round-stat-val.gold{color:var(--gold)}
+.round-stat-val.ice{color:var(--ice)}
+.round-divider{width:1px;height:36px;background:var(--border)}
+
+/* ── CONTROLS PANEL ────────────────────────────────── */
+.controls-panel{
+  display:flex;flex-direction:column;gap:16px;
+  padding-top:0;
+}
+.ctrl-section-label{
+  font-size:9px;letter-spacing:0.28em;text-transform:uppercase;
+  color:var(--gold);opacity:0.7;margin-bottom:8px;
+}
+
+/* Compass */
+.compass-wrap{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:20px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.compass-svg-wrap{position:relative;width:220px;height:220px}
+#compassSvg{width:220px;height:220px;cursor:pointer;user-select:none}
+.dir-btn{
+  cursor:pointer;transition:all .15s;
+}
+.dir-btn .dir-sector{
+  fill:rgba(255,255,255,0.03);stroke:rgba(244,240,232,0.06);stroke-width:1;
+  transition:all .15s;
+}
+.dir-btn:hover .dir-sector{fill:rgba(184,223,240,0.08);stroke:rgba(184,223,240,0.2)}
+.dir-btn.selected .dir-sector{fill:rgba(201,162,39,0.18);stroke:rgba(201,162,39,0.5);stroke-width:1.5}
+.dir-btn .dir-label{
+  fill:rgba(244,240,232,0.35);font-family:'Bebas Neue',sans-serif;font-size:11px;
+  transition:fill .15s;pointer-events:none;
+}
+.dir-btn:hover .dir-label{fill:rgba(184,223,240,0.8)}
+.dir-btn.selected .dir-label{fill:var(--gold)}
+.stay-btn{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(244,240,232,0.1);
+  background:rgba(244,240,232,0.04);
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.stay-btn:hover{border-color:rgba(184,223,240,0.25);background:rgba(184,223,240,0.06)}
+.stay-btn.selected{border-color:rgba(201,162,39,0.5);background:rgba(201,162,39,0.12)}
+.stay-icon{
+  width:16px;height:16px;
+  border:2px solid rgba(244,240,232,0.25);
+  border-radius:50%;
+  transition:border-color .15s;
+}
+.stay-btn.selected .stay-icon{border-color:var(--gold);box-shadow:0 0 6px rgba(201,162,39,0.4)}
+.stay-btn:hover .stay-icon{border-color:rgba(184,223,240,0.6)}
+
+/* Power selector */
+.power-wrap{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:16px 20px;
+}
+.power-btns{display:flex;gap:8px;margin-top:10px}
+.power-btn{
+  flex:1;padding:10px 8px;border-radius:8px;
+  border:1px solid rgba(244,240,232,0.1);
+  background:rgba(244,240,232,0.03);
+  cursor:pointer;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+}
+.power-btn:hover{border-color:rgba(184,223,240,0.2);background:rgba(184,223,240,0.05)}
+.power-btn.selected{border-color:rgba(201,162,39,0.5);background:rgba(201,162,39,0.1)}
+.power-name{font-family:'Bebas Neue';font-size:14px;letter-spacing:0.08em;color:var(--ivory-60);transition:color .15s}
+.power-btn:hover .power-name{color:var(--ice)}
+.power-btn.selected .power-name{color:var(--gold)}
+.power-pips{display:flex;gap:3px;align-items:center}
+.pip{width:6px;height:6px;border-radius:50%;background:rgba(244,240,232,0.15);transition:all .15s}
+.power-btn.selected .pip.active{background:var(--gold);box-shadow:0 0 4px rgba(201,162,39,0.5)}
+.power-btn:hover .pip.active{background:var(--ice)}
+
+/* Launch button */
+.launch-wrap{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:16px 20px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.timer-ring-wrap{position:relative;width:80px;height:80px}
+#timerRing{position:absolute;inset:0}
+.timer-num{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue';font-size:26px;letter-spacing:0.04em;color:var(--ivory);
+}
+.btn-launch{
+  width:100%;padding:13px;border-radius:8px;
+  font-family:'Bebas Neue';font-size:18px;letter-spacing:0.14em;
+  cursor:pointer;border:1px solid var(--gold);
+  background:var(--gold);color:var(--void);
+  transition:all .25s;
+  position:relative;overflow:hidden;
+}
+.btn-launch::after{
+  content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+  transition:none;
+}
+.btn-launch.ready::after{animation:sheen 2s ease-in-out infinite}
+@keyframes sheen{0%{left:-100%}60%{left:150%}100%{left:150%}}
+.btn-launch:disabled{background:rgba(244,240,232,0.06);border-color:rgba(244,240,232,0.1);color:var(--ivory-20);cursor:not-allowed}
+.btn-launch:disabled::after{display:none}
+.btn-launch:not(:disabled):hover{background:var(--gold-light);box-shadow:0 0 24px rgba(201,162,39,0.3)}
+
+/* Status bar */
+.status-bar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.status-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 10px;border-radius:20px;font-size:11px;letter-spacing:0.06em;
+  border:1px solid;
+}
+.status-badge.planning{background:rgba(184,223,240,0.08);color:var(--ice);border-color:rgba(184,223,240,0.2)}
+.status-badge.waiting{background:rgba(201,162,39,0.08);color:var(--gold);border-color:rgba(201,162,39,0.2)}
+.status-badge.resolving{background:rgba(74,222,128,0.08);color:var(--green);border-color:rgba(74,222,128,0.2)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.status-dot.pulse{animation:dot-pulse 1.2s ease-in-out infinite}
+@keyframes dot-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Player cards */
+.player-cards{display:flex;gap:10px}
+.player-card{
+  flex:1;padding:12px 14px;border-radius:8px;
+  border:1px solid var(--border);background:var(--surface);
+  display:flex;align-items:center;gap:10px;
+  transition:border-color .2s;
+}
+.player-card.you{border-color:rgba(201,162,39,0.25);background:rgba(201,162,39,0.04)}
+.player-card.them{border-color:rgba(184,223,240,0.15);background:rgba(184,223,240,0.03)}
+.player-card.eliminated{border-color:rgba(212,69,58,0.3);background:rgba(212,69,58,0.05);opacity:0.6}
+.player-avatar{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.player-avatar.you{background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.3)}
+.player-avatar.them{background:rgba(184,223,240,0.1);border:1px solid rgba(184,223,240,0.25)}
+.player-info{flex:1;min-width:0}
+.player-name{font-size:12px;font-weight:500;color:var(--ivory-80);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-role{font-size:10px;color:var(--ivory-40);letter-spacing:0.06em;text-transform:uppercase}
+.player-status{font-size:10px;text-align:right}
+.player-status.moved{color:var(--green)}
+.player-status.waiting{color:var(--gold)}
+.player-status.elim{color:var(--red)}
+
+/* Log panel */
+.log-wrap{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:14px 16px;
+  max-height:180px;overflow-y:auto;
+}
+.log-wrap::-webkit-scrollbar{width:4px}
+.log-wrap::-webkit-scrollbar-track{background:transparent}
+.log-wrap::-webkit-scrollbar-thumb{background:rgba(255,215,120,0.15);border-radius:2px}
+.log-entry{
+  font-size:11px;color:var(--ivory-40);padding:4px 0;
+  border-bottom:1px solid rgba(244,240,232,0.04);line-height:1.5;
+}
+.log-entry:last-child{border-bottom:none}
+.log-entry .log-round{color:var(--gold);font-family:'Bebas Neue';font-size:12px;letter-spacing:0.08em}
+.log-entry .log-action{color:var(--ivory-60)}
+.log-entry .log-elim{color:var(--red)}
+.log-entry .log-shrink{color:var(--ice)}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(70px);
+  padding:11px 22px;background:var(--surface-elevated);
+  border:1px solid var(--border);border-radius:6px;
+  font-size:13px;color:var(--ivory-60);
+  box-shadow:0 8px 28px rgba(0,0,0,0.5);
+  z-index:999;opacity:0;transition:transform .35s cubic-bezier(0.23,1,0.32,1),opacity .35s;
+  pointer-events:none;white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ── RESPONSIVE ────────────────────────────────────── */
+@media(max-width:900px){
+  .page{grid-template-columns:1fr;padding:16px}
+  .canvas-wrap{max-width:100%}
+  .compass-svg-wrap{width:180px;height:180px}
+  #compassSvg{width:180px;height:180px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-title">Shitbox <em>&</em> Shuffle</div>
+    <div class="nav-chip">Penguin Knockout</div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-meta">Round <span id="navRound">—</span></div>
+    <div class="nav-meta">Platform <span id="navRadius">—</span></div>
+    <button class="btn-nav" onclick="doForfeit()">Forfeit</button>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- LEFT: Arena -->
+  <div class="arena-panel">
+    <div>
+      <div class="arena-eyebrow">Last Penguin Standing</div>
+      <div class="arena-title">Penguin <em>Knockout</em></div>
+    </div>
+
+    <!-- Player cards -->
+    <div class="player-cards">
+      <div class="player-card you" id="p1Card">
+        <div class="player-avatar you">🐧</div>
+        <div class="player-info">
+          <div class="player-name" id="p1Name">You</div>
+          <div class="player-role">Player 1</div>
+        </div>
+        <div class="player-status waiting" id="p1Status">Planning</div>
+      </div>
+      <div class="player-card them" id="p2Card">
+        <div class="player-avatar them">🐧</div>
+        <div class="player-info">
+          <div class="player-name" id="p2Name">Opponent</div>
+          <div class="player-role">Player 2</div>
+        </div>
+        <div class="player-status waiting" id="p2Status">Waiting</div>
+      </div>
+    </div>
+
+    <!-- Canvas -->
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="gameCanvas" width="560" height="560"></canvas>
+
+      <!-- Overlay: waiting for game start -->
+      <div class="phase-overlay show" id="waitingOverlay">
+        <div class="overlay-eyebrow">Ice Arena</div>
+        <div class="overlay-heading">Penguin<br><em>Knockout</em></div>
+        <div class="overlay-sub">Connect a WebSocket session to start playing. The last penguin standing wins.</div>
+        <button class="btn-overlay" onclick="demoMode()">Demo Mode</button>
+      </div>
+
+      <!-- Overlay: game over -->
+      <div class="phase-overlay" id="endOverlay">
+        <div class="overlay-eyebrow">Game Over</div>
+        <div class="overlay-heading" id="endHeading">You <em>Win</em></div>
+        <div class="overlay-sub" id="endSub">Your penguin survived the ice.</div>
+        <button class="btn-overlay" onclick="resetDemo()">Play Again</button>
+      </div>
+    </div>
+
+    <!-- Round stats -->
+    <div class="round-bar">
+      <div class="round-stat">
+        <div class="round-stat-label">Round</div>
+        <div class="round-stat-val gold" id="statRound">1</div>
+      </div>
+      <div class="round-divider"></div>
+      <div class="round-stat">
+        <div class="round-stat-label">Platform Radius</div>
+        <div class="round-stat-val ice" id="statRadius">5</div>
+      </div>
+      <div class="round-divider"></div>
+      <div class="round-stat">
+        <div class="round-stat-label">Next Shrink</div>
+        <div class="round-stat-val" id="statShrink">Round 2</div>
+      </div>
+      <div class="round-divider"></div>
+      <div class="round-stat">
+        <div class="round-stat-label">Status</div>
+        <div id="statusBadgeWrap">
+          <span class="status-badge planning"><span class="status-dot pulse"></span>Planning</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event log -->
+    <div class="log-wrap" id="eventLog">
+      <div class="log-entry"><span class="log-action">Game starting — choose your direction and power, then launch.</span></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Controls -->
+  <div class="controls-panel">
+
+    <!-- Compass direction picker -->
+    <div class="compass-wrap">
+      <div class="ctrl-section-label">Direction</div>
+      <div class="compass-svg-wrap">
+        <svg id="compassSvg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer ring -->
+          <circle cx="110" cy="110" r="106" fill="none" stroke="rgba(244,240,232,0.06)" stroke-width="1"/>
+          <!-- Inner ring -->
+          <circle cx="110" cy="110" r="66" fill="none" stroke="rgba(244,240,232,0.04)" stroke-width="1"/>
+          <!-- Direction sectors - N, NE, E, SE, S, SW, W, NW -->
+          <!-- Each sector spans 45° centered on its cardinal direction -->
+          <!-- N: 270°±22.5° → path from center -->
+          <g class="dir-btn" id="dir-N" onclick="selectDir('N')">
+            <path class="dir-sector" d="M110,110 L73.6,25.9 A106,106 0,0,1 146.4,25.9 Z"/>
+            <text class="dir-label" x="110" y="52" text-anchor="middle" dominant-baseline="middle">N</text>
+          </g>
+          <!-- NE: 315° -->
+          <g class="dir-btn" id="dir-NE" onclick="selectDir('NE')">
+            <path class="dir-sector" d="M110,110 L146.4,25.9 A106,106 0,0,1 194.1,73.6 Z"/>
+            <text class="dir-label" x="168" y="62" text-anchor="middle" dominant-baseline="middle">NE</text>
+          </g>
+          <!-- E: 0° -->
+          <g class="dir-btn" id="dir-E" onclick="selectDir('E')">
+            <path class="dir-sector" d="M110,110 L194.1,73.6 A106,106 0,0,1 194.1,146.4 Z"/>
+            <text class="dir-label" x="168" y="110" text-anchor="middle" dominant-baseline="middle">E</text>
+          </g>
+          <!-- SE: 45° -->
+          <g class="dir-btn" id="dir-SE" onclick="selectDir('SE')">
+            <path class="dir-sector" d="M110,110 L194.1,146.4 A106,106 0,0,1 146.4,194.1 Z"/>
+            <text class="dir-label" x="168" y="158" text-anchor="middle" dominant-baseline="middle">SE</text>
+          </g>
+          <!-- S: 90° -->
+          <g class="dir-btn" id="dir-S" onclick="selectDir('S')">
+            <path class="dir-sector" d="M110,110 L146.4,194.1 A106,106 0,0,1 73.6,194.1 Z"/>
+            <text class="dir-label" x="110" y="170" text-anchor="middle" dominant-baseline="middle">S</text>
+          </g>
+          <!-- SW: 135° -->
+          <g class="dir-btn" id="dir-SW" onclick="selectDir('SW')">
+            <path class="dir-sector" d="M110,110 L73.6,194.1 A106,106 0,0,1 25.9,146.4 Z"/>
+            <text class="dir-label" x="52" y="158" text-anchor="middle" dominant-baseline="middle">SW</text>
+          </g>
+          <!-- W: 180° -->
+          <g class="dir-btn" id="dir-W" onclick="selectDir('W')">
+            <path class="dir-sector" d="M110,110 L25.9,146.4 A106,106 0,0,1 25.9,73.6 Z"/>
+            <text class="dir-label" x="52" y="110" text-anchor="middle" dominant-baseline="middle">W</text>
+          </g>
+          <!-- NW: 225° -->
+          <g class="dir-btn" id="dir-NW" onclick="selectDir('NW')">
+            <path class="dir-sector" d="M110,110 L25.9,73.6 A106,106 0,0,1 73.6,25.9 Z"/>
+            <text class="dir-label" x="52" y="62" text-anchor="middle" dominant-baseline="middle">NW</text>
+          </g>
+          <!-- Compass tick marks -->
+          <line x1="110" y1="6" x2="110" y2="18" stroke="rgba(201,162,39,0.4)" stroke-width="2"/>
+          <line x1="214" y1="110" x2="202" y2="110" stroke="rgba(244,240,232,0.15)" stroke-width="1.5"/>
+          <line x1="110" y1="214" x2="110" y2="202" stroke="rgba(244,240,232,0.15)" stroke-width="1.5"/>
+          <line x1="6" y1="110" x2="18" y2="110" stroke="rgba(244,240,232,0.15)" stroke-width="1.5"/>
+        </svg>
+        <!-- Stay button in center -->
+        <button class="stay-btn" id="dir-STAY" onclick="selectDir('STAY')" title="Hold position">
+          <div class="stay-icon"></div>
+        </button>
+      </div>
+      <div style="font-size:11px;color:var(--ivory-20);text-align:center">Selected: <span id="dirLabel" style="color:var(--gold)">—</span></div>
+    </div>
+
+    <!-- Power selector -->
+    <div class="power-wrap">
+      <div class="ctrl-section-label">Power</div>
+      <div class="power-btns">
+        <button class="power-btn" id="pow-1" onclick="selectPow(1)">
+          <div class="power-name">Shuffle</div>
+          <div class="power-pips">
+            <div class="pip active"></div>
+            <div class="pip"></div>
+            <div class="pip"></div>
+          </div>
+          <div style="font-size:9px;color:var(--ivory-20);margin-top:2px">×1 tile</div>
+        </button>
+        <button class="power-btn" id="pow-2" onclick="selectPow(2)">
+          <div class="power-name">Shove</div>
+          <div class="power-pips">
+            <div class="pip active"></div>
+            <div class="pip active"></div>
+            <div class="pip"></div>
+          </div>
+          <div style="font-size:9px;color:var(--ivory-20);margin-top:2px">×2 tiles</div>
+        </button>
+        <button class="power-btn" id="pow-3" onclick="selectPow(3)">
+          <div class="power-name">Cannon</div>
+          <div class="power-pips">
+            <div class="pip active"></div>
+            <div class="pip active"></div>
+            <div class="pip active"></div>
+          </div>
+          <div style="font-size:9px;color:var(--ivory-20);margin-top:2px">×3 tiles</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Timer + Launch -->
+    <div class="launch-wrap">
+      <div class="ctrl-section-label" style="align-self:flex-start">Time Remaining</div>
+      <div class="timer-ring-wrap">
+        <svg id="timerRing" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(244,240,232,0.06)" stroke-width="5"/>
+          <circle id="timerArc" cx="40" cy="40" r="34" fill="none" stroke="var(--gold)" stroke-width="5"
+            stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="0"
+            transform="rotate(-90 40 40)" style="transition:stroke-dashoffset .9s linear,stroke .3s"/>
+        </svg>
+        <div class="timer-num" id="timerNum">15</div>
+      </div>
+      <button class="btn-launch" id="launchBtn" onclick="submitMove()" disabled>
+        Select Direction &amp; Power
+      </button>
+    </div>
+
+    <!-- How to play quick ref -->
+    <div style="padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;">
+      <div class="ctrl-section-label">How to Play</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:2px">
+        <div style="font-size:11px;color:var(--ivory-40);line-height:1.6">
+          <span style="color:var(--ice)">1.</span> Pick a direction on the compass and a power level.
+        </div>
+        <div style="font-size:11px;color:var(--ivory-40);line-height:1.6">
+          <span style="color:var(--ice)">2.</span> Both penguins launch <em style="color:var(--ivory-60)">simultaneously</em> — neither can see the other's choice.
+        </div>
+        <div style="font-size:11px;color:var(--ivory-40);line-height:1.6">
+          <span style="color:var(--ice)">3.</span> The platform <em style="color:var(--red)">shrinks</em> every 2 rounds.
+        </div>
+        <div style="font-size:11px;color:var(--ivory-40);line-height:1.6">
+          <span style="color:var(--gold)">Win</span> by knocking your opponent off the edge — or staying on longer.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Constants ─────────────────────────────────────────────────────────────────
+const INITIAL_RADIUS = 5;
+const TILE_SIZE_BASE = 46;
+const DIRECTION_VECTORS = {
+  N:{x:0,y:-1},NE:{x:1,y:-1},E:{x:1,y:0},SE:{x:1,y:1},
+  S:{x:0,y:1},SW:{x:-1,y:1},W:{x:-1,y:0},NW:{x:-1,y:-1},STAY:{x:0,y:0}
+};
+
+// ── Game state ────────────────────────────────────────────────────────────────
+let gameState = null;
+let myUserId = 'player1'; // would come from auth in real integration
+let selectedDir = null;
+let selectedPow = null;
+let timerInterval = null;
+let timerRemaining = 15;
+let hasMoved = false;
+let animating = false;
+
+// Canvas setup
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const CANVAS_SIZE = 560;
+
+// ── Direction selector ────────────────────────────────────────────────────────
+function selectDir(dir) {
+  if (hasMoved || animating) return;
+  selectedDir = dir;
+
+  // Clear all
+  document.querySelectorAll('.dir-btn').forEach(el => el.classList.remove('selected'));
+  document.getElementById('dir-STAY').classList.remove('selected');
+
+  if (dir === 'STAY') {
+    document.getElementById('dir-STAY').classList.add('selected');
+  } else {
+    document.getElementById('dir-' + dir)?.classList.add('selected');
+  }
+  document.getElementById('dirLabel').textContent = dir;
+  updateLaunchBtn();
+}
+
+function selectPow(p) {
+  if (hasMoved || animating) return;
+  selectedPow = p;
+  document.querySelectorAll('.power-btn').forEach(el => el.classList.remove('selected'));
+  document.getElementById('pow-' + p).classList.add('selected');
+  updateLaunchBtn();
+}
+
+function updateLaunchBtn() {
+  const btn = document.getElementById('launchBtn');
+  if (selectedDir && selectedPow) {
+    btn.disabled = false;
+    btn.textContent = 'LAUNCH';
+    btn.classList.add('ready');
+  } else {
+    btn.disabled = true;
+    btn.textContent = 'Select Direction & Power';
+    btn.classList.remove('ready');
+  }
+}
+
+// ── Timer ─────────────────────────────────────────────────────────────────────
+const ARC_FULL = 213.6;
+function startTimer(seconds) {
+  clearInterval(timerInterval);
+  timerRemaining = seconds;
+  updateTimerUI(seconds, seconds);
+  timerInterval = setInterval(() => {
+    timerRemaining--;
+    updateTimerUI(timerRemaining, seconds);
+    if (timerRemaining <= 0) {
+      clearInterval(timerInterval);
+      // Auto-submit STAY if player hasn't moved
+      if (!hasMoved) {
+        if (!selectedDir) selectedDir = 'STAY';
+        if (!selectedPow) selectedPow = 1;
+        submitMove();
+      }
+    }
+  }, 1000);
+}
+
+function stopTimer() { clearInterval(timerInterval); }
+
+function updateTimerUI(remaining, total) {
+  document.getElementById('timerNum').textContent = remaining;
+  const pct = remaining / total;
+  const offset = ARC_FULL * (1 - pct);
+  const arc = document.getElementById('timerArc');
+  arc.style.strokeDashoffset = offset;
+  // Color shift: gold → red as time runs out
+  if (pct > 0.5) arc.style.stroke = 'var(--gold)';
+  else if (pct > 0.25) arc.style.stroke = '#e8a020';
+  else arc.style.stroke = 'var(--red)';
+}
+
+// ── Canvas rendering ──────────────────────────────────────────────────────────
+function drawGame(state, animState) {
+  ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+  // Background
+  ctx.fillStyle = '#08070a';
+  ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+  const radius = state.platformRadius;
+  const tileSize = Math.min(TILE_SIZE_BASE, Math.floor((CANVAS_SIZE * 0.88) / (radius * 2 + 1)));
+  const cx = CANVAS_SIZE / 2;
+  const cy = CANVAS_SIZE / 2;
+
+  // Draw ambient ocean gradient
+  const oceanGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, CANVAS_SIZE * 0.7);
+  oceanGrad.addColorStop(0, 'rgba(12,20,35,0.0)');
+  oceanGrad.addColorStop(1, 'rgba(5,15,30,0.6)');
+  ctx.fillStyle = oceanGrad;
+  ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+  // Draw tiles
+  const maxR = INITIAL_RADIUS + 1;
+  for (let gx = -maxR; gx <= maxR; gx++) {
+    for (let gy = -maxR; gy <= maxR; gy++) {
+      const dist = Math.sqrt(gx * gx + gy * gy);
+      const isActive = dist <= radius + 0.5;
+      const isEdge = dist > radius - 0.5 && isActive;
+      const wasActive = dist <= (radius + 1) + 0.5 && !isActive;
+
+      if (!isActive && !wasActive) continue;
+
+      const px = cx + gx * tileSize;
+      const py = cy + gy * tileSize;
+      const ts = tileSize - 3;
+      const tr = 4;
+
+      if (isActive) {
+        // Ice tile
+        const iceAlpha = isEdge ? 0.55 : 0.75;
+        ctx.save();
+        roundRect(ctx, px - ts/2, py - ts/2, ts, ts, tr);
+        const iceGrad = ctx.createLinearGradient(px - ts/2, py - ts/2, px + ts/2, py + ts/2);
+        iceGrad.addColorStop(0, `rgba(200,230,248,${iceAlpha})`);
+        iceGrad.addColorStop(0.5, `rgba(180,218,240,${iceAlpha * 0.85})`);
+        iceGrad.addColorStop(1, `rgba(155,200,228,${iceAlpha * 0.7})`);
+        ctx.fillStyle = iceGrad;
+        ctx.fill();
+
+        // Subtle tile border
+        ctx.strokeStyle = isEdge ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.12)';
+        ctx.lineWidth = isEdge ? 1.5 : 0.8;
+        ctx.stroke();
+        ctx.restore();
+
+        // Shine fleck (top-left)
+        ctx.save();
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.beginPath();
+        ctx.ellipse(px - ts * 0.2, py - ts * 0.18, ts * 0.08, ts * 0.04, -0.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Edge crack effect
+        if (isEdge) {
+          drawCrack(ctx, px, py, ts, gy, gx, radius);
+        }
+      } else if (wasActive) {
+        // Ghost tile (recently shrunk) — faint ocean water
+        ctx.save();
+        roundRect(ctx, px - ts/2, py - ts/2, ts, ts, tr);
+        ctx.fillStyle = 'rgba(40,80,120,0.12)';
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+  }
+
+  // Draw grid coordinates for active platform (subtle)
+  ctx.save();
+  ctx.globalAlpha = 0.08;
+  ctx.strokeStyle = 'rgba(255,255,255,1)';
+  ctx.lineWidth = 0.5;
+  for (let gx = -radius; gx <= radius; gx++) {
+    for (let gy = -radius; gy <= radius; gy++) {
+      const dist = Math.sqrt(gx * gx + gy * gy);
+      if (dist > radius + 0.5) continue;
+      const px = cx + gx * tileSize;
+      const py = cy + gy * tileSize;
+      ctx.beginPath();
+      ctx.moveTo(px - tileSize/2, py);
+      ctx.lineTo(px + tileSize/2, py);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(px, py - tileSize/2);
+      ctx.lineTo(px, py + tileSize/2);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+
+  // Draw penguins
+  const positions = animState ? animState.penguins : state.penguins;
+  const playerIds = [state.player1, state.player2];
+
+  for (let i = 0; i < playerIds.length; i++) {
+    const uid = playerIds[i];
+    const peng = positions[uid];
+    if (!peng) continue;
+
+    const isMe = uid === myUserId;
+    const px = cx + peng.position.x * tileSize;
+    const py = cy + peng.position.y * tileSize;
+
+    if (peng.isEliminated) {
+      // Draw falling/splash indicator
+      drawSplash(ctx, px, py, tileSize);
+    } else {
+      drawPenguin(ctx, px, py, tileSize * 0.85, isMe);
+    }
+  }
+}
+
+function drawCrack(ctx, px, py, ts, gy, gx, radius) {
+  // Draw 1-2 small crack lines on edge tiles to imply ice fracture
+  ctx.save();
+  ctx.globalAlpha = 0.35;
+  ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+  ctx.lineWidth = 0.8;
+  // Simple procedural crack based on position hash
+  const seed = (Math.abs(gx * 7 + gy * 13)) % 3;
+  ctx.beginPath();
+  if (seed === 0) {
+    ctx.moveTo(px - ts * 0.3, py + ts * 0.1);
+    ctx.lineTo(px - ts * 0.05, py - ts * 0.15);
+    ctx.lineTo(px + ts * 0.2, py - ts * 0.05);
+  } else if (seed === 1) {
+    ctx.moveTo(px + ts * 0.15, py - ts * 0.3);
+    ctx.lineTo(px + ts * 0.3, py + ts * 0.05);
+  } else {
+    ctx.moveTo(px - ts * 0.2, py - ts * 0.2);
+    ctx.lineTo(px + ts * 0.1, py + ts * 0.1);
+    ctx.lineTo(px - ts * 0.05, py + ts * 0.3);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawPenguin(ctx, px, py, size, isMe) {
+  const s = size;
+  const accentColor = isMe ? '#c9a227' : '#60a5fa';
+  const ringColor = isMe ? 'rgba(201,162,39,0.6)' : 'rgba(96,165,250,0.5)';
+
+  ctx.save();
+  ctx.translate(px, py);
+
+  // Player indicator ring beneath penguin
+  ctx.beginPath();
+  ctx.ellipse(0, s * 0.42, s * 0.32, s * 0.1, 0, 0, Math.PI * 2);
+  const ringGrad = ctx.createRadialGradient(0, s*0.42, 0, 0, s*0.42, s*0.32);
+  ringGrad.addColorStop(0, ringColor);
+  ringGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = ringGrad;
+  ctx.fill();
+
+  // Body (main black ellipse — tuxedo silhouette)
+  ctx.beginPath();
+  ctx.ellipse(0, s * 0.05, s * 0.28, s * 0.42, 0, 0, Math.PI * 2);
+  const bodyGrad = ctx.createLinearGradient(-s*0.28, -s*0.37, s*0.28, s*0.47);
+  bodyGrad.addColorStop(0, '#2a2830');
+  bodyGrad.addColorStop(0.4, '#1a1820');
+  bodyGrad.addColorStop(1, '#0e0d12');
+  ctx.fillStyle = bodyGrad;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // White belly
+  ctx.beginPath();
+  ctx.ellipse(0, s * 0.1, s * 0.15, s * 0.25, 0, 0, Math.PI * 2);
+  const bellyGrad = ctx.createLinearGradient(-s*0.15, -s*0.15, s*0.15, s*0.35);
+  bellyGrad.addColorStop(0, 'rgba(244,240,232,0.92)');
+  bellyGrad.addColorStop(1, 'rgba(220,215,200,0.75)');
+  ctx.fillStyle = bellyGrad;
+  ctx.fill();
+
+  // Accent stripe (player color) — small stripe on belly
+  ctx.beginPath();
+  ctx.ellipse(0, s * 0.28, s * 0.07, s * 0.035, 0, 0, Math.PI * 2);
+  ctx.fillStyle = accentColor;
+  ctx.globalAlpha = 0.7;
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // Head
+  ctx.beginPath();
+  ctx.ellipse(0, -s * 0.28, s * 0.22, s * 0.22, 0, 0, Math.PI * 2);
+  const headGrad = ctx.createRadialGradient(-s*0.06, -s*0.34, 0, 0, -s*0.28, s*0.22);
+  headGrad.addColorStop(0, '#2a2830');
+  headGrad.addColorStop(1, '#0e0d12');
+  ctx.fillStyle = headGrad;
+  ctx.fill();
+
+  // White face patch
+  ctx.beginPath();
+  ctx.ellipse(0, -s * 0.27, s * 0.13, s * 0.13, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(244,240,232,0.88)';
+  ctx.fill();
+
+  // Eyes
+  const eyeOffX = s * 0.065;
+  const eyeY = -s * 0.3;
+  // Left eye
+  ctx.beginPath();
+  ctx.ellipse(-eyeOffX, eyeY, s * 0.04, s * 0.05, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#1a1820';
+  ctx.fill();
+  // Eye shine
+  ctx.beginPath();
+  ctx.ellipse(-eyeOffX - s*0.01, eyeY - s*0.015, s*0.015, s*0.015, 0, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.fill();
+  // Right eye
+  ctx.beginPath();
+  ctx.ellipse(eyeOffX, eyeY, s * 0.04, s * 0.05, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#1a1820';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(eyeOffX - s*0.01, eyeY - s*0.015, s*0.015, s*0.015, 0, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.fill();
+
+  // Beak (gold triangle)
+  ctx.beginPath();
+  ctx.moveTo(-s * 0.07, -s * 0.22);
+  ctx.lineTo(s * 0.07, -s * 0.22);
+  ctx.lineTo(0, -s * 0.12);
+  ctx.closePath();
+  const beakGrad = ctx.createLinearGradient(0, -s*0.22, 0, -s*0.12);
+  beakGrad.addColorStop(0, '#e8c030');
+  beakGrad.addColorStop(1, '#b88a10');
+  ctx.fillStyle = beakGrad;
+  ctx.fill();
+
+  // Feet (two small rounded trapezoids)
+  ctx.save();
+  ctx.translate(-s * 0.1, s * 0.42);
+  drawFoot(ctx, s, accentColor);
+  ctx.restore();
+  ctx.save();
+  ctx.translate(s * 0.1, s * 0.42);
+  drawFoot(ctx, s, accentColor);
+  ctx.restore();
+
+  ctx.restore();
+}
+
+function drawFoot(ctx, s, color) {
+  ctx.beginPath();
+  ctx.moveTo(-s*0.07, 0);
+  ctx.lineTo(-s*0.1, s*0.08);
+  ctx.lineTo(s*0.1, s*0.08);
+  ctx.lineTo(s*0.07, 0);
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.85;
+  ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+function drawSplash(ctx, px, py, tileSize) {
+  ctx.save();
+  ctx.translate(px, py);
+  const t = Date.now() / 1000;
+  ctx.globalAlpha = 0.6 + Math.sin(t * 3) * 0.2;
+
+  // Splash rings
+  for (let i = 0; i < 3; i++) {
+    const r = tileSize * (0.15 + i * 0.12);
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.strokeStyle = '#60a5fa';
+    ctx.lineWidth = 1.5 - i * 0.4;
+    ctx.globalAlpha = (0.5 - i * 0.15) * (0.6 + Math.sin(t * 3 + i) * 0.2);
+    ctx.stroke();
+  }
+
+  // × mark
+  ctx.globalAlpha = 0.7;
+  ctx.strokeStyle = '#d4453a';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(-tileSize*0.12, -tileSize*0.12);
+  ctx.lineTo(tileSize*0.12, tileSize*0.12);
+  ctx.moveTo(tileSize*0.12, -tileSize*0.12);
+  ctx.lineTo(-tileSize*0.12, tileSize*0.12);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// ── Animation engine ──────────────────────────────────────────────────────────
+function animateResolution(prevState, nextState, resolution, onComplete) {
+  animating = true;
+  const DURATION = 600;
+  const start = performance.now();
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function ease(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+  const prevPositions = {};
+  const nextPositions = {};
+  for (const uid of [prevState.player1, prevState.player2]) {
+    prevPositions[uid] = { ...prevState.penguins[uid].position };
+    nextPositions[uid] = { ...resolution.positions[uid] };
+  }
+
+  function frame(now) {
+    const elapsed = now - start;
+    const t = Math.min(elapsed / DURATION, 1);
+    const et = ease(t);
+
+    const interpState = {
+      ...nextState,
+      platformRadius: prevState.platformRadius, // don't shrink during move anim
+      penguins: {}
+    };
+
+    for (const uid of [prevState.player1, prevState.player2]) {
+      interpState.penguins[uid] = {
+        ...nextState.penguins[uid],
+        isEliminated: t >= 1 ? nextState.penguins[uid].isEliminated : false,
+        position: {
+          x: lerp(prevPositions[uid].x, nextPositions[uid].x, et),
+          y: lerp(prevPositions[uid].y, nextPositions[uid].y, et),
+        }
+      };
+    }
+
+    drawGame(prevState, interpState);
+
+    if (t < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      // Now do shrink animation if platform shrank
+      if (resolution.platformShrunk) {
+        animateShrink(nextState, prevState.platformRadius, onComplete);
+      } else {
+        animating = false;
+        drawGame(nextState);
+        onComplete();
+      }
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function animateShrink(state, oldRadius, onComplete) {
+  const DURATION = 800;
+  const start = performance.now();
+
+  function frame(now) {
+    const t = Math.min((now - start) / DURATION, 1);
+    // Render with intermediate radius (fractional)
+    const interpRadius = oldRadius - (oldRadius - state.platformRadius) * t;
+    drawGame({ ...state, platformRadius: interpRadius });
+
+    if (t < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      animating = false;
+      drawGame(state);
+      onComplete();
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+// ── Animation loop (idle redraw for splash animation) ─────────────────────────
+let rafRunning = false;
+function startRaf() {
+  if (rafRunning) return;
+  rafRunning = true;
+  function loop() {
+    if (gameState) {
+      const hasElim = Object.values(gameState.penguins).some(p => p.isEliminated);
+      if (hasElim && !animating) drawGame(gameState);
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+}
+
+// ── Game logic (demo / integration) ──────────────────────────────────────────
+function initGameState(player1Id, player2Id) {
+  return {
+    player1: player1Id,
+    player2: player2Id,
+    penguins: {
+      [player1Id]: { position: { x: -3, y: 0 }, isEliminated: false },
+      [player2Id]: { position: { x: 3, y: 0 }, isEliminated: false },
+    },
+    platformRadius: INITIAL_RADIUS,
+    round: 1,
+    phase: 'planning',
+    submittedMoves: { [player1Id]: null, [player2Id]: null },
+    startedAt: Date.now(),
+  };
+}
+
+function applyMoveLocal(pos, dir, power) {
+  const v = DIRECTION_VECTORS[dir] || { x: 0, y: 0 };
+  return { x: pos.x + v.x * power, y: pos.y + v.y * power };
+}
+
+function isOnPlatform(pos, radius) {
+  return Math.sqrt(pos.x * pos.x + pos.y * pos.y) <= radius + 0.5;
+}
+
+function resolveRoundLocal(state, p1Move, p2Move) {
+  const { player1: p1, player2: p2, penguins, platformRadius, round } = state;
+  const moves = { [p1]: p1Move, [p2]: p2Move };
+
+  const raw = {};
+  for (const uid of [p1, p2]) {
+    if (penguins[uid].isEliminated) {
+      raw[uid] = { ...penguins[uid].position };
+    } else {
+      raw[uid] = applyMoveLocal(penguins[uid].position, moves[uid].direction, moves[uid].power);
+    }
+  }
+
+  // Collision detection
+  let collision = false;
+  const p1orig = penguins[p1].position;
+  const p2orig = penguins[p2].position;
+  const sameTile = !penguins[p1].isEliminated && !penguins[p2].isEliminated &&
+    raw[p1].x === raw[p2].x && raw[p1].y === raw[p2].y;
+  const crossover = !penguins[p1].isEliminated && !penguins[p2].isEliminated &&
+    raw[p1].x === p2orig.x && raw[p1].y === p2orig.y &&
+    raw[p2].x === p1orig.x && raw[p2].y === p1orig.y;
+
+  if (sameTile || crossover) {
+    collision = true;
+    const pow1 = p1Move.power, pow2 = p2Move.power;
+    const sign = (n) => n > 0 ? 1 : n < 0 ? -1 : 0;
+    if (pow1 > pow2) {
+      const dx = sign(p2orig.x - p1orig.x), dy = sign(p2orig.y - p1orig.y);
+      const fb = dx === 0 && dy === 0 ? { x: 1, y: 0 } : { x: dx, y: dy };
+      raw[p2] = { x: p2orig.x + fb.x * (pow2 + 1), y: p2orig.y + fb.y * (pow2 + 1) };
+      raw[p1] = applyMoveLocal(p1orig, p1Move.direction, p1Move.power);
+    } else if (pow2 > pow1) {
+      const dx = sign(p1orig.x - p2orig.x), dy = sign(p1orig.y - p2orig.y);
+      const fb = dx === 0 && dy === 0 ? { x: -1, y: 0 } : { x: dx, y: dy };
+      raw[p1] = { x: p1orig.x + fb.x * (pow1 + 1), y: p1orig.y + fb.y * (pow1 + 1) };
+      raw[p2] = applyMoveLocal(p2orig, p2Move.direction, p2Move.power);
+    } else {
+      raw[p1] = { x: p1orig.x - sign(raw[p1].x - p1orig.x), y: p1orig.y - sign(raw[p1].y - p1orig.y) };
+      raw[p2] = { x: p2orig.x - sign(raw[p2].x - p2orig.x), y: p2orig.y - sign(raw[p2].y - p2orig.y) };
+    }
+  }
+
+  // Edge check
+  const eliminations = [];
+  for (const uid of [p1, p2]) {
+    if (penguins[uid].isEliminated) continue;
+    if (!isOnPlatform(raw[uid], platformRadius)) eliminations.push(uid);
+  }
+
+  // Shrink
+  const shouldShrink = round % 2 === 0;
+  const newRadius = shouldShrink ? Math.max(2, platformRadius - 1) : platformRadius;
+
+  if (shouldShrink && newRadius < platformRadius) {
+    for (const uid of [p1, p2]) {
+      if (penguins[uid].isEliminated || eliminations.includes(uid)) continue;
+      if (!isOnPlatform(raw[uid], newRadius)) eliminations.push(uid);
+    }
+  }
+
+  return { moves, positions: raw, collision, eliminations, platformShrunk: shouldShrink && newRadius < platformRadius, newPlatformRadius: newRadius };
+}
+
+function applyResolutionLocal(state, resolution) {
+  const newPenguins = {};
+  for (const uid of [state.player1, state.player2]) {
+    newPenguins[uid] = {
+      position: resolution.positions[uid],
+      isEliminated: state.penguins[uid].isEliminated || resolution.eliminations.includes(uid),
+    };
+  }
+  return {
+    ...state,
+    penguins: newPenguins,
+    platformRadius: resolution.newPlatformRadius,
+    round: state.round + 1,
+    phase: 'planning',
+    submittedMoves: { [state.player1]: null, [state.player2]: null },
+    lastRoundResolution: resolution,
+  };
+}
+
+// ── Demo mode ──────────────────────────────────────────────────────────────────
+function demoMode() {
+  gameState = initGameState('player1', 'player2');
+  myUserId = 'player1';
+  hasMoved = false;
+  document.getElementById('waitingOverlay').classList.remove('show');
+  document.getElementById('p1Name').textContent = 'You';
+  document.getElementById('p2Name').textContent = 'AI Opponent';
+  updateUI();
+  drawGame(gameState);
+  startTimer(15);
+  startRaf();
+  addLog(`<span class="log-round">DEMO</span> <span class="log-action">Game started — both penguins on the ice.</span>`);
+  toast('Demo mode active — AI will make random moves');
+}
+
+function resetDemo() {
+  document.getElementById('endOverlay').classList.remove('show');
+  hasMoved = false;
+  selectedDir = null;
+  selectedPow = null;
+  document.querySelectorAll('.dir-btn').forEach(el => el.classList.remove('selected'));
+  document.getElementById('dir-STAY').classList.remove('selected');
+  document.querySelectorAll('.power-btn').forEach(el => el.classList.remove('selected'));
+  document.getElementById('dirLabel').textContent = '—';
+  updateLaunchBtn();
+  demoMode();
+}
+
+function submitMove() {
+  if (!selectedDir || !selectedPow) return;
+  if (hasMoved || animating) return;
+  hasMoved = true;
+  stopTimer();
+
+  const myMove = { direction: selectedDir, power: selectedPow };
+
+  // Update status
+  setStatusBadge('resolving', 'Resolving...');
+  document.getElementById('p1Status').textContent = 'Launched!';
+  document.getElementById('p1Status').className = 'player-status moved';
+
+  const btn = document.getElementById('launchBtn');
+  btn.disabled = true;
+  btn.textContent = 'Waiting for Opponent...';
+  btn.classList.remove('ready');
+
+  // In demo mode — opponent AI picks a random move after short delay
+  setTimeout(() => {
+    const dirs = ['N','NE','E','SE','S','SW','W','NW','STAY'];
+    const aiDir = dirs[Math.floor(Math.random() * dirs.length)];
+    const aiPow = Math.ceil(Math.random() * 3);
+    const aiMove = { direction: aiDir, power: aiPow };
+
+    document.getElementById('p2Status').textContent = 'Launched!';
+    document.getElementById('p2Status').className = 'player-status moved';
+
+    const prevState = JSON.parse(JSON.stringify(gameState));
+    const resolution = resolveRoundLocal(gameState, myMove, aiMove);
+    const nextState = applyResolutionLocal(gameState, resolution);
+
+    // Log the round
+    const dirLabel = { N:'North',NE:'NE',E:'East',SE:'SE',S:'South',SW:'SW',W:'West',NW:'NW',STAY:'Stay' };
+    addLog(`<span class="log-round">R${prevState.round}</span> <span class="log-action">You: ${dirLabel[myMove.direction]} ×${myMove.power} | Opponent: ${dirLabel[aiDir]} ×${aiPow}</span>`);
+    if (resolution.collision) addLog(`<span class="log-action">💥 Collision! Penguins clash on the ice.</span>`);
+    if (resolution.platformShrunk) addLog(`<span class="log-shrink">❄ Platform shrank to radius ${resolution.newPlatformRadius}.</span>`);
+    if (resolution.eliminations.length) {
+      for (const uid of resolution.eliminations) {
+        const name = uid === myUserId ? 'You' : 'Opponent';
+        addLog(`<span class="log-elim">🌊 ${name} fell off the ice!</span>`);
+      }
+    }
+
+    animateResolution(prevState, nextState, resolution, () => {
+      gameState = nextState;
+
+      // Check game end
+      const p1e = nextState.penguins[nextState.player1].isEliminated;
+      const p2e = nextState.penguins[nextState.player2].isEliminated;
+
+      if (p1e || p2e) {
+        let heading, sub;
+        if (p1e && p2e) {
+          heading = `It's a <em>Draw</em>`;
+          sub = 'Both penguins fell off the ice simultaneously.';
+        } else if (!p1e && p2e) {
+          heading = `You <em>Win</em>`;
+          sub = 'Your opponent slid into the void. Well played.';
+        } else {
+          heading = `You <em>Lose</em>`;
+          sub = 'Your penguin couldn\'t hold the ice. Better luck next round.';
+        }
+        document.getElementById('endHeading').innerHTML = heading;
+        document.getElementById('endSub').textContent = sub;
+        setTimeout(() => document.getElementById('endOverlay').classList.add('show'), 600);
+        updateUI(nextState);
+        return;
+      }
+
+      // Next round
+      gameState = nextState;
+      hasMoved = false;
+      selectedDir = null;
+      selectedPow = null;
+      document.querySelectorAll('.dir-btn').forEach(el => el.classList.remove('selected'));
+      document.getElementById('dir-STAY').classList.remove('selected');
+      document.querySelectorAll('.power-btn').forEach(el => el.classList.remove('selected'));
+      document.getElementById('dirLabel').textContent = '—';
+      updateLaunchBtn();
+      updateUI(nextState);
+      setStatusBadge('planning', 'Planning');
+      document.getElementById('p1Status').textContent = 'Planning';
+      document.getElementById('p1Status').className = 'player-status waiting';
+      document.getElementById('p2Status').textContent = 'Waiting';
+      document.getElementById('p2Status').className = 'player-status waiting';
+      startTimer(15);
+    });
+  }, 600 + Math.random() * 800);
+}
+
+function doForfeit() {
+  if (!gameState) return;
+  if (confirm('Forfeit this game?')) {
+    const endH = document.getElementById('endHeading');
+    const endS = document.getElementById('endSub');
+    endH.innerHTML = 'You <em>Forfeit</em>';
+    endS.textContent = 'You stepped off the ice voluntarily.';
+    document.getElementById('endOverlay').classList.add('show');
+    stopTimer();
+    addLog(`<span class="log-elim">You forfeited the game.</span>`);
+  }
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function updateUI(state) {
+  state = state || gameState;
+  if (!state) return;
+
+  document.getElementById('navRound').textContent = state.round;
+  document.getElementById('navRadius').textContent = state.platformRadius;
+  document.getElementById('statRound').textContent = state.round;
+  document.getElementById('statRadius').textContent = state.platformRadius;
+  const nextShrink = state.round % 2 === 0 ? state.round : state.round + (2 - state.round % 2);
+  document.getElementById('statShrink').textContent = `Round ${nextShrink + (state.round % 2 === 0 ? 2 : 0)}`;
+
+  // Player card eliminated state
+  const p1e = state.penguins[state.player1]?.isEliminated;
+  const p2e = state.penguins[state.player2]?.isEliminated;
+  document.getElementById('p1Card').className = 'player-card you' + (p1e ? ' eliminated' : '');
+  document.getElementById('p2Card').className = 'player-card them' + (p2e ? ' eliminated' : '');
+  if (p1e) { document.getElementById('p1Status').textContent = 'Out'; document.getElementById('p1Status').className = 'player-status elim'; }
+  if (p2e) { document.getElementById('p2Status').textContent = 'Out'; document.getElementById('p2Status').className = 'player-status elim'; }
+}
+
+function setStatusBadge(type, label) {
+  document.getElementById('statusBadgeWrap').innerHTML =
+    `<span class="status-badge ${type}"><span class="status-dot${type !== 'resolving' ? ' pulse' : ''}"></span>${label}</span>`;
+}
+
+function addLog(html) {
+  const log = document.getElementById('eventLog');
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = html;
+  log.appendChild(entry);
+  log.scrollTop = log.scrollHeight;
+}
+
+let toastTimer;
+function toast(msg, dur = 2800) {
+  clearTimeout(toastTimer);
+  const el = document.getElementById('toast');
+  el.classList.remove('show');
+  requestAnimationFrame(() => {
+    el.textContent = msg;
+    el.classList.add('show');
+    toastTimer = setTimeout(() => el.classList.remove('show'), dur);
+  });
+}
+
+// ── Initial render ────────────────────────────────────────────────────────────
+(function init() {
+  // Draw static preview on load
+  const previewState = initGameState('player1', 'player2');
+  drawGame(previewState);
+  startRaf();
+})();
+</script>
+</body>
+</html>
