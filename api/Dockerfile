@@ -33,8 +33,9 @@ COPY shared/package.json ./shared/
 RUN npm install --workspace api --omit=dev --include-workspace-root
 
 # Copy built output and Prisma files
+# npm workspaces hoist @prisma/client to /app/node_modules — prisma generate writes .prisma there, not under api/
 COPY --from=builder /app/api/dist ./api/dist
-COPY --from=builder /app/api/node_modules/.prisma ./api/node_modules/.prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY api/prisma ./api/prisma
 
 WORKDIR /app/api
