@@ -4,7 +4,9 @@ watchPatterns = ["api/**", "shared/**"]
 
 [deploy]
 startCommand = "sh -c 'npx prisma migrate deploy && node dist/main.js'"
-healthcheckPath = "/api/auth/health"
-healthcheckTimeout = 30
+# Root path — registered before global /api prefix (see main.ts)
+healthcheckPath = "/health"
+# First deploy: prisma migrate can be slow
+healthcheckTimeout = 120
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3

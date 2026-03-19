@@ -2,8 +2,11 @@ import * as Joi from "joi";
 
 export const validationSchema = Joi.object({
   NODE_ENV: Joi.string().valid("development", "production", "test").default("development"),
-  PORT: Joi.number().default(3001),
-  DATABASE_URL: Joi.string().uri().required(),
+  PORT: Joi.alternatives()
+    .try(Joi.number(), Joi.string().pattern(/^\d+$/))
+    .default(3001),
+  // postgresql:// URLs can fail Joi.uri() with some password encodings
+  DATABASE_URL: Joi.string().required().min(8),
   REDIS_URL: Joi.string().pattern(/^redis(s)?:\/\//).required(),
   JWT_ACCESS_SECRET: Joi.string().min(16).required(),
   JWT_REFRESH_SECRET: Joi.string().min(16).required(),

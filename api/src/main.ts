@@ -6,6 +6,13 @@ import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Root health for load balancers / Railway (no /api prefix, no CORS origin required)
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.get("/health", (_req: Request, res: Response) => {
+    res.status(200).json({ ok: true });
+  });
+
   app.setGlobalPrefix("api");
   
   // SECURITY: Add security headers
@@ -32,11 +39,9 @@ async function bootstrap() {
   
   app.enableCors({
     origin: (origin, callback) => {
-      // SECURITY: Only allow no-origin requests in development (for testing tools)
-      // In production, require an origin header to prevent CSRF-like attacks
+      // No Origin: Railway health checks, curl, mobile — must not block or probes fail
       if (!origin) {
-        const isDev = process.env.NODE_ENV === "development";
-        return callback(null, isDev);
+        return callback(null, true);
       }
       
       // In development, allow localhost variations
@@ -76,9 +81,9 @@ async function bootstrap() {
     })
   );
 
-  const port = process.env.PORT || 3001;
-  await app.listen(port);
-  Logger.log(`API listening on http://localhost:${port}`, "Bootstrap");
+  const port = parseInt(String(process.env.PORT || "3001"), 10);
+  await app.listen(port, "0.0.0.0");
+  Logger.log(`API listening on 0.0.0.0:${port}`, "Bootstrap");
 }
 
 bootstrap();
