@@ -6,14 +6,14 @@ WORKDIR /app
 # Copy workspace root package files
 COPY package.json package-lock.json ./
 COPY api/package.json ./api/
-COPY shared/package.json ./shared/ 2>/dev/null || true
+COPY shared/package.json ./shared/
 
 # Install all dependencies (including devDependencies for build)
 RUN npm install --workspace api --include-workspace-root
 
 # Copy source
 COPY api/ ./api/
-COPY shared/ ./shared/ 2>/dev/null || true
+COPY shared/ ./shared/
 COPY tsconfig.json ./
 
 # Generate Prisma client and build
@@ -29,7 +29,7 @@ WORKDIR /app
 # Install only production dependencies
 COPY package.json package-lock.json ./
 COPY api/package.json ./api/
-COPY shared/package.json ./shared/ 2>/dev/null || true
+COPY shared/package.json ./shared/
 RUN npm install --workspace api --omit=dev --include-workspace-root
 
 # Copy built output and Prisma files
