@@ -29,6 +29,20 @@ import { UnoService } from "../games/uno/uno.service";
 import { GeoGuesserService } from "../games/geoguesser/geoguesser.service";
 import { TanksService } from "../games/tanks/tanks.service";
 import { PenguinKnockoutService } from "../games/penguin-knockout/penguin-knockout.service";
+import { BlackjackService } from "../games/blackjack/blackjack.service";
+import { BsService } from "../games/bs/bs.service";
+import { SpinTheWheelService } from "../games/spin-the-wheel/spin-the-wheel.service";
+import { MonopolyService } from "../games/monopoly/monopoly.service";
+import { HangmanService } from "../games/word-games/hangman/hangman.service";
+import { GhostService } from "../games/word-games/ghost/ghost.service";
+import { WordleService } from "../games/word-games/wordle/wordle.service";
+import { JottoService } from "../games/word-games/jotto/jotto.service";
+import { SpellingBeeService } from "../games/word-games/spelling-bee/spelling-bee.service";
+import { LetterBoxedService } from "../games/word-games/letter-boxed/letter-boxed.service";
+import { BoggleService } from "../games/word-games/boggle/boggle.service";
+import { ScattergoriesService } from "../games/word-games/scattergories/scattergories.service";
+import { ScrabbleService } from "../games/word-games/scrabble/scrabble.service";
+import { BananagramsService } from "../games/word-games/bananagrams/bananagrams.service";
 import { VideoService } from "../video/video.service";
 import { WalletService } from "../wallet/wallet.service";
 import { ReportsService } from "../reports/reports.service";
@@ -54,7 +68,17 @@ import {
   TruthsAndLieSubmitGuessDto,
   TwentyOneQuestionsNextDto,
   TanksInputDto,
-  PenguinMoveDto
+  PenguinMoveDto,
+  BlackjackActionDto,
+  BlackjackNewHandDto,
+  BsPlayCardsDto,
+  BsCallDto,
+  BsEndGameDto,
+  MonopolyGameDto,
+  MonopolyBidDto,
+  MonopolyPropertyDto,
+  MonopolyTradeOfferDto,
+  MonopolyTradeResponseDto,
 } from "./dto";
 
 // SECURITY: Dynamic CORS based on environment - DO NOT use origin: "*" in production
@@ -89,6 +113,12 @@ import {
   },
   maxHttpBufferSize: 1e6 // SECURITY: Limit WebSocket message size to 1MB
 })
+@UsePipes(new ValidationPipe({
+  whitelist: true,
+  forbidNonWhitelisted: true,
+  transform: true,
+  exceptionFactory: (errors) => new WsException(errors)
+}))
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnModuleDestroy {
   @WebSocketServer()
   server!: Server;
@@ -101,6 +131,10 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
 
   // Track tanks game loop intervals
   private tanksGameLoops = new Map<string, NodeJS.Timeout>();
+
+  // Track word game timers
+  private boggleTimers = new Map<string, NodeJS.Timeout>();
+  private scattergoriesTimers = new Map<string, NodeJS.Timeout>();
 
   constructor(
     private readonly matchmakingService: MatchmakingService,
@@ -120,6 +154,20 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
     private readonly geoGuesserService: GeoGuesserService,
     private readonly tanksService: TanksService,
     private readonly penguinKnockoutService: PenguinKnockoutService,
+    private readonly blackjackService: BlackjackService,
+    private readonly bsService: BsService,
+    private readonly spinTheWheelService: SpinTheWheelService,
+    private readonly monopolyService: MonopolyService,
+    private readonly hangmanService: HangmanService,
+    private readonly ghostService: GhostService,
+    private readonly wordleService: WordleService,
+    private readonly jottoService: JottoService,
+    private readonly spellingBeeService: SpellingBeeService,
+    private readonly letterBoxedService: LetterBoxedService,
+    private readonly boggleService: BoggleService,
+    private readonly scattergoriesService: ScattergoriesService,
+    private readonly scrabbleService: ScrabbleService,
+    private readonly bananagramsService: BananagramsService,
     private readonly videoService: VideoService,
     private readonly walletService: WalletService,
     private readonly reportsService: ReportsService,
@@ -144,6 +192,54 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
     }
   }
 
+  /**
+   * Clears all timer/interval entries associated with a specific gameId.
+   * Safe to call even if no timers exist for the given gameId.
+   */
+  private cleanupGameTimers(gameId: string): void {
+    const triviaTimer = this.triviaQuestionTimers.get(gameId);
+    if (triviaTimer) {
+      clearTimeout(triviaTimer);
+      this.triviaQuestionTimers.delete(gameId);
+    }
+    this.triviaQuestionStartTimes.delete(gameId);
+
+    const geoTimer = this.geoGuesserRoundTimers.get(gameId);
+    if (geoTimer) {
+      clearTimeout(geoTimer);
+      this.geoGuesserRoundTimers.delete(gameId);
+    }
+
+    const tanksLoop = this.tanksGameLoops.get(gameId);
+    if (tanksLoop) {
+      clearInterval(tanksLoop);
+      this.tanksGameLoops.delete(gameId);
+    }
+
+    const boggleTimer = this.boggleTimers.get(gameId);
+    if (boggleTimer) {
+      clearTimeout(boggleTimer);
+      this.boggleTimers.delete(gameId);
+    }
+
+    const scattergoriesTimer = this.scattergoriesTimers.get(gameId);
+    if (scattergoriesTimer) {
+      clearTimeout(scattergoriesTimer);
+      this.scattergoriesTimers.delete(gameId);
+    }
+  }
+
+  /**
+   * Clears a voting timer for a specific roundId.
+   */
+  private cleanupVotingTimer(roundId: string): void {
+    const timer = this.votingTimers.get(roundId);
+    if (timer) {
+      clearTimeout(timer);
+      this.votingTimers.delete(roundId);
+    }
+  }
+
   handleDisconnect(client: Socket) {
     const userId = (client as any).user?.sub;
     if (userId) {
@@ -158,10 +254,17 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       const rooms = Array.from(client.rooms) as string[];
       rooms.forEach(room => {
         if (room.startsWith('session:')) {
-          // Emit to everyone else in the session room (not this disconnecting client)
           client.to(room).emit('session.peerLeft', { userId, sessionId: room.replace('session:', '') });
         }
       });
+
+      // Clean up game-specific timers for any game rooms this socket was in
+      for (const room of rooms) {
+        if (room.startsWith('game:')) {
+          const gameId = room.replace('game:', '');
+          this.cleanupGameTimers(gameId);
+        }
+      }
 
       setTimeout(() => {
         if (!this.matchingIntervals.has(userId)) {
@@ -172,44 +275,45 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   onModuleDestroy() {
-    // Cleanup all matching intervals
-    for (const [userId, interval] of this.matchingIntervals.entries()) {
+    for (const [, interval] of this.matchingIntervals.entries()) {
       clearInterval(interval);
     }
     this.matchingIntervals.clear();
 
-    // Cleanup all voting timers
-    for (const [roundId, timer] of this.votingTimers.entries()) {
+    for (const [, timer] of this.votingTimers.entries()) {
       clearTimeout(timer);
     }
     this.votingTimers.clear();
 
-    // Cleanup trivia timers
-    for (const [gameId, timer] of this.triviaQuestionTimers.entries()) {
+    for (const [, timer] of this.triviaQuestionTimers.entries()) {
       clearTimeout(timer);
     }
     this.triviaQuestionTimers.clear();
+    this.triviaQuestionStartTimes.clear();
 
-    // Cleanup GeoGuesser round timers
-    for (const [gameId, timer] of this.geoGuesserRoundTimers.entries()) {
+    for (const [, timer] of this.geoGuesserRoundTimers.entries()) {
       clearTimeout(timer);
     }
     this.geoGuesserRoundTimers.clear();
 
-    // Cleanup tanks game loops
-    for (const [gameId, interval] of this.tanksGameLoops.entries()) {
+    for (const [, interval] of this.tanksGameLoops.entries()) {
       clearInterval(interval);
     }
     this.tanksGameLoops.clear();
+
+    for (const [, timer] of this.boggleTimers.entries()) {
+      clearTimeout(timer);
+    }
+    this.boggleTimers.clear();
+
+    for (const [, timer] of this.scattergoriesTimers.entries()) {
+      clearTimeout(timer);
+    }
+    this.scattergoriesTimers.clear();
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("match.join")
   async handleMatchJoin(
     @ConnectedSocket() client: Socket,
@@ -573,8 +677,64 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
           this.geoGuesserService.setState(startedGame.id, ggState);
           finalState = ggState as any;
         }
+      } else if (startedGame.type === GameType.MONOPOLY && finalState) {
+        const mpState = this.monopolyService.getState(startedGame.id);
+        if (mpState) {
+          for (const player of mpState.players) {
+            const gp = startedGame.players.find(p => p.userId === player.userId);
+            if (gp) player.displayName = gp.user.displayName || player.displayName;
+          }
+          this.monopolyService.setState(startedGame.id, mpState);
+          finalState = mpState as any;
+        }
       }
       
+      // Word games with per-player sanitized state
+      if (
+        (startedGame.type === GameType.HANGMAN || startedGame.type === GameType.WORDLE ||
+         startedGame.type === GameType.JOTTO ||
+         startedGame.type === GameType.SPELLING_BEE || startedGame.type === GameType.BOGGLE ||
+         startedGame.type === GameType.SCATTERGORIES || startedGame.type === GameType.BANANAGRAMS ||
+         startedGame.type === GameType.SCRABBLE_GAME) && finalState
+      ) {
+        const sessionSockets = await this.server.in(`session:${body.sessionId}`).fetchSockets();
+        for (const s of sessionSockets) {
+          const su = (s as any).user;
+          if (su) {
+            let sanitized = finalState;
+            if (startedGame.type === GameType.HANGMAN) {
+              sanitized = this.hangmanService.sanitizeStateForPlayer(finalState as any, su.sub) as any;
+            } else if (startedGame.type === GameType.WORDLE) {
+              sanitized = this.wordleService.sanitizeStateForPlayer(finalState as any, su.sub) as any;
+            } else if (startedGame.type === GameType.JOTTO) {
+              sanitized = this.jottoService.sanitizeStateForPlayer(finalState as any, su.sub) as any;
+            } else if (startedGame.type === GameType.SPELLING_BEE) {
+              sanitized = this.spellingBeeService.sanitizeStateForPlayer(finalState as any, su.sub) as any;
+            } else if (startedGame.type === GameType.BOGGLE) {
+              sanitized = this.boggleService.sanitizeStateForPlayer(finalState as any, su.sub) as any;
+            } else if (startedGame.type === GameType.SCATTERGORIES) {
+              sanitized = this.scattergoriesService.sanitizeStateForPlayer(finalState as any, su.sub) as any;
+            } else if (startedGame.type === GameType.BANANAGRAMS) {
+              sanitized = this.bananagramsService.sanitizeStateForPlayer(finalState as any, su.sub) as any;
+            } else if (startedGame.type === GameType.SCRABBLE_GAME) {
+              sanitized = this.scrabbleService.sanitizeStateForPlayer(finalState as any, su.sub) as any;
+            }
+            s.emit("game.started", {
+              gameId: startedGame.id,
+              gameType: startedGame.type,
+              state: sanitized,
+              players: startedGame.players.map(p => ({
+                odUserId: p.userId,
+                side: p.side,
+                displayName: p.user.displayName
+              }))
+            });
+          }
+        }
+        this.logger.log(`Game ${startedGame.id} (${startedGame.type}) started for session ${body.sessionId}`);
+        return;
+      }
+
       // For UNO, send each player their own sanitized state (hides opponent's hand)
       if (startedGame.type === GameType.UNO && finalState) {
         const sessionSockets = await this.server.in(`session:${body.sessionId}`).fetchSockets();
@@ -582,6 +742,60 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
           const su = (s as any).user;
           if (su) {
             const sanitized = this.unoService.sanitizeForPlayer(finalState as any, su.sub);
+            s.emit("game.started", {
+              gameId: startedGame.id,
+              gameType: startedGame.type,
+              state: sanitized,
+              players: startedGame.players.map(p => ({
+                odUserId: p.userId,
+                side: p.side,
+                displayName: p.user.displayName
+              }))
+            });
+          }
+        }
+      } else if (startedGame.type === GameType.BS && finalState) {
+        const sessionSockets = await this.server.in(`session:${body.sessionId}`).fetchSockets();
+        for (const s of sessionSockets) {
+          const su = (s as any).user;
+          if (su) {
+            const sanitized = this.bsService.sanitizeStateForPlayer(finalState as any, su.sub);
+            s.emit("game.started", {
+              gameId: startedGame.id,
+              gameType: startedGame.type,
+              state: sanitized,
+              players: startedGame.players.map(p => ({
+                odUserId: p.userId,
+                side: p.side,
+                displayName: p.user.displayName
+              }))
+            });
+          }
+        }
+      } else if (startedGame.type === GameType.POKER && finalState) {
+        const sessionSockets = await this.server.in(`session:${body.sessionId}`).fetchSockets();
+        for (const s of sessionSockets) {
+          const su = (s as any).user;
+          if (su) {
+            const sanitized = this.pokerService.sanitizeStateForPlayer(finalState as any, su.sub);
+            s.emit("game.started", {
+              gameId: startedGame.id,
+              gameType: startedGame.type,
+              state: sanitized,
+              players: startedGame.players.map(p => ({
+                odUserId: p.userId,
+                side: p.side,
+                displayName: p.user.displayName
+              }))
+            });
+          }
+        }
+      } else if (startedGame.type === GameType.BLACKJACK && finalState) {
+        const sessionSockets = await this.server.in(`session:${body.sessionId}`).fetchSockets();
+        for (const s of sessionSockets) {
+          const su = (s as any).user;
+          if (su) {
+            const sanitized = this.blackjackService.sanitizeStateForPlayer(finalState as any, su.sub);
             s.emit("game.started", {
               gameId: startedGame.id,
               gameType: startedGame.type,
@@ -621,6 +835,48 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       // For Tanks, start the real-time game loop
       if (startedGame.type === GameType.TANKS) {
         this.startTanksGameLoop(startedGame.id, `session:${body.sessionId}`);
+      }
+
+      if (startedGame.type === GameType.BLACKJACK) {
+        this.scheduleBlackjackTurnTimer(startedGame.id, `session:${body.sessionId}`);
+      }
+
+      if (startedGame.type === GameType.BS) {
+        this.scheduleBsTurnTimer(startedGame.id, `session:${body.sessionId}`);
+      }
+
+      // For Boggle, start 3-minute round timer
+      if (startedGame.type === GameType.BOGGLE) {
+        const roomKey = `session:${body.sessionId}`;
+        this.boggleTimers.set(startedGame.id, setTimeout(async () => {
+          try {
+            const result = await this.boggleService.endRound(startedGame.id);
+            if (result && result.state) {
+              const sockets = await this.server.in(roomKey).fetchSockets();
+              for (const s of sockets) {
+                const su = (s as any).user;
+                if (su) {
+                  s.emit("game.stateUpdate", {
+                    gameId: startedGame.id,
+                    state: result.state,
+                  });
+                }
+              }
+              if (result.gameEnded) {
+                this.server.to(roomKey).emit("game.end", {
+                  gameId: startedGame.id,
+                  winnerId: result.winner ?? null,
+                  isDraw: result.isDraw ?? false,
+                  reason: result.winner ? "win" : (result.isDraw ? "draw" : "time"),
+                  finalState: result.state,
+                });
+              }
+            }
+          } catch (e: any) {
+            this.logger.error(`Boggle timer error for ${startedGame.id}:`, e);
+          }
+          this.boggleTimers.delete(startedGame.id);
+        }, 180_000));
       }
       
       this.logger.log(`Game ${startedGame.id} (${startedGame.type}) started for session ${body.sessionId}`);
@@ -675,12 +931,28 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       // Join game room
       client.join(`game:${body.gameId}`);
       
-      // Send current game state
+      let gameState = game.state;
+      if (game.type === GameType.BS && gameState) {
+        const bsState = this.bsService.getState(body.gameId);
+        if (bsState) {
+          gameState = this.bsService.sanitizeStateForPlayer(bsState, user.sub) as any;
+        }
+      } else if (game.type === GameType.POKER && gameState) {
+        const pokerState = this.pokerService.getState(body.gameId);
+        if (pokerState) {
+          gameState = this.pokerService.sanitizeStateForPlayer(pokerState, user.sub) as any;
+        }
+      } else if (game.type === GameType.BLACKJACK && gameState) {
+        const bjState = this.blackjackService.getState(body.gameId);
+        if (bjState) {
+          gameState = this.blackjackService.sanitizeStateForPlayer(bjState, user.sub) as any;
+        }
+      }
       client.emit("game.state", {
         gameId: game.id,
         gameType: game.type,
         status: game.status,
-        state: game.state,
+        state: gameState,
         players: game.players.map(p => ({
           odUserId: p.userId,
           side: p.side,
@@ -693,12 +965,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("game.move")
   async handleGameMove(
     @ConnectedSocket() client: Socket,
@@ -1132,12 +1399,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("session.sendGift")
   async handleSendGift(
     @ConnectedSocket() client: Socket,
@@ -1234,12 +1496,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   // ==================== ROOM EVENTS ====================
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("room.join")
   async handleRoomJoin(
     @ConnectedSocket() client: Socket,
@@ -1401,12 +1658,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("room.vote")
   async handleVote(
     @ConnectedSocket() client: Socket,
@@ -1431,36 +1683,113 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   @SubscribeMessage("room.gameMove")
   async handleRoomGameMove(
     @ConnectedSocket() client: Socket,
-    @MessageBody() body: { roomId: string; roundId: string; cellIndex: number }
+    @MessageBody() body: {
+      roomId: string;
+      roundId: string;
+      cellIndex?: number;
+      colIndex?: number;
+      from?: { row: number; col: number };
+      to?: { row: number; col: number };
+      promotionPiece?: string;
+      cardIndex?: number;
+    }
   ) {
     const user = (client as any).user;
     
     try {
-      // Get round to find the game ID
       const round = await this.roomsService.getRoundDetails(body.roundId);
       
       if (!round.gameId) {
         client.emit("room.error", { message: "No game in progress" });
         return;
       }
-      
-      // Make the move using TicTacToe service
-      const result = await this.ticTacToeService.makeMove(round.gameId, user.sub, body.cellIndex);
+
+      let result: any;
+      const gameId = round.gameId;
+
+      switch (round.gameType) {
+        case GameType.TICTACTOE: {
+          if (body.cellIndex === undefined) {
+            client.emit("room.error", { message: "cellIndex required for TicTacToe" });
+            return;
+          }
+          result = await this.ticTacToeService.makeMove(gameId, user.sub, body.cellIndex);
+          break;
+        }
+        case GameType.CONNECT_FOUR: {
+          if (body.colIndex === undefined) {
+            client.emit("room.error", { message: "colIndex required for Connect Four" });
+            return;
+          }
+          result = await this.connectFourService.makeMove(gameId, user.sub, body.colIndex);
+          break;
+        }
+        case GameType.CHESS: {
+          if (!body.from || !body.to) {
+            client.emit("room.error", { message: "from and to required for Chess" });
+            return;
+          }
+          const game = await this.gamesService.getGame(gameId);
+          const currentState = game.state as any;
+          if (!currentState) {
+            client.emit("room.error", { message: "Game state not found" });
+            return;
+          }
+          result = this.chessService.makeMove(currentState, user.sub, body.from, body.to, body.promotionPiece as PieceType | undefined);
+          if (result.success && result.state) {
+            await this.prisma.game.update({
+              where: { id: gameId },
+              data: {
+                state: result.state as any,
+                ...(result.gameEnded ? { status: "COMPLETED", endedAt: new Date(), winnerUserId: result.winner || null } : {})
+              }
+            });
+          }
+          break;
+        }
+        case GameType.CHECKERS: {
+          if (!body.from || !body.to) {
+            client.emit("room.error", { message: "from and to required for Checkers" });
+            return;
+          }
+          result = await this.checkersService.makeMove(gameId, user.sub, body.from as any, body.to as any);
+          break;
+        }
+        case GameType.MEMORY_CARDS: {
+          if (body.cardIndex === undefined) {
+            client.emit("room.error", { message: "cardIndex required for Memory Cards" });
+            return;
+          }
+          result = await this.memoryService.makeMove(gameId, user.sub, body.cardIndex);
+          break;
+        }
+        default:
+          client.emit("room.error", { message: `Game type ${round.gameType} is not supported for room.gameMove` });
+          return;
+      }
       
       if (!result.success) {
         client.emit("room.error", { message: result.error });
         return;
       }
       
-      // Broadcast state update
       this.server.to(`room:${body.roomId}`).emit("room.gameStateUpdate", {
         roundId: body.roundId,
         state: result.state,
-        lastMove: { cell: body.cellIndex }
+        lastMove: {
+          ...(body.cellIndex !== undefined && { cell: body.cellIndex }),
+          ...(body.colIndex !== undefined && { col: body.colIndex }),
+          ...(body.from && { from: body.from }),
+          ...(body.to && { to: body.to }),
+          ...(body.cardIndex !== undefined && { card: body.cardIndex }),
+        }
       });
       
-      // Check if game ended (winner is set OR it's a draw)
-      if (result.winner !== null || result.isDraw) {
+      const isGameOver = result.winner !== null && result.winner !== undefined
+        || result.isDraw
+        || result.gameEnded;
+
+      if (isGameOver) {
         const payout = await this.roomsService.completeRound(
           body.roundId,
           result.winner || null,
@@ -1472,13 +1801,12 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
           winnerId: result.winner,
           isDraw: result.isDraw,
           winningLine: result.winningLine,
+          winningCells: result.winningCells,
           payout: payout.payout
         });
         
-        // Update winner's wallet
         if (result.winner) {
           const winnerWallet = await this.walletService.getWallet(result.winner);
-          // Find the winner's socket and emit wallet update
           const sockets = await this.server.in(`room:${body.roomId}`).fetchSockets();
           for (const s of sockets) {
             if ((s as any).user?.sub === result.winner) {
@@ -1585,11 +1913,13 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       a => a === question.correctAnswer
     );
 
-    // Send results
+    // Send results — include the inter-question delay so the client can show a countdown
+    const nextQuestionDelay = this.configService.get<number>("intervals.triviaQuestionDelay") ?? 2500;
     this.server.to(roomKey).emit("trivia.questionResult", {
       gameId,
       correctAnswer: question.correctAnswer,
       correctAnswerIndex,
+      nextQuestionIn: nextQuestionDelay,
       results: endedState.currentAnswers.map(answer => ({
         odUserId: answer.odUserId,
         displayName: answer.odUserDisplayName,
@@ -1630,23 +1960,10 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
         const nextState = this.triviaService.advanceToNextQuestion(currentState);
         this.triviaService.setState(gameId, nextState);
 
-        // Emit state update so frontend knows we're moving to next question
-        this.server.to(roomKey).emit("game.stateUpdate", {
-          gameId,
-          state: nextState
-        });
-
-        // Update database
-        this.prisma.game.update({
-          where: { id: gameId },
-          data: { state: nextState as any }
-        }).catch((err: any) => this.logger.error("Failed to update game state:", err));
-
-        // Brief pause, then start next question
-        setTimeout(() => {
-          this.logger.log(`Starting next question for game ${gameId}`);
-          this.startTriviaQuestion(gameId, roomKey);
-        }, this.configService.get<number>("intervals.triviaQuestionPause") || 2000);
+        // startTriviaQuestion will emit the single authoritative game.stateUpdate + trivia.questionStart
+        // Emitting a second game.stateUpdate here would cause the frontend to render the question
+        // before the timer starts, breaking the pendingState mechanism
+        this.startTriviaQuestion(gameId, roomKey);
       }
     }, this.configService.get<number>("intervals.triviaQuestionDelay") || 3000); // Reduced to 3 seconds
   }
@@ -1699,12 +2016,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("trivia.selectTheme")
   async handleTriviaThemeSelection(
     @ConnectedSocket() client: Socket,
@@ -1748,30 +2060,29 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
         selectedTheme: result.selectedTheme
       });
 
-      // If all players selected, move to countdown and start game after delay
+      // If all players selected, transition to question phase
       if (result.allPlayersSelected && result.selectedTheme) {
-        // Update state to countdown phase
-        this.server.to(roomKey).emit("game.stateUpdate", {
-          gameId: body.gameId,
-          state: result.state
-        });
+        // Use nullish coalescing so a configured value of 0 is respected (|| treats 0 as falsy)
+        const countdownMs = this.configService.get<number>("intervals.triviaCountdown") ?? 0;
 
-        // Start the game after countdown
+        // Only broadcast the countdown state if there is actually a visible countdown delay;
+        // skipping it avoids a brief disabled-button flash on the client when delay is 0
+        if (countdownMs > 0) {
+          this.server.to(roomKey).emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: result.state
+          });
+        }
+
         setTimeout(() => {
           const countdownState = this.triviaService.getState(body.gameId);
           if (countdownState) {
             const startedState = this.triviaService.startGame(body.gameId, countdownState);
             this.triviaService.setState(body.gameId, startedState);
-            
-            this.server.to(roomKey).emit("game.stateUpdate", {
-              gameId: body.gameId,
-              state: startedState
-            });
-
-            // Start first question
+            // startTriviaQuestion emits the single authoritative game.stateUpdate + trivia.questionStart
             this.startTriviaQuestion(body.gameId, roomKey);
           }
-        }, this.configService.get<number>("intervals.triviaCountdown") || 3000);
+        }, countdownMs);
       }
     } catch (error: any) {
       this.logger.error("Trivia theme selection error:", error);
@@ -1780,12 +2091,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("trivia.answer")
   async handleTriviaAnswer(
     @ConnectedSocket() client: Socket,
@@ -1875,12 +2181,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   // ==================== TRUTHS AND LIE GAME ====================
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("truthsAndLie.submitStatements")
   async handleSubmitStatements(
     @ConnectedSocket() client: Socket,
@@ -1945,12 +2246,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("truthsAndLie.submitGuess")
   async handleSubmitGuess(
     @ConnectedSocket() client: Socket,
@@ -2017,12 +2313,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   // ==================== 21 QUESTIONS GAME ====================
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("twentyOneQuestions.next")
   async handleNextQuestion(
     @ConnectedSocket() client: Socket,
@@ -2162,12 +2453,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   // ==================== BILLIARDS GAME ====================
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("billiards.shot")
   async handleBilliardsShot(
     @ConnectedSocket() client: Socket,
@@ -2235,12 +2521,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("billiards.event")
   async handleBilliardsEvent(
     @ConnectedSocket() client: Socket,
@@ -2280,12 +2561,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("billiards.placeCueBall")
   async handlePlaceCueBall(
     @ConnectedSocket() client: Socket,
@@ -2337,12 +2613,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("poker.action")
   async handlePokerAction(
     @ConnectedSocket() client: Socket,
@@ -2396,28 +2667,38 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
         this.pokerService.setState(body.gameId, result.state);
       }
 
-      // Emit action result to all players (contains full state, so no need for separate stateUpdate)
       this.logger.log(`[handlePokerAction] Emitting to room: ${roomKey}`);
-      this.server.to(roomKey).emit("poker.actionResult", {
-        gameId: body.gameId,
-        action: body.action,
-        amount: body.amount,
-        state: result.state,
-        handComplete: result.handComplete,
-        winners: result.winners,
-        nextAction: result.nextAction
-      });
+      if (result.state) {
+        const pokerActionSockets = await this.server.in(roomKey).fetchSockets();
+        for (const s of pokerActionSockets) {
+          const su = (s as any).user;
+          if (su) {
+            const sanitized = this.pokerService.sanitizeStateForPlayer(result.state, su.sub);
+            s.emit("poker.actionResult", {
+              gameId: body.gameId,
+              action: body.action,
+              amount: body.amount,
+              state: sanitized,
+              handComplete: result.handComplete,
+              winners: result.winners,
+              nextAction: result.nextAction
+            });
+          }
+        }
 
-      // Note: Removed duplicate game.stateUpdate emission - poker.actionResult already contains full state
-      // This prevents double state updates on the frontend
-
-      // If hand completed, emit hand end event
-      if (result.handComplete) {
-        this.server.to(roomKey).emit("poker.handEnd", {
-          gameId: body.gameId,
-          winners: result.winners,
-          state: result.state
-        });
+        if (result.handComplete) {
+          for (const s of pokerActionSockets) {
+            const su = (s as any).user;
+            if (su) {
+              const sanitized = this.pokerService.sanitizeStateForPlayer(result.state, su.sub);
+              s.emit("poker.handEnd", {
+                gameId: body.gameId,
+                winners: result.winners,
+                state: sanitized
+              });
+            }
+          }
+        }
       }
     } catch (error: any) {
       this.logger.error("Poker action error:", error);
@@ -2426,12 +2707,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage("poker.startNewHand")
   async handlePokerStartNewHand(
     @ConnectedSocket() client: Socket,
@@ -2453,10 +2729,10 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
         return;
       }
 
-      // Start new hand
+      // Start new hand (returns null if hand already in progress — duplicate auto-trigger)
       const newState = this.pokerService.startNewHand(body.gameId);
       if (!newState) {
-        client.emit("game.error", { message: "Failed to start new hand" });
+        // Silent return: duplicate request from the second client, first already dealt
         return;
       }
 
@@ -2478,12 +2754,18 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
           }
         });
 
-        // Emit game over
-        this.server.to(roomKey).emit("poker.gameOver", {
-          gameId: body.gameId,
-          winnerId: newState.winnerIds?.[0] || playersWithChips[0]?.userId,
-          state: newState
-        });
+        const pokerGameOverSockets = await this.server.in(roomKey).fetchSockets();
+        for (const s of pokerGameOverSockets) {
+          const su = (s as any).user;
+          if (su) {
+            const sanitized = this.pokerService.sanitizeStateForPlayer(newState, su.sub);
+            s.emit("poker.gameOver", {
+              gameId: body.gameId,
+              winnerId: newState.winnerIds?.[0] || playersWithChips[0]?.userId,
+              state: sanitized
+            });
+          }
+        }
 
         this.server.to(roomKey).emit("game.end", {
           gameId: body.gameId,
@@ -2491,31 +2773,33 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
           reason: "all_chips_won"
         });
 
-        // Cleanup game from memory after a delay
         setTimeout(() => {
           this.pokerService.cleanupGame(body.gameId);
-        }, 60000); // Keep in memory for 1 minute for any late reconnects
+        }, 60000);
 
         return;
       }
 
-      // Update state in database
       await this.prisma.game.update({
         where: { id: body.gameId },
         data: { state: newState as any }
       });
 
-      // Emit new hand started to all players
-      this.server.to(roomKey).emit("poker.newHand", {
-        gameId: body.gameId,
-        state: newState
-      });
-
-      // Emit state update
-      this.server.to(roomKey).emit("game.stateUpdate", {
-        gameId: body.gameId,
-        state: newState
-      });
+      const pokerNewHandSockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of pokerNewHandSockets) {
+        const su = (s as any).user;
+        if (su) {
+          const sanitized = this.pokerService.sanitizeStateForPlayer(newState, su.sub);
+          s.emit("poker.newHand", {
+            gameId: body.gameId,
+            state: sanitized
+          });
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: sanitized
+          });
+        }
+      }
     } catch (error: any) {
       this.logger.error("Poker start new hand error:", error);
       client.emit("game.error", { message: error.message || "Failed to start new hand" });
@@ -2560,6 +2844,726 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       this.logger.log(`Poker game ${body.gameId} ended by user ${user.sub}`);
     } catch (error: any) {
       this.logger.error("Poker end game error:", error);
+      client.emit("game.error", { message: error.message || "Failed to end game" });
+    }
+  }
+
+  private scheduleBlackjackTurnTimer(gameId: string, roomKey: string) {
+    this.blackjackService.setTurnTimer(gameId, async () => {
+      try {
+        const result = await this.blackjackService.autoActForTimeout(gameId);
+        if (!result || !result.success || !result.state) return;
+
+        await this.prisma.game.update({
+          where: { id: gameId },
+          data: { state: result.state as any }
+        });
+
+        const bjTimeoutSockets = await this.server.in(roomKey).fetchSockets();
+        for (const s of bjTimeoutSockets) {
+          const su = (s as any).user;
+          if (su) {
+            const sanitized = this.blackjackService.sanitizeStateForPlayer(result.state, su.sub);
+            s.emit("blackjack.actionResult", {
+              gameId,
+              action: 'timeout',
+              state: sanitized,
+              handComplete: result.handComplete,
+              winners: result.winners
+            });
+          }
+        }
+
+        if (result.handComplete) {
+          this.blackjackService.clearTurnTimer(gameId);
+          for (const s of bjTimeoutSockets) {
+            const su = (s as any).user;
+            if (su) {
+              const sanitized = this.blackjackService.sanitizeStateForPlayer(result.state, su.sub);
+              s.emit("blackjack.roundEnd", {
+                gameId,
+                winners: result.winners,
+                state: sanitized
+              });
+            }
+          }
+        } else {
+          this.scheduleBlackjackTurnTimer(gameId, roomKey);
+        }
+      } catch (error: any) {
+        this.logger.error("Blackjack turn timeout error:", error);
+      }
+    });
+  }
+
+  // ==================== BLACKJACK GAME HANDLERS ====================
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage("blackjack.action")
+  async handleBlackjackAction(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: BlackjackActionDto
+  ) {
+    const user = (client as any).user;
+
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.BLACKJACK) {
+        client.emit("game.error", { message: "Not a blackjack game" });
+        return;
+      }
+
+      this.assertPlayerInGame(game, user.sub);
+
+      const result = await this.blackjackService.processAction(
+        body.gameId,
+        user.sub,
+        body.action as any,
+        body.amount
+      );
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error || "Invalid action" });
+        return;
+      }
+
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
+
+      if (result.state) {
+        await this.prisma.game.update({
+          where: { id: body.gameId },
+          data: { state: result.state as any }
+        });
+      }
+
+      const bjActionSockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of bjActionSockets) {
+        const su = (s as any).user;
+        if (su && result.state) {
+          const sanitized = this.blackjackService.sanitizeStateForPlayer(result.state, su.sub);
+          s.emit("blackjack.actionResult", {
+            gameId: body.gameId,
+            action: body.action,
+            amount: body.amount,
+            state: sanitized,
+            handComplete: result.handComplete,
+            winners: result.winners
+          });
+        }
+      }
+
+      if (result.handComplete) {
+        this.blackjackService.clearTurnTimer(body.gameId);
+        for (const s of bjActionSockets) {
+          const su = (s as any).user;
+          if (su && result.state) {
+            const sanitized = this.blackjackService.sanitizeStateForPlayer(result.state, su.sub);
+            s.emit("blackjack.roundEnd", {
+              gameId: body.gameId,
+              winners: result.winners,
+              state: sanitized
+            });
+          }
+        }
+      } else {
+        this.scheduleBlackjackTurnTimer(body.gameId, roomKey);
+      }
+
+    } catch (error: any) {
+      this.logger.error("Blackjack action error:", error);
+      client.emit("game.error", { message: error.message || "Failed to process blackjack action" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage("blackjack.startNewHand")
+  async handleBlackjackStartNewHand(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: BlackjackNewHandDto
+  ) {
+    const user = (client as any).user;
+
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.BLACKJACK) {
+        client.emit("game.error", { message: "Not a blackjack game" });
+        return;
+      }
+
+      this.assertPlayerInGame(game, user.sub);
+
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
+
+      const newState = this.blackjackService.startNewHand(body.gameId);
+
+      if (!newState) {
+        // Game over — a player is out of chips
+        const currentState = this.blackjackService.getState(body.gameId);
+        const winnerId = currentState?.winnerIds?.[0] ||
+          currentState?.players.find(p => p.chips > 0)?.userId || null;
+
+        await this.prisma.game.update({
+          where: { id: body.gameId },
+          data: {
+            status: "COMPLETED",
+            endedAt: new Date(),
+            winnerUserId: winnerId
+          }
+        });
+
+        if (currentState) {
+          const bjGameOverSockets = await this.server.in(roomKey).fetchSockets();
+          for (const s of bjGameOverSockets) {
+            const su = (s as any).user;
+            if (su) {
+              const sanitized = this.blackjackService.sanitizeStateForPlayer(currentState, su.sub);
+              s.emit("blackjack.gameOver", {
+                gameId: body.gameId,
+                winnerId,
+                state: sanitized
+              });
+            }
+          }
+        }
+
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId,
+          reason: "opponent_broke"
+        });
+
+        setTimeout(() => {
+          this.blackjackService.cleanupGame(body.gameId);
+        }, 60000);
+
+        return;
+      }
+
+      await this.prisma.game.update({
+        where: { id: body.gameId },
+        data: { state: newState as any }
+      });
+
+      const bjNewHandSockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of bjNewHandSockets) {
+        const su = (s as any).user;
+        if (su) {
+          const sanitized = this.blackjackService.sanitizeStateForPlayer(newState, su.sub);
+          s.emit("blackjack.newHand", {
+            gameId: body.gameId,
+            state: sanitized
+          });
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: sanitized
+          });
+        }
+      }
+
+      this.scheduleBlackjackTurnTimer(body.gameId, roomKey);
+
+    } catch (error: any) {
+      this.logger.error("Blackjack start new hand error:", error);
+      client.emit("game.error", { message: error.message || "Failed to start new hand" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage("blackjack.endGame")
+  async handleBlackjackEndGame(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string }
+  ) {
+    const user = (client as any).user;
+
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.BLACKJACK) {
+        client.emit("game.error", { message: "Not a blackjack game" });
+        return;
+      }
+
+      this.blackjackService.cleanupGame(body.gameId);
+
+      await this.prisma.game.update({
+        where: { id: body.gameId },
+        data: {
+          status: "COMPLETED",
+          endedAt: new Date()
+        }
+      });
+
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
+
+      this.server.to(roomKey).emit("game.end", {
+        gameId: body.gameId,
+        reason: "game_ended"
+      });
+
+      this.logger.log(`Blackjack game ${body.gameId} ended by user ${user.sub}`);
+    } catch (error: any) {
+      this.logger.error("Blackjack end game error:", error);
+      client.emit("game.error", { message: error.message || "Failed to end game" });
+    }
+  }
+
+  // ==================== SPIN THE WHEEL HANDLERS ====================
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage("stw.bet")
+  async handleStwBet(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; amount: number }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.SPIN_THE_WHEEL) {
+        client.emit("game.error", { message: "Not a Spin the Wheel game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+
+      const result = this.spinTheWheelService.placeBet(body.gameId, user.sub, body.amount);
+      if (!result.success) {
+        client.emit("game.error", { message: result.error || "Invalid action" });
+        return;
+      }
+
+      if (result.state) {
+        await this.prisma.game.update({
+          where: { id: body.gameId },
+          data: { state: result.state as any }
+        });
+      }
+
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
+      const sockets = await this.server.in(roomKey).fetchSockets();
+
+      if (result.spinResult) {
+        // Both bets placed — broadcast spin result to everyone
+        for (const s of sockets) {
+          s.emit("stw.spinResult", {
+            gameId: body.gameId,
+            state: result.state,
+            spinResult: result.spinResult
+          });
+        }
+      } else {
+        // Only one bet placed so far — tell everyone state updated
+        for (const s of sockets) {
+          s.emit("stw.betPlaced", {
+            gameId: body.gameId,
+            state: result.state
+          });
+        }
+      }
+    } catch (error: any) {
+      this.logger.error("STW bet error:", error);
+      client.emit("game.error", { message: error.message || "Failed to place bet" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage("stw.newRound")
+  async handleStwNewRound(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.SPIN_THE_WHEEL) {
+        client.emit("game.error", { message: "Not a Spin the Wheel game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+
+      const newState = this.spinTheWheelService.startNewRound(body.gameId);
+      if (!newState) {
+        client.emit("game.error", { message: "Could not start new round" });
+        return;
+      }
+
+      await this.prisma.game.update({
+        where: { id: body.gameId },
+        data: { state: newState as any }
+      });
+
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
+      this.server.to(roomKey).emit("stw.newRound", {
+        gameId: body.gameId,
+        state: newState
+      });
+    } catch (error: any) {
+      this.logger.error("STW new round error:", error);
+      client.emit("game.error", { message: error.message || "Failed to start new round" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage("stw.endGame")
+  async handleStwEndGame(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      this.spinTheWheelService.cleanupGame(body.gameId);
+      await this.prisma.game.update({
+        where: { id: body.gameId },
+        data: { status: "COMPLETED", endedAt: new Date() }
+      });
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
+      this.server.to(roomKey).emit("game.end", { gameId: body.gameId, reason: "game_ended" });
+    } catch (error: any) {
+      this.logger.error("STW end game error:", error);
+      client.emit("game.error", { message: error.message || "Failed to end game" });
+    }
+  }
+
+  // ==================== BS GAME HANDLERS ====================
+
+  private scheduleBsTurnTimer(gameId: string, roomKey: string) {
+    this.bsService.setTurnTimer(gameId, async () => {
+      try {
+        const state = this.bsService.getState(gameId);
+        if (!state || state.phase !== 'playing') return;
+
+        const currentPlayer = state.players[state.currentPlayerIndex];
+        if (!currentPlayer || currentPlayer.hand.length === 0) return;
+
+        const result = await this.bsService.processPlayCards(gameId, currentPlayer.userId, [0]);
+        if (!result.success || !result.state) return;
+
+        await this.prisma.game.update({
+          where: { id: gameId },
+          data: { state: result.state as any }
+        });
+
+        for (const p of result.state.players) {
+          const clientState = this.bsService.sanitizeStateForPlayer(result.state, p.userId);
+          const sockets = await this.server.in(roomKey).fetchSockets();
+          for (const s of sockets) {
+            if ((s as any).user?.sub === p.userId) {
+              s.emit("bs.playResult", { gameId, state: clientState });
+            }
+          }
+        }
+
+        this.scheduleBsCallWindowTimer(gameId, roomKey);
+      } catch (error: any) {
+        this.logger.error("BS turn timeout error:", error);
+      }
+    });
+  }
+
+  private scheduleBsCallWindowTimer(gameId: string, roomKey: string) {
+    this.bsService.setCallWindowTimer(gameId, async () => {
+      try {
+        const state = this.bsService.getState(gameId);
+        if (!state || state.phase !== 'callWindow' || !state.lastPlay) return;
+
+        const opponentId = state.players.find(p => p.userId !== state.lastPlay!.playerId)?.userId;
+        if (!opponentId) return;
+
+        const result = await this.bsService.processPass(gameId, opponentId);
+        if (!result.success || !result.state) return;
+
+        await this.prisma.game.update({
+          where: { id: gameId },
+          data: { state: result.state as any }
+        });
+
+        if (result.state.phase === 'ended') {
+          for (const p of result.state.players) {
+            const clientState = this.bsService.sanitizeStateForPlayer(result.state, p.userId);
+            const sockets = await this.server.in(roomKey).fetchSockets();
+            for (const s of sockets) {
+              if ((s as any).user?.sub === p.userId) {
+                s.emit("bs.callResult", { gameId, state: clientState, wasBS: null, revealedCards: null, penaltyTo: null, autoPass: true });
+              }
+            }
+          }
+
+          const winnerId = result.state.winnerId;
+          this.server.to(roomKey).emit("bs.gameOver", { gameId, winnerId });
+          this.server.to(roomKey).emit("game.end", { gameId, winnerId, reason: "bs_win" });
+
+          await this.prisma.game.update({
+            where: { id: gameId },
+            data: { status: "COMPLETED", endedAt: new Date(), winnerUserId: winnerId }
+          });
+
+          setTimeout(() => this.bsService.cleanupGame(gameId), 60000);
+          return;
+        }
+
+        for (const p of result.state.players) {
+          const clientState = this.bsService.sanitizeStateForPlayer(result.state, p.userId);
+          const sockets = await this.server.in(roomKey).fetchSockets();
+          for (const s of sockets) {
+            if ((s as any).user?.sub === p.userId) {
+              s.emit("bs.callResult", { gameId, state: clientState, wasBS: null, revealedCards: null, penaltyTo: null, autoPass: true });
+            }
+          }
+        }
+
+        this.scheduleBsTurnTimer(gameId, roomKey);
+      } catch (error: any) {
+        this.logger.error("BS call window timeout error:", error);
+      }
+    });
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage("bs.playCards")
+  async handleBsPlayCards(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: BsPlayCardsDto
+  ) {
+    const user = (client as any).user;
+
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.BS) {
+        client.emit("game.error", { message: "Not a BS game" });
+        return;
+      }
+
+      this.assertPlayerInGame(game, user.sub);
+
+      const result = await this.bsService.processPlayCards(body.gameId, user.sub, body.cardIndices);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error || "Invalid action" });
+        return;
+      }
+
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
+
+      if (result.state) {
+        await this.prisma.game.update({
+          where: { id: body.gameId },
+          data: { state: result.state as any }
+        });
+
+        for (const p of result.state.players) {
+          const clientState = this.bsService.sanitizeStateForPlayer(result.state, p.userId);
+          const sockets = await this.server.in(roomKey).fetchSockets();
+          for (const s of sockets) {
+            if ((s as any).user?.sub === p.userId) {
+              s.emit("bs.playResult", { gameId: body.gameId, state: clientState });
+            }
+          }
+        }
+
+      }
+
+      this.scheduleBsCallWindowTimer(body.gameId, roomKey);
+
+    } catch (error: any) {
+      this.logger.error("BS play cards error:", error);
+      client.emit("game.error", { message: error.message || "Failed to play cards" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage("bs.call")
+  async handleBsCall(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: BsCallDto
+  ) {
+    const user = (client as any).user;
+
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.BS) {
+        client.emit("game.error", { message: "Not a BS game" });
+        return;
+      }
+
+      this.assertPlayerInGame(game, user.sub);
+
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
+
+      if (body.action === 'callBS') {
+        const result = await this.bsService.processCallBS(body.gameId, user.sub);
+
+        if (!result.success) {
+          client.emit("game.error", { message: result.error || "Invalid call" });
+          return;
+        }
+
+        if (result.state) {
+          await this.prisma.game.update({
+            where: { id: body.gameId },
+            data: { state: result.state as any }
+          });
+
+          for (const p of result.state.players) {
+            const clientState = this.bsService.sanitizeStateForPlayer(result.state, p.userId);
+            const sockets = await this.server.in(roomKey).fetchSockets();
+            for (const s of sockets) {
+              if ((s as any).user?.sub === p.userId) {
+                s.emit("bs.callResult", {
+                  gameId: body.gameId,
+                  state: clientState,
+                  wasBS: result.wasBS,
+                  revealedCards: result.revealedCards,
+                  penaltyTo: result.penaltyTo
+                });
+              }
+            }
+          }
+
+          setTimeout(async () => {
+            try {
+              const resolvedState = await this.bsService.resolveAfterReveal(body.gameId);
+              if (!resolvedState) return;
+
+              await this.prisma.game.update({
+                where: { id: body.gameId },
+                data: { state: resolvedState as any }
+              });
+
+              if (resolvedState.phase === 'ended') {
+                const winnerId = resolvedState.winnerId;
+                for (const p of resolvedState.players) {
+                  const clientState = this.bsService.sanitizeStateForPlayer(resolvedState, p.userId);
+                  const sockets = await this.server.in(roomKey).fetchSockets();
+                  for (const s of sockets) {
+                    if ((s as any).user?.sub === p.userId) {
+                      s.emit("bs.resolved", { gameId: body.gameId, state: clientState });
+                    }
+                  }
+                }
+                this.server.to(roomKey).emit("bs.gameOver", { gameId: body.gameId, winnerId });
+                this.server.to(roomKey).emit("game.end", { gameId: body.gameId, winnerId, reason: "bs_win" });
+
+                await this.prisma.game.update({
+                  where: { id: body.gameId },
+                  data: { status: "COMPLETED", endedAt: new Date(), winnerUserId: winnerId }
+                });
+
+                setTimeout(() => this.bsService.cleanupGame(body.gameId), 60000);
+              } else {
+                for (const p of resolvedState.players) {
+                  const clientState = this.bsService.sanitizeStateForPlayer(resolvedState, p.userId);
+                  const sockets = await this.server.in(roomKey).fetchSockets();
+                  for (const s of sockets) {
+                    if ((s as any).user?.sub === p.userId) {
+                      s.emit("bs.resolved", { gameId: body.gameId, state: clientState });
+                    }
+                  }
+                }
+
+                this.scheduleBsTurnTimer(body.gameId, roomKey);
+              }
+            } catch (err: any) {
+              this.logger.error("BS resolve after reveal error:", err);
+            }
+          }, 2500);
+        }
+      } else {
+        const result = await this.bsService.processPass(body.gameId, user.sub);
+
+        if (!result.success) {
+          client.emit("game.error", { message: result.error || "Invalid pass" });
+          return;
+        }
+
+        if (result.state) {
+          await this.prisma.game.update({
+            where: { id: body.gameId },
+            data: { state: result.state as any }
+          });
+
+          if (result.state.phase === 'ended') {
+            const winnerId = result.state.winnerId;
+            for (const p of result.state.players) {
+              const clientState = this.bsService.sanitizeStateForPlayer(result.state, p.userId);
+              const sockets = await this.server.in(roomKey).fetchSockets();
+              for (const s of sockets) {
+                if ((s as any).user?.sub === p.userId) {
+                  s.emit("bs.callResult", { gameId: body.gameId, state: clientState, wasBS: null, revealedCards: null, penaltyTo: null });
+                }
+              }
+            }
+            this.server.to(roomKey).emit("bs.gameOver", { gameId: body.gameId, winnerId });
+            this.server.to(roomKey).emit("game.end", { gameId: body.gameId, winnerId, reason: "bs_win" });
+
+            await this.prisma.game.update({
+              where: { id: body.gameId },
+              data: { status: "COMPLETED", endedAt: new Date(), winnerUserId: winnerId }
+            });
+
+            setTimeout(() => this.bsService.cleanupGame(body.gameId), 60000);
+          } else {
+            for (const p of result.state.players) {
+              const clientState = this.bsService.sanitizeStateForPlayer(result.state, p.userId);
+              const sockets = await this.server.in(roomKey).fetchSockets();
+              for (const s of sockets) {
+                if ((s as any).user?.sub === p.userId) {
+                  s.emit("bs.callResult", { gameId: body.gameId, state: clientState, wasBS: null, revealedCards: null, penaltyTo: null });
+                }
+              }
+            }
+
+            this.scheduleBsTurnTimer(body.gameId, roomKey);
+          }
+        }
+      }
+
+    } catch (error: any) {
+      this.logger.error("BS call error:", error);
+      client.emit("game.error", { message: error.message || "Failed to process BS call" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage("bs.endGame")
+  async handleBsEndGame(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: BsEndGameDto
+  ) {
+    const user = (client as any).user;
+
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.BS) {
+        client.emit("game.error", { message: "Not a BS game" });
+        return;
+      }
+
+      this.bsService.cleanupGame(body.gameId);
+
+      await this.prisma.game.update({
+        where: { id: body.gameId },
+        data: { status: "COMPLETED", endedAt: new Date() }
+      });
+
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${body.gameId}`;
+
+      this.server.to(roomKey).emit("game.end", { gameId: body.gameId, reason: "game_ended" });
+
+      this.logger.log(`BS game ${body.gameId} ended by user ${user.sub}`);
+    } catch (error: any) {
+      this.logger.error("BS end game error:", error);
       client.emit("game.error", { message: error.message || "Failed to end game" });
     }
   }
@@ -2792,12 +3796,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage('tanks.input')
   async handleTanksInput(
     @ConnectedSocket() client: Socket,
@@ -2816,12 +3815,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
   }
 
   @UseGuards(WsJwtGuard)
-  @UsePipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-    exceptionFactory: (errors) => new WsException(errors)
-  }))
+
   @SubscribeMessage('penguin.move')
   async handlePenguinMove(
     @ConnectedSocket() client: Socket,
@@ -2845,8 +3839,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       if (result.waitingForOpponent) {
         // Acknowledge to submitting player; opponent gets notified when they also submit
         client.emit('penguin.moveAcknowledged', { gameId: body.gameId });
-        // Broadcast to the room so opponent knows a move was submitted (without revealing it)
-        this.server.to(roomKey).emit('penguin.opponentReady', { gameId: body.gameId, userId: user.sub });
+        client.broadcast.to(roomKey).emit('penguin.opponentReady', { gameId: body.gameId, userId: user.sub });
         return;
       }
 
@@ -2887,6 +3880,1231 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
     } catch (err: any) {
       this.logger.error('penguin.move error:', err);
       client.emit('game.error', { message: err.message || 'Move failed' });
+    }
+  }
+
+  // ==================== MONOPOLY GAME HANDLERS ====================
+
+  private async handleMonopolyAction(
+    client: Socket,
+    gameId: string,
+    actionFn: () => any,
+    actionName: string,
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(gameId);
+      if (game.type !== GameType.MONOPOLY) {
+        client.emit('game.error', { message: 'Not a Monopoly game' });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+
+      const result = actionFn();
+      if (!result.success) {
+        client.emit('game.error', { message: result.error || 'Invalid action' });
+        return;
+      }
+
+      const sessionId = game.sessionId;
+      const roomKey = sessionId ? `session:${sessionId}` : `game:${gameId}`;
+
+      if (result.state) {
+        await this.prisma.game.update({
+          where: { id: gameId },
+          data: { state: result.state as any },
+        });
+      }
+
+      this.server.to(roomKey).emit('monopoly.stateUpdate', {
+        gameId,
+        state: result.state,
+        events: result.events,
+        action: actionName,
+      });
+
+      if (result.gameOver) {
+        await this.prisma.game.update({
+          where: { id: gameId },
+          data: {
+            status: 'COMPLETED',
+            endedAt: new Date(),
+            winnerUserId: result.winnerId,
+          },
+        });
+
+        this.server.to(roomKey).emit('game.end', {
+          gameId,
+          winnerId: result.winnerId,
+          reason: 'bankruptcy',
+        });
+
+        this.monopolyService.cleanupGame(gameId);
+      }
+    } catch (err: any) {
+      this.logger.error(`Monopoly ${actionName} error:`, err);
+      client.emit('game.error', { message: err.message || `Failed to ${actionName}` });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.rollDice')
+  async handleMonopolyRollDice(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyGameDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.rollDice(body.gameId, user.sub), 'rollDice');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.buyProperty')
+  async handleMonopolyBuyProperty(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyGameDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.buyProperty(body.gameId, user.sub), 'buyProperty');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.declineProperty')
+  async handleMonopolyDeclineProperty(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyGameDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.declineProperty(body.gameId, user.sub), 'declineProperty');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.placeBid')
+  async handleMonopolyPlaceBid(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyBidDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.placeBid(body.gameId, user.sub, body.amount), 'placeBid');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.passBid')
+  async handleMonopolyPassBid(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyGameDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.passBid(body.gameId, user.sub), 'passBid');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.buildHouse')
+  async handleMonopolyBuildHouse(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyPropertyDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.buildHouse(body.gameId, user.sub, body.propertyIndex), 'buildHouse');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.sellHouse')
+  async handleMonopolySellHouse(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyPropertyDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.sellHouse(body.gameId, user.sub, body.propertyIndex), 'sellHouse');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.mortgage')
+  async handleMonopolyMortgage(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyPropertyDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.mortgageProperty(body.gameId, user.sub, body.propertyIndex), 'mortgage');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.unmortgage')
+  async handleMonopolyUnmortgage(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyPropertyDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.unmortgageProperty(body.gameId, user.sub, body.propertyIndex), 'unmortgage');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.proposeTrade')
+  async handleMonopolyProposeTrade(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyTradeOfferDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.proposeTrade(body.gameId, user.sub, {
+        fromUserId: user.sub,
+        toUserId: '',
+        offeredProperties: body.offeredProperties,
+        requestedProperties: body.requestedProperties,
+        offeredCash: body.offeredCash,
+        requestedCash: body.requestedCash,
+      }), 'proposeTrade');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.respondTrade')
+  async handleMonopolyRespondTrade(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyTradeResponseDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.respondTrade(body.gameId, user.sub, body.accept), 'respondTrade');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.payJailFine')
+  async handleMonopolyPayJailFine(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyGameDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.payJailFine(body.gameId, user.sub), 'payJailFine');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.useJailCard')
+  async handleMonopolyUseJailCard(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyGameDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.useJailCard(body.gameId, user.sub), 'useJailCard');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.endTurn')
+  async handleMonopolyEndTurn(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyGameDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.endTurn(body.gameId, user.sub), 'endTurn');
+  }
+
+  @UseGuards(WsJwtGuard)
+
+  @SubscribeMessage('monopoly.declareBankruptcy')
+  async handleMonopolyDeclareBankruptcy(@ConnectedSocket() client: Socket, @MessageBody() body: MonopolyGameDto) {
+    const user = (client as any).user;
+    await this.handleMonopolyAction(client, body.gameId,
+      () => this.monopolyService.declareBankruptcy(body.gameId, user.sub), 'declareBankruptcy');
+  }
+
+  // ─── Word Game: HANGMAN ────────────────────────────────
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('hangman.pickWord')
+  async handleHangmanPickWord(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; word: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.HANGMAN) {
+        client.emit("game.error", { message: "Not a Hangman game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.hangmanService.pickWord(body.gameId, user.sub, body.word);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.hangmanService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('hangman.guess')
+  async handleHangmanGuess(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; letter?: string; word?: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.HANGMAN) {
+        client.emit("game.error", { message: "Not a Hangman game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      let result: any;
+      if (body.word) {
+        result = await this.hangmanService.guessWord(body.gameId, user.sub, body.word);
+      } else if (body.letter) {
+        result = await this.hangmanService.guessLetter(body.gameId, user.sub, body.letter);
+      } else {
+        client.emit("game.error", { message: "Must provide letter or word" });
+        return;
+      }
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.hangmanService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  // ─── Word Game: GHOST ────────────────────────────────
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('ghost.addLetter')
+  async handleGhostAddLetter(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; letter: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.GHOST) {
+        client.emit("game.error", { message: "Not a Ghost game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.ghostService.addLetter(body.gameId, user.sub, body.letter);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      this.server.to(roomKey).emit("game.stateUpdate", {
+        gameId: body.gameId,
+        state: result.state,
+      });
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('ghost.challenge')
+  async handleGhostChallenge(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.GHOST) {
+        client.emit("game.error", { message: "Not a Ghost game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.ghostService.challenge(body.gameId, user.sub);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      this.server.to(roomKey).emit("game.stateUpdate", {
+        gameId: body.gameId,
+        state: result.state,
+      });
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('ghost.respond')
+  async handleGhostRespond(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; word: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.GHOST) {
+        client.emit("game.error", { message: "Not a Ghost game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.ghostService.respondToChallenge(body.gameId, user.sub, body.word);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      this.server.to(roomKey).emit("game.stateUpdate", {
+        gameId: body.gameId,
+        state: result.state,
+      });
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  // ─── Word Game: WORDLE ────────────────────────────────
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('wordle.guess')
+  async handleWordleGuess(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; word: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.WORDLE) {
+        client.emit("game.error", { message: "Not a Wordle game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.wordleService.submitGuess(body.gameId, user.sub, body.word);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.wordleService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  // ─── Word Game: JOTTO ────────────────────────────────
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('jotto.pickWord')
+  async handleJottoPickWord(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; word: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.JOTTO) {
+        client.emit("game.error", { message: "Not a Jotto game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.jottoService.pickWord(body.gameId, user.sub, body.word);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.jottoService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('jotto.guess')
+  async handleJottoGuess(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; word: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.JOTTO) {
+        client.emit("game.error", { message: "Not a Jotto game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.jottoService.submitGuess(body.gameId, user.sub, body.word);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.jottoService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  // ─── Word Game: SPELLING BEE ────────────────────────────────
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('spellingBee.submit')
+  async handleSpellingBeeSubmit(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; word: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.SPELLING_BEE) {
+        client.emit("game.error", { message: "Not a Spelling Bee game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.spellingBeeService.submitWord(body.gameId, user.sub, body.word);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.spellingBeeService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('spellingBee.endGame')
+  async handleSpellingBeeEnd(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.SPELLING_BEE) {
+        client.emit("game.error", { message: "Not a Spelling Bee game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.spellingBeeService.endGame(body.gameId);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.spellingBeeService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "time"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  // ─── Word Game: LETTER BOXED ────────────────────────────────
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('letterBoxed.submit')
+  async handleLetterBoxedSubmit(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; word: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.LETTER_BOXED) {
+        client.emit("game.error", { message: "Not a Letter Boxed game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.letterBoxedService.submitWord(body.gameId, user.sub, body.word);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      this.server.to(roomKey).emit("game.stateUpdate", {
+        gameId: body.gameId,
+        state: result.state,
+      });
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  // ─── Word Game: BOGGLE ────────────────────────────────
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('boggle.submit')
+  async handleBoggleSubmit(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; word: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.BOGGLE) {
+        client.emit("game.error", { message: "Not a Boggle game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.boggleService.submitWord(body.gameId, user.sub, body.word);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.boggleService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+
+      if (result.gameEnded) {
+        const timer = this.boggleTimers.get(body.gameId);
+        if (timer) {
+          clearTimeout(timer);
+          this.boggleTimers.delete(body.gameId);
+        }
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "time"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  // ─── Word Game: SCATTERGORIES ────────────────────────────────
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('scattergories.submit')
+  async handleScattergoriesSubmit(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; answers: Record<string, string> }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.SCATTERGORIES) {
+        client.emit("game.error", { message: "Not a Scattergories game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.scattergoriesService.submitAnswers(body.gameId, user.sub, body.answers);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      // If both submitted, auto-score the round
+      if (result.allSubmitted) {
+        const scoreResult = await this.scattergoriesService.scoreRound(body.gameId);
+        if (scoreResult?.state) {
+          this.server.to(roomKey).emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: scoreResult.state,
+          });
+
+          if (scoreResult.gameEnded) {
+            this.server.to(roomKey).emit("game.end", {
+              gameId: body.gameId,
+              winnerId: scoreResult.winner ?? null,
+              isDraw: scoreResult.isDraw ?? false,
+              reason: scoreResult.winner ? "win" : (scoreResult.isDraw ? "draw" : "loss"),
+              finalState: scoreResult.state,
+            });
+          }
+          return;
+        }
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.scattergoriesService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('scattergories.nextRound')
+  async handleScattergoriesNextRound(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.SCATTERGORIES) {
+        client.emit("game.error", { message: "Not a Scattergories game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.scattergoriesService.nextRound(body.gameId);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.scattergoriesService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  // ─── Word Game: SCRABBLE ────────────────────────────────
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('scrabble.place')
+  async handleScrabblePlace(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; placements: { row: number; col: number; letter: string; isBlank?: boolean }[] }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.SCRABBLE_GAME) {
+        client.emit("game.error", { message: "Not a Scrabble game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const placements = body.placements.map(p => ({ ...p, isBlank: p.isBlank ?? false }));
+      const result = await this.scrabbleService.placeTiles(body.gameId, user.sub, placements);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.scrabbleService.sanitizeStateForPlayer(result.state, su.sub),
+          });
+        }
+      }
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('scrabble.exchange')
+  async handleScrabbleExchange(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; tileIndices: number[] }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.SCRABBLE_GAME) {
+        client.emit("game.error", { message: "Not a Scrabble game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.scrabbleService.exchangeTiles(body.gameId, user.sub, body.tileIndices);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.scrabbleService.sanitizeStateForPlayer(result.state, su.sub),
+          });
+        }
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('scrabble.pass')
+  async handleScrabblePass(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.SCRABBLE_GAME) {
+        client.emit("game.error", { message: "Not a Scrabble game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.scrabbleService.passTurn(body.gameId, user.sub);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.scrabbleService.sanitizeStateForPlayer(result.state, su.sub),
+          });
+        }
+      }
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('scrabble.challenge')
+  async handleScrabbleChallenge(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.SCRABBLE_GAME) {
+        client.emit("game.error", { message: "Not a Scrabble game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.scrabbleService.challenge(body.gameId, user.sub);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.scrabbleService.sanitizeStateForPlayer(result.state, su.sub),
+          });
+        }
+      }
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  // ─── Word Game: BANANAGRAMS ────────────────────────────────
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('bananagrams.updateGrid')
+  async handleBananagramsUpdateGrid(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; placements: any[] }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.BANANAGRAMS) {
+        client.emit("game.error", { message: "Not a Bananagrams game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.bananagramsService.updateGrid(body.gameId, user.sub, body.placements);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.bananagramsService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('bananagrams.peel')
+  async handleBananagramsPeel(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.BANANAGRAMS) {
+        client.emit("game.error", { message: "Not a Bananagrams game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.bananagramsService.peel(body.gameId, user.sub);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      // Peel gives both players a new tile - send per-player state
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.bananagramsService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('bananagrams.dump')
+  async handleBananagramsDump(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string; letterIndex: number }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.BANANAGRAMS) {
+        client.emit("game.error", { message: "Not a Bananagrams game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.bananagramsService.dump(body.gameId, user.sub, body.letterIndex);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.bananagramsService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('bananagrams.bananas')
+  async handleBananagramsBananas(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { gameId: string }
+  ) {
+    const user = (client as any).user;
+    try {
+      const game = await this.gamesService.getGame(body.gameId);
+      if (game.type !== GameType.BANANAGRAMS) {
+        client.emit("game.error", { message: "Not a Bananagrams game" });
+        return;
+      }
+      this.assertPlayerInGame(game, user.sub);
+      const roomKey = game.sessionId ? `session:${game.sessionId}` : `game:${body.gameId}`;
+
+      const result = await this.bananagramsService.callBananas(body.gameId, user.sub);
+
+      if (!result.success) {
+        client.emit("game.error", { message: result.error });
+        return;
+      }
+
+      const sockets = await this.server.in(roomKey).fetchSockets();
+      for (const s of sockets) {
+        const su = (s as any).user;
+        if (su) {
+          s.emit("game.stateUpdate", {
+            gameId: body.gameId,
+            state: this.bananagramsService.sanitizeStateForPlayer(result.state!, su.sub),
+          });
+        }
+      }
+
+      if (result.gameEnded) {
+        this.server.to(roomKey).emit("game.end", {
+          gameId: body.gameId,
+          winnerId: result.winner ?? null,
+          isDraw: result.isDraw ?? false,
+          reason: result.winner ? "win" : (result.isDraw ? "draw" : "loss"),
+          finalState: result.state,
+        });
+      }
+    } catch (error: any) {
+      client.emit("game.error", { message: error.message || "Game error" });
     }
   }
 }

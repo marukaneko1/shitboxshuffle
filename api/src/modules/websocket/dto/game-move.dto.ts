@@ -34,8 +34,8 @@ export class GameMoveDto {
   promotionPiece?: PieceType;
 
   @IsOptional()
-  @IsIn(['play', 'draw'])
-  unoMoveType?: 'play' | 'draw';
+  @IsIn(['play', 'draw', 'pass'])
+  unoMoveType?: 'play' | 'draw' | 'pass';
 
   @IsOptional()
   @IsNumber()

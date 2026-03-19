@@ -12,15 +12,13 @@ export class WsJwtGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const client: Socket = context.switchToWs().getClient<Socket>();
     
-    // Try multiple ways to get the token
     const token =
       client.handshake.auth?.token ||
       client.handshake.query?.token ||
-      (client.handshake.headers?.authorization as string)?.replace(/^Bearer\s+/, "") ||
-      (client.handshake.headers?.authorization as string)?.replace(/^bearer\s+/, "");
+      (client.handshake.headers?.authorization as string)?.replace(/^bearer\s+/i, "");
 
     if (!token || typeof token !== "string") {
-      this.logger.warn(`[WEBSOCKET AUTH] Missing access token. Auth object: ${JSON.stringify(client.handshake.auth)}, Query: ${JSON.stringify(client.handshake.query)}, Headers: ${JSON.stringify(Object.keys(client.handshake.headers))}`);
+      this.logger.warn(`[WEBSOCKET AUTH] Missing access token. Headers: ${JSON.stringify(Object.keys(client.handshake.headers))}`);
       throw new UnauthorizedException("Missing access token");
     }
 

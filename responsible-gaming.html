@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsible Gaming — Shitbox Shuffle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400;1,900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --void: #030303;
+  --ink: #141210;
+  --smoke: #1c1a17;
+  --ember: #c9a227;
+  --flame: #e8c547;
+  --blood: #8b2020;
+  --crimson: #c23636;
+  --bone: #e8e0d0;
+  --chalk: #f5f0e6;
+  --dust: rgba(232,224,208,0.7);
+  --ash: rgba(232,224,208,0.4);
+  --ghost: rgba(232,224,208,0.15);
+  --phantom: rgba(232,224,208,0.06);
+}
+
+html { background: var(--void); scroll-behavior: smooth; }
+body {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  background: var(--void);
+  color: var(--bone);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+::selection { background: var(--ember); color: var(--void); }
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: stretch;
+  height: 70px;
+  background: rgba(3,3,3,0.92);
+  border-bottom: 1px solid var(--phantom);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  text-decoration: none;
+  border-right: 1px solid var(--phantom);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-logo::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--ember);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+
+.nav-logo:hover::before { transform: scaleX(1); }
+
+.logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.15em;
+  color: var(--chalk);
+}
+
+.logo-text .amp {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ember);
+  margin: 0 2px;
+}
+
+.nav-spacer { flex: 1; }
+
+.nav-enter {
+  display: flex;
+  align-items: center;
+  padding: 0 36px;
+  background: var(--ember);
+  color: var(--void);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+
+.nav-enter:hover { background: var(--flame); letter-spacing: 0.25em; }
+
+.page-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 140px 40px 100px;
+}
+
+.page-overline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-overline::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ember));
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.page-sub {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 16px;
+  font-style: italic;
+  color: var(--dust);
+  line-height: 1.8;
+  margin-bottom: 60px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--phantom);
+  max-width: 560px;
+}
+
+.gold-divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ember), var(--flame));
+  margin-bottom: 60px;
+}
+
+.content-section {
+  margin-bottom: 52px;
+}
+
+.content-section h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.15em;
+  color: var(--ember);
+  margin-bottom: 16px;
+}
+
+.content-section p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--dust);
+  margin-bottom: 14px;
+}
+
+.content-section ul {
+  padding-left: 20px;
+  margin-bottom: 14px;
+}
+
+.content-section ul li {
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--dust);
+  margin-bottom: 8px;
+}
+
+.content-section ul li::marker {
+  color: var(--ember);
+}
+
+.warning-box {
+  border: 1px solid rgba(139,32,32,0.4);
+  border-left: 3px solid var(--crimson);
+  background: rgba(139,32,32,0.08);
+  padding: 20px 24px;
+  margin-bottom: 52px;
+}
+
+.warning-box h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.15em;
+  color: var(--crimson);
+  margin-bottom: 10px;
+}
+
+.warning-box p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--dust);
+  margin-bottom: 0;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 52px;
+}
+
+.tool-card {
+  border: 1px solid var(--phantom);
+  border-top: 2px solid var(--ember);
+  padding: 28px 24px;
+  background: var(--phantom);
+}
+
+.tool-card h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  color: var(--chalk);
+  margin-bottom: 10px;
+}
+
+.tool-card p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--dust);
+  margin-bottom: 20px;
+}
+
+.tool-card .tool-btn {
+  display: inline-block;
+  padding: 10px 24px;
+  background: none;
+  border: 1px solid var(--ember);
+  color: var(--ember);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.tool-card .tool-btn:hover {
+  background: var(--ember);
+  color: var(--void);
+}
+
+.quiz-block {
+  border: 1px solid var(--phantom);
+  padding: 40px;
+  background: var(--phantom);
+  margin-bottom: 52px;
+}
+
+.quiz-block h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.15em;
+  color: var(--chalk);
+  margin-bottom: 8px;
+}
+
+.quiz-block p {
+  font-size: 14px;
+  color: var(--dust);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.quiz-question {
+  margin-bottom: 20px;
+}
+
+.quiz-question p {
+  font-size: 14px;
+  color: var(--bone);
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.quiz-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.quiz-opt {
+  padding: 10px 20px;
+  border: 1px solid var(--ghost);
+  background: none;
+  color: var(--ash);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quiz-opt:hover,
+.quiz-opt.selected {
+  border-color: var(--ember);
+  color: var(--ember);
+  background: rgba(201,162,39,0.06);
+}
+
+.quiz-result {
+  margin-top: 24px;
+  padding: 20px;
+  display: none;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--dust);
+}
+
+.quiz-result.low { border-left: 3px solid #4ade80; background: rgba(74,222,128,0.06); }
+.quiz-result.medium { border-left: 3px solid var(--ember); background: rgba(201,162,39,0.06); }
+.quiz-result.high { border-left: 3px solid var(--crimson); background: rgba(194,54,54,0.06); }
+
+.btn-check {
+  margin-top: 24px;
+  padding: 14px 36px;
+  background: var(--ember);
+  color: var(--void);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-check:hover { background: var(--flame); }
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.resource-link {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 24px;
+  border: 1px solid var(--phantom);
+  text-decoration: none;
+  transition: border-color 0.3s;
+}
+
+.resource-link:hover { border-color: var(--ember); }
+
+.resource-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.12em;
+  color: var(--chalk);
+}
+
+.resource-desc {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--ash);
+  text-transform: uppercase;
+}
+
+.resource-url {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--ember);
+  margin-top: 4px;
+}
+
+footer {
+  margin-top: 100px;
+  padding: 40px;
+  border-top: 1px solid var(--phantom);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-wordmark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  color: var(--ash);
+}
+
+.footer-links {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ash);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover { color: var(--ember); }
+.footer-links a.active { color: var(--ember); }
+
+.footer-copy {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(232,224,208,0.25);
+}
+
+@media (max-width: 768px) {
+  nav { height: 60px; }
+  .nav-logo { padding: 0 20px; }
+  .nav-enter { padding: 0 24px; font-size: 12px; }
+  .page-wrap { padding: 110px 24px 80px; }
+  .tools-grid { grid-template-columns: 1fr; }
+  .resources-grid { grid-template-columns: 1fr; }
+  .quiz-block { padding: 24px 20px; }
+  footer { flex-direction: column; text-align: center; padding: 32px 24px; }
+  .footer-links { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo" aria-label="Shitbox Shuffle home">
+    <span class="logo-text">SHITBOX <span class="amp">&</span> SHUFFLE</span>
+  </a>
+  <div class="nav-spacer"></div>
+  <a href="shitboxshuffle.html" class="nav-enter">ENTER THE ROOM</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-overline">Player Safety</div>
+  <h1>Responsible Gaming</h1>
+  <p class="page-sub">Shitbox Shuffle is entertainment. We want you to play within your means, know your limits, and leave the table when the game stops being fun.</p>
+  <div class="gold-divider"></div>
+
+  <div class="warning-box">
+    <h3>⚠ Need Help Now?</h3>
+    <p>If you or someone you know is struggling with problem gambling, call the <strong style="color: var(--bone);">National Problem Gambling Helpline: 1-800-522-4700</strong> (24/7, free, confidential). Text "HELLO" to 522-4700 or chat at <strong style="color: var(--bone);">ncpgambling.org/chat</strong>.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Play Within Your Limits</h2>
+    <p>Gambling should never be a way to make money or escape problems. Before you play, decide how much you can afford to lose and treat that as the cost of entertainment — not an investment.</p>
+    <ul>
+      <li>Set a strict budget before each session and stop when it's gone</li>
+      <li>Never chase losses — a losing streak doesn't guarantee a win</li>
+      <li>Don't play under the influence of alcohol or when emotionally distressed</li>
+      <li>Take regular breaks — sustained play impairs decision-making</li>
+      <li>Keep gambling separate from money for bills, food, and rent</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Signs of Problem Gambling</h2>
+    <p>Problem gambling can develop gradually. Watch for these warning signs in yourself or others:</p>
+    <ul>
+      <li>Spending more time or money gambling than intended</li>
+      <li>Feeling restless or irritable when trying to cut back</li>
+      <li>Gambling to escape stress, anxiety, or depression</li>
+      <li>Lying to friends or family about gambling activity</li>
+      <li>Borrowing money or selling possessions to gamble</li>
+      <li>Failed attempts to stop or control gambling</li>
+    </ul>
+  </div>
+
+  <div class="quiz-block">
+    <h2>Quick Self-Check</h2>
+    <p>Answer honestly. This isn't a clinical assessment, but it may help you reflect on your habits.</p>
+
+    <div class="quiz-question" data-q="0">
+      <p>In the past month, have you spent more than you planned to on Shitbox Shuffle?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-val="0">Never</button>
+        <button class="quiz-opt" data-val="1">Sometimes</button>
+        <button class="quiz-opt" data-val="2">Often</button>
+      </div>
+    </div>
+
+    <div class="quiz-question" data-q="1">
+      <p>Have you ever gambled to recover money you previously lost?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-val="0">No</button>
+        <button class="quiz-opt" data-val="1">Once or twice</button>
+        <button class="quiz-opt" data-val="2">Yes, regularly</button>
+      </div>
+    </div>
+
+    <div class="quiz-question" data-q="2">
+      <p>Has gambling ever interfered with work, school, or personal relationships?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-val="0">No</button>
+        <button class="quiz-opt" data-val="1">Slightly</button>
+        <button class="quiz-opt" data-val="2">Significantly</button>
+      </div>
+    </div>
+
+    <button class="btn-check" onclick="checkQuiz()">CHECK MY SCORE</button>
+
+    <div class="quiz-result low" id="quizLow">
+      <strong style="color: #4ade80;">Low risk.</strong> Your responses suggest healthy gambling habits. Continue setting limits and playing responsibly.
+    </div>
+    <div class="quiz-result medium" id="quizMed">
+      <strong style="color: var(--ember);">Moderate concern.</strong> Some of your responses suggest potential risk. Consider using our deposit limits or taking a break. Our <a href="support.html" style="color: var(--ember);">Support</a> team is available if you want to talk.
+    </div>
+    <div class="quiz-result high" id="quizHigh">
+      <strong style="color: var(--crimson);">Please seek help.</strong> Your responses suggest a serious concern. We strongly encourage you to use our self-exclusion tool and reach out to the National Problem Gambling Helpline at <strong style="color: var(--bone);">1-800-522-4700</strong>.
+    </div>
+  </div>
+
+  <div class="content-section">
+    <h2>Tools We Provide</h2>
+    <p>Your account dashboard gives you direct access to these controls at any time:</p>
+  </div>
+
+  <div class="tools-grid">
+    <div class="tool-card">
+      <h3>Deposit Limits</h3>
+      <p>Set daily, weekly, or monthly deposit caps. Limits take effect immediately and can only be decreased in real-time — increases require a 72-hour cooling-off period.</p>
+      <a href="shitboxshuffle.html" class="tool-btn">Set Limits</a>
+    </div>
+    <div class="tool-card">
+      <h3>Session Reminders</h3>
+      <p>Enable pop-up reminders every 30, 60, or 90 minutes of continuous play. A brief break can help you reassess your session with a clear head.</p>
+      <a href="shitboxshuffle.html" class="tool-btn">Configure</a>
+    </div>
+    <div class="tool-card">
+      <h3>Take a Break</h3>
+      <p>Lock your account for 24 hours, 7 days, or 30 days. During a break, you cannot deposit, wager, or enter matches. Your balance is preserved.</p>
+      <a href="support.html" class="tool-btn">Request Break</a>
+    </div>
+    <div class="tool-card">
+      <h3>Self-Exclusion</h3>
+      <p>Permanently close your account and block access for a minimum of 12 months. This cannot be reversed during the exclusion period. Contact support to request self-exclusion.</p>
+      <a href="support.html" class="tool-btn">Self-Exclude</a>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <h2>External Resources</h2>
+    <p>These organizations offer free, confidential help for problem gambling:</p>
+  </div>
+
+  <div class="resources-grid">
+    <a class="resource-link" href="https://www.ncpgambling.org" target="_blank" rel="noopener noreferrer">
+      <span class="resource-name">National Council on Problem Gambling</span>
+      <span class="resource-desc">Helpline, resources & treatment locator</span>
+      <span class="resource-url">ncpgambling.org · 1-800-522-4700</span>
+    </a>
+    <a class="resource-link" href="https://www.gamblersinanonymous.org" target="_blank" rel="noopener noreferrer">
+      <span class="resource-name">Gamblers Anonymous</span>
+      <span class="resource-desc">12-step recovery program & local meetings</span>
+      <span class="resource-url">gamblersinanonymous.org</span>
+    </a>
+    <a class="resource-link" href="https://www.gamtalk.org" target="_blank" rel="noopener noreferrer">
+      <span class="resource-name">GamTalk</span>
+      <span class="resource-desc">24/7 online peer support forum</span>
+      <span class="resource-url">gamtalk.org</span>
+    </a>
+    <a class="resource-link" href="https://www.bettor.help" target="_blank" rel="noopener noreferrer">
+      <span class="resource-name">Bettor.help</span>
+      <span class="resource-desc">Find treatment & support by state</span>
+      <span class="resource-url">bettor.help</span>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-wordmark">SHITBOX SHUFFLE</div>
+  <div class="footer-links">
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="support.html">Support</a>
+    <a href="responsible-gaming.html" class="active">Responsible Gaming</a>
+  </div>
+  <span class="footer-copy">© 2026 Shitbox Shuffle</span>
+</footer>
+
+<script>
+const answers = {};
+
+document.querySelectorAll('.quiz-opt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const q = btn.closest('.quiz-question').dataset.q;
+    btn.closest('.quiz-options').querySelectorAll('.quiz-opt').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[q] = parseInt(btn.dataset.val);
+    ['quizLow','quizMed','quizHigh'].forEach(id => document.getElementById(id).style.display = 'none');
+  });
+});
+
+function checkQuiz() {
+  if (Object.keys(answers).length < 3) {
+    alert('Please answer all three questions first.');
+    return;
+  }
+  const total = Object.values(answers).reduce((a, b) => a + b, 0);
+  ['quizLow','quizMed','quizHigh'].forEach(id => document.getElementById(id).style.display = 'none');
+  let resultId;
+  if (total <= 1) resultId = 'quizLow';
+  else if (total <= 3) resultId = 'quizMed';
+  else resultId = 'quizHigh';
+  const el = document.getElementById(resultId);
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+
+</body>
+</html>

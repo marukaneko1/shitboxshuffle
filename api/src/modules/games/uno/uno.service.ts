@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { GameStatus } from '@prisma/client';
 import {
@@ -149,7 +149,7 @@ export class UnoService {
   async makeMove(
     gameId: string,
     userId: string,
-    move: { type: 'play' | 'draw'; cardId?: number; chosenColor?: UnoColor },
+    move: { type: 'play' | 'draw' | 'pass'; cardId?: number; chosenColor?: UnoColor },
   ): Promise<UnoMoveResult> {
     const game = await this.prisma.game.findUnique({
       where: { id: gameId },
@@ -161,7 +161,7 @@ export class UnoService {
 
     const state = game.state as unknown as UnoState;
     if (!state) return { success: false, error: 'Invalid game state' };
-    if (state.phase !== 'play') return { success: false, error: 'Game is over' };
+    if (state.phase !== 'play' && state.phase !== 'draw_play_or_pass') return { success: false, error: 'Game is over' };
     if (state.currentTurn !== userId) return { success: false, error: "It's not your turn" };
 
     const hand = state.hands[userId];
@@ -170,7 +170,18 @@ export class UnoService {
     const opponentId = state.playerOrder.find(p => p !== userId)!;
 
     if (move.type === 'draw') {
+      if (state.phase === 'draw_play_or_pass') return { success: false, error: 'You already drew — play the card or pass' };
       return this.handleDraw(gameId, userId, opponentId, state);
+    }
+
+    if (move.type === 'pass') {
+      if (state.phase !== 'draw_play_or_pass') return { success: false, error: 'You can only pass after drawing' };
+      const newState: UnoState = JSON.parse(JSON.stringify(state));
+      newState.phase = 'play';
+      newState.currentTurn = opponentId;
+      newState.lastAction = `${userId} passed after drawing`;
+      await this.prisma.game.update({ where: { id: gameId }, data: { state: newState as any } });
+      return { success: true, state: newState, winner: null, isDraw: false };
     }
 
     if (move.type === 'play') {
@@ -195,18 +206,20 @@ export class UnoService {
     }
 
     if (newState.drawPile.length === 0) {
-      // Extremely rare: no cards anywhere — pass turn
       newState.currentTurn = opponentId;
       newState.lastAction = `${userId} could not draw (empty deck) — turn passed`;
     } else {
       const drawn = newState.drawPile.pop()!;
       hand.push(drawn);
 
-      // If the drawn card is playable, player may play it — handled client side.
-      // Server just records the draw and passes turn if it's not immediately played.
-      // (Player must send a separate 'play' move if they choose to play it.)
-      newState.currentTurn = opponentId;
-      newState.lastAction = `${userId} drew a card`;
+      if (this.canPlay(drawn, newState)) {
+        newState.phase = 'draw_play_or_pass';
+        newState.lastAction = `${userId} drew a playable card — may play it or pass`;
+        newState.drawCount = (newState.drawCount || 0) + 1;
+      } else {
+        newState.currentTurn = opponentId;
+        newState.lastAction = `${userId} drew a card`;
+      }
     }
 
     await this.prisma.game.update({ where: { id: gameId }, data: { state: newState as any } });
@@ -222,6 +235,7 @@ export class UnoService {
     chosenColor?: UnoColor,
   ): Promise<UnoMoveResult> {
     const newState: UnoState = JSON.parse(JSON.stringify(state));
+    if (newState.phase === 'draw_play_or_pass') newState.phase = 'play';
     const hand = newState.hands[userId];
 
     const cardIdx = hand.findIndex(c => c.id === cardId);
@@ -356,7 +370,7 @@ export class UnoService {
 
   async forfeitGame(gameId: string, userId: string): Promise<UnoGameEndResult> {
     const game = await this.prisma.game.findUnique({ where: { id: gameId }, include: { players: true } });
-    if (!game) throw new Error('Game not found');
+    if (!game) throw new NotFoundException('Game not found');
 
     const state = game.state as unknown as UnoState;
     const opponentId = state.playerOrder.find(p => p !== userId)!;

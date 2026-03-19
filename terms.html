@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — Shitbox Shuffle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400;1,900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --void: #030303;
+  --abyss: #080706;
+  --tar: #0c0b09;
+  --ink: #141210;
+  --smoke: #1c1a17;
+  --ember: #c9a227;
+  --flame: #e8c547;
+  --rust: #8b6914;
+  --bone: #e8e0d0;
+  --chalk: #f5f0e6;
+  --dust: rgba(232,224,208,0.7);
+  --ash: rgba(232,224,208,0.4);
+  --ghost: rgba(232,224,208,0.15);
+  --phantom: rgba(232,224,208,0.06);
+}
+
+html { background: var(--void); scroll-behavior: smooth; }
+body {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  background: var(--void);
+  color: var(--bone);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+::selection { background: var(--ember); color: var(--void); }
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: stretch;
+  height: 70px;
+  background: rgba(3,3,3,0.92);
+  border-bottom: 1px solid var(--phantom);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  text-decoration: none;
+  border-right: 1px solid var(--phantom);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-logo::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--ember);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+
+.nav-logo:hover::before { transform: scaleX(1); }
+
+.logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.15em;
+  color: var(--chalk);
+}
+
+.logo-text .amp {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ember);
+  margin: 0 2px;
+}
+
+.nav-spacer { flex: 1; }
+
+.nav-enter {
+  display: flex;
+  align-items: center;
+  padding: 0 36px;
+  background: var(--ember);
+  color: var(--void);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+
+.nav-enter:hover { background: var(--flame); letter-spacing: 0.25em; }
+
+.page-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 140px 40px 100px;
+}
+
+.page-overline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-overline::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ember));
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.page-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ash);
+  text-transform: uppercase;
+  margin-bottom: 60px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--phantom);
+}
+
+.gold-divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ember), var(--flame));
+  margin-bottom: 60px;
+}
+
+.content-section {
+  margin-bottom: 52px;
+}
+
+.content-section h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.15em;
+  color: var(--ember);
+  margin-bottom: 16px;
+}
+
+.content-section p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--dust);
+  margin-bottom: 14px;
+}
+
+.content-section ul {
+  padding-left: 20px;
+  margin-bottom: 14px;
+}
+
+.content-section ul li {
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--dust);
+  margin-bottom: 8px;
+}
+
+.content-section ul li::marker {
+  color: var(--ember);
+}
+
+footer {
+  margin-top: 100px;
+  padding: 40px;
+  border-top: 1px solid var(--phantom);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-wordmark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  color: var(--ash);
+}
+
+.footer-links {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ash);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover { color: var(--ember); }
+.footer-links a.active { color: var(--ember); }
+
+.footer-copy {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(232,224,208,0.25);
+}
+
+@media (max-width: 768px) {
+  nav { height: 60px; }
+  .nav-logo { padding: 0 20px; }
+  .nav-enter { padding: 0 24px; font-size: 12px; }
+  .page-wrap { padding: 110px 24px 80px; }
+  footer { flex-direction: column; text-align: center; padding: 32px 24px; }
+  .footer-links { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo" aria-label="Shitbox Shuffle home">
+    <span class="logo-text">SHITBOX <span class="amp">&</span> SHUFFLE</span>
+  </a>
+  <div class="nav-spacer"></div>
+  <a href="shitboxshuffle.html" class="nav-enter">ENTER THE ROOM</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-overline">Legal</div>
+  <h1>Terms of Service</h1>
+  <p class="page-date">Last updated: March 2026</p>
+  <div class="gold-divider"></div>
+
+  <div class="content-section">
+    <h2>1. Acceptance of Terms</h2>
+    <p>By accessing or using Shitbox Shuffle ("the Service"), you agree to be bound by these Terms of Service. If you do not agree to all of these terms, you may not use the Service.</p>
+    <p>We reserve the right to update these terms at any time. Continued use of the Service after changes constitutes acceptance of the revised terms.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>2. Eligibility</h2>
+    <p>You must be at least 18 years of age to use Shitbox Shuffle. By using the Service, you represent and warrant that you:</p>
+    <ul>
+      <li>Are 18 years of age or older</li>
+      <li>Are a legal resident of the United States</li>
+      <li>Are legally permitted to participate in wagering activities in your jurisdiction</li>
+      <li>Are not on any self-exclusion list or otherwise prohibited from gambling</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>3. Account Registration</h2>
+    <p>You must create an account to use the Service. You are responsible for maintaining the confidentiality of your account credentials and for all activity that occurs under your account.</p>
+    <p>You agree to provide accurate, current, and complete information during registration and to keep this information up to date. We reserve the right to suspend or terminate accounts that contain false information.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>4. Wagering Rules</h2>
+    <p>All wagers are final once a game begins. Shitbox Shuffle acts as the platform facilitating wagers between matched players. By placing a wager, you acknowledge:</p>
+    <ul>
+      <li>Wager amounts are deducted from your wallet balance at match start</li>
+      <li>Winnings are credited to your wallet upon game completion</li>
+      <li>The platform fee is disclosed prior to each match</li>
+      <li>Disputes are resolved at Shitbox Shuffle's sole discretion</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>5. Prohibited Conduct</h2>
+    <p>You agree not to:</p>
+    <ul>
+      <li>Use bots, scripts, or automated tools during gameplay</li>
+      <li>Collude with other players to manipulate outcomes</li>
+      <li>Harass, threaten, or abuse other players via the video or chat features</li>
+      <li>Attempt to circumvent our matching, wagering, or payout systems</li>
+      <li>Use the Service for any unlawful purpose</li>
+    </ul>
+    <p>Violations may result in immediate account termination and forfeiture of wallet balance.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>6. Camera & Video</h2>
+    <p>The Service requires camera access to participate in matches. By enabling your camera, you consent to video transmission to your matched opponent during an active session. Video is not recorded or stored by Shitbox Shuffle.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>7. Withdrawals & Payments</h2>
+    <p>Wallet balances may be withdrawn subject to identity verification. Minimum withdrawal amounts, processing times, and applicable fees are outlined in your account settings. We reserve the right to delay withdrawals pending fraud review.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>8. Limitation of Liability</h2>
+    <p>Shitbox Shuffle is provided "as is" without warranty of any kind. To the maximum extent permitted by law, we disclaim all liability for losses arising from your use of the Service, including but not limited to wagering losses, technical failures, or unauthorized account access.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>9. Governing Law</h2>
+    <p>These terms are governed by the laws of the United States. Any disputes shall be resolved through binding arbitration in accordance with the rules of the American Arbitration Association.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>10. Contact</h2>
+    <p>Questions about these terms? Reach us at <a href="support.html" style="color: var(--ember); text-decoration: none;">Support</a>.</p>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-wordmark">SHITBOX SHUFFLE</div>
+  <div class="footer-links">
+    <a href="terms.html" class="active">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="support.html">Support</a>
+    <a href="responsible-gaming.html">Responsible Gaming</a>
+  </div>
+  <span class="footer-copy">© 2026 Shitbox Shuffle</span>
+</footer>
+
+</body>
+</html>

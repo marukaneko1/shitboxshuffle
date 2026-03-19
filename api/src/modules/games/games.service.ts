@@ -15,6 +15,20 @@ import { UnoService } from "./uno/uno.service";
 import { GeoGuesserService } from "./geoguesser/geoguesser.service";
 import { TanksService } from "./tanks/tanks.service";
 import { PenguinKnockoutService } from "./penguin-knockout/penguin-knockout.service";
+import { BlackjackService } from "./blackjack/blackjack.service";
+import { BsService } from "./bs/bs.service";
+import { HangmanService } from "./word-games/hangman/hangman.service";
+import { GhostService } from "./word-games/ghost/ghost.service";
+import { WordleService } from "./word-games/wordle/wordle.service";
+import { JottoService } from "./word-games/jotto/jotto.service";
+import { SpellingBeeService } from "./word-games/spelling-bee/spelling-bee.service";
+import { LetterBoxedService } from "./word-games/letter-boxed/letter-boxed.service";
+import { BoggleService } from "./word-games/boggle/boggle.service";
+import { ScattergoriesService } from "./word-games/scattergories/scattergories.service";
+import { ScrabbleService } from "./word-games/scrabble/scrabble.service";
+import { BananagramsService } from "./word-games/bananagrams/bananagrams.service";
+import { MonopolyService } from "./monopoly/monopoly.service";
+import { SpinTheWheelService } from "./spin-the-wheel/spin-the-wheel.service";
 
 @Injectable()
 export class GamesService {
@@ -33,16 +47,37 @@ export class GamesService {
     private readonly unoService: UnoService,
     private readonly geoGuesserService: GeoGuesserService,
     private readonly tanksService: TanksService,
-    private readonly penguinKnockoutService: PenguinKnockoutService
+    private readonly penguinKnockoutService: PenguinKnockoutService,
+    private readonly blackjackService: BlackjackService,
+    private readonly bsService: BsService,
+    private readonly hangmanService: HangmanService,
+    private readonly ghostService: GhostService,
+    private readonly wordleService: WordleService,
+    private readonly jottoService: JottoService,
+    private readonly spellingBeeService: SpellingBeeService,
+    private readonly letterBoxedService: LetterBoxedService,
+    private readonly boggleService: BoggleService,
+    private readonly scattergoriesService: ScattergoriesService,
+    private readonly scrabbleService: ScrabbleService,
+    private readonly bananagramsService: BananagramsService,
+    private readonly monopolyService: MonopolyService,
+    private readonly spinTheWheelService: SpinTheWheelService,
   ) {}
 
+  private fisherYatesShuffle<T>(arr: T[]): T[] {
+    const result = [...arr];
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  }
+
   async createGame(sessionId: string, type: GameType, playerIds: string[]) {
-    // Determine side assignment based on game type
     let sideMappings: { userId: string; side: string }[];
     
     if (type === GameType.CHESS) {
-      // For chess, randomly assign white/black
-      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      const shuffled = this.fisherYatesShuffle(playerIds);
       sideMappings = [
         { userId: shuffled[0], side: "white" },
         { userId: shuffled[1], side: "black" }
@@ -79,27 +114,27 @@ export class GamesService {
       }));
     } else if (type === GameType.CONNECT_FOUR) {
       // Randomly assign R (red, goes first) and Y (yellow)
-      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      const shuffled = this.fisherYatesShuffle(playerIds);
       sideMappings = [
         { userId: shuffled[0], side: "R" },
         { userId: shuffled[1], side: "Y" }
       ];
     } else if (type === GameType.CHECKERS) {
       // Randomly assign B (Black, goes first) and R (Red)
-      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      const shuffled = this.fisherYatesShuffle(playerIds);
       sideMappings = [
         { userId: shuffled[0], side: "B" },
         { userId: shuffled[1], side: "R" }
       ];
     } else if (type === GameType.MEMORY_CARDS) {
       // Randomly assign player1 (goes first) and player2
-      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      const shuffled = this.fisherYatesShuffle(playerIds);
       sideMappings = [
         { userId: shuffled[0], side: "player1" },
         { userId: shuffled[1], side: "player2" }
       ];
     } else if (type === GameType.UNO) {
-      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      const shuffled = this.fisherYatesShuffle(playerIds);
       sideMappings = [
         { userId: shuffled[0], side: "player1" },
         { userId: shuffled[1], side: "player2" }
@@ -115,7 +150,41 @@ export class GamesService {
         side: `player${idx + 1}`
       }));
     } else if (type === GameType.PENGUIN_KNOCKOUT) {
-      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      const shuffled = this.fisherYatesShuffle(playerIds);
+      sideMappings = [
+        { userId: shuffled[0], side: "player1" },
+        { userId: shuffled[1], side: "player2" }
+      ];
+    } else if (type === GameType.BLACKJACK) {
+      sideMappings = playerIds.map((userId, idx) => ({
+        userId,
+        side: `player${idx + 1}`
+      }));
+    } else if (type === GameType.BS) {
+      const shuffled = this.fisherYatesShuffle(playerIds);
+      sideMappings = [
+        { userId: shuffled[0], side: "player1" },
+        { userId: shuffled[1], side: "player2" }
+      ];
+    } else if (type === GameType.SPIN_THE_WHEEL) {
+      sideMappings = playerIds.map((userId, idx) => ({
+        userId,
+        side: `player${idx + 1}`
+      }));
+    } else if (
+      type === GameType.WORDLE || type === GameType.SPELLING_BEE ||
+      type === GameType.LETTER_BOXED || type === GameType.BOGGLE ||
+      type === GameType.HANGMAN || type === GameType.GHOST ||
+      type === GameType.JOTTO || type === GameType.SCATTERGORIES ||
+      type === GameType.SCRABBLE_GAME || type === GameType.BANANAGRAMS
+    ) {
+      const shuffled = this.fisherYatesShuffle(playerIds);
+      sideMappings = [
+        { userId: shuffled[0], side: "player1" },
+        { userId: shuffled[1], side: "player2" }
+      ];
+    } else if (type === GameType.MONOPOLY) {
+      const shuffled = this.fisherYatesShuffle(playerIds);
       sideMappings = [
         { userId: shuffled[0], side: "player1" },
         { userId: shuffled[1], side: "player2" }
@@ -252,6 +321,83 @@ export class GamesService {
       if (!player1 || !player2) throw new BadRequestException("Invalid player configuration for Penguin Knockout");
       state = this.penguinKnockoutService.initializeState(player1, player2);
       this.penguinKnockoutService.setState(game.id, state);
+    } else if (game.type === GameType.SPIN_THE_WHEEL) {
+      const p1 = game.players.find(p => p.side === "player1")?.userId;
+      const p2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!p1 || !p2) throw new BadRequestException("Invalid player configuration for Spin the Wheel");
+      state = this.spinTheWheelService.initializeState(p1, p2);
+      this.spinTheWheelService.setState(game.id, state);
+    } else if (game.type === GameType.BLACKJACK) {
+      const playerIds = game.players.map(p => p.userId);
+      state = this.blackjackService.initializeState(game.id, playerIds);
+      this.blackjackService.setState(game.id, state);
+    } else if (game.type === GameType.BS) {
+      const playerIds = game.players.map(p => p.userId);
+      state = this.bsService.initializeState(game.id, playerIds);
+      this.bsService.setState(game.id, state);
+    } else if (game.type === GameType.HANGMAN) {
+      const p1 = game.players.find(p => p.side === "player1")?.userId;
+      const p2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!p1 || !p2) throw new BadRequestException("Invalid player configuration for Hangman");
+      state = this.hangmanService.initializeState(p1, p2);
+      this.hangmanService.setState(game.id, state);
+    } else if (game.type === GameType.GHOST) {
+      const p1 = game.players.find(p => p.side === "player1")?.userId;
+      const p2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!p1 || !p2) throw new BadRequestException("Invalid player configuration for Ghost");
+      state = this.ghostService.initializeState(p1, p2);
+      this.ghostService.setState(game.id, state);
+    } else if (game.type === GameType.WORDLE) {
+      const p1 = game.players.find(p => p.side === "player1")?.userId;
+      const p2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!p1 || !p2) throw new BadRequestException("Invalid player configuration for Wordle");
+      state = this.wordleService.initializeState(p1, p2);
+      this.wordleService.setState(game.id, state);
+    } else if (game.type === GameType.JOTTO) {
+      const p1 = game.players.find(p => p.side === "player1")?.userId;
+      const p2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!p1 || !p2) throw new BadRequestException("Invalid player configuration for Jotto");
+      state = this.jottoService.initializeState(p1, p2);
+      this.jottoService.setState(game.id, state);
+    } else if (game.type === GameType.SPELLING_BEE) {
+      const p1 = game.players.find(p => p.side === "player1")?.userId;
+      const p2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!p1 || !p2) throw new BadRequestException("Invalid player configuration for Spelling Bee");
+      state = this.spellingBeeService.initializeState(p1, p2);
+      this.spellingBeeService.setState(game.id, state);
+    } else if (game.type === GameType.LETTER_BOXED) {
+      const p1 = game.players.find(p => p.side === "player1")?.userId;
+      const p2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!p1 || !p2) throw new BadRequestException("Invalid player configuration for Letter Boxed");
+      state = this.letterBoxedService.initializeState(p1, p2);
+      this.letterBoxedService.setState(game.id, state);
+    } else if (game.type === GameType.BOGGLE) {
+      const p1 = game.players.find(p => p.side === "player1")?.userId;
+      const p2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!p1 || !p2) throw new BadRequestException("Invalid player configuration for Boggle");
+      state = this.boggleService.initializeState(p1, p2);
+      this.boggleService.setState(game.id, state);
+    } else if (game.type === GameType.SCATTERGORIES) {
+      const p1 = game.players.find(p => p.side === "player1")?.userId;
+      const p2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!p1 || !p2) throw new BadRequestException("Invalid player configuration for Scattergories");
+      state = this.scattergoriesService.initializeState(p1, p2);
+      this.scattergoriesService.setState(game.id, state);
+    } else if (game.type === GameType.SCRABBLE_GAME) {
+      const p1 = game.players.find(p => p.side === "player1")?.userId;
+      const p2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!p1 || !p2) throw new BadRequestException("Invalid player configuration for Scrabble");
+      state = this.scrabbleService.initializeState(p1, p2);
+      this.scrabbleService.setState(game.id, state);
+    } else if (game.type === GameType.BANANAGRAMS) {
+      const p1 = game.players.find(p => p.side === "player1")?.userId;
+      const p2 = game.players.find(p => p.side === "player2")?.userId;
+      if (!p1 || !p2) throw new BadRequestException("Invalid player configuration for Bananagrams");
+      state = this.bananagramsService.initializeState(p1, p2);
+      this.bananagramsService.setState(game.id, state);
+    } else if (game.type === GameType.MONOPOLY) {
+      const playerIds = game.players.map(p => p.userId);
+      state = this.monopolyService.initializeState(game.id, playerIds);
     }
 
     // Update game to active with initial state

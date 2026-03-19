@@ -14,7 +14,24 @@ import {
 
 @Injectable()
 export class ConnectFourService {
+  private gameLocks = new Map<string, Promise<void>>();
+
   constructor(private readonly prisma: PrismaService) {}
+
+  private async withLock<T>(gameId: string, fn: () => Promise<T>): Promise<T> {
+    while (this.gameLocks.has(gameId)) {
+      await this.gameLocks.get(gameId);
+    }
+    let resolve: () => void;
+    const lock = new Promise<void>(r => { resolve = r; });
+    this.gameLocks.set(gameId, lock);
+    try {
+      return await fn();
+    } finally {
+      this.gameLocks.delete(gameId);
+      resolve!();
+    }
+  }
 
   initializeState(playerRId: string, playerYId: string): ConnectFourState {
     const board: C4Board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
@@ -100,6 +117,10 @@ export class ConnectFourService {
   }
 
   async makeMove(gameId: string, userId: string, colIndex: number): Promise<C4MoveResult> {
+    return this.withLock(gameId, () => this.makeMoveInternal(gameId, userId, colIndex));
+  }
+
+  private async makeMoveInternal(gameId: string, userId: string, colIndex: number): Promise<C4MoveResult> {
     const game = await this.prisma.game.findUnique({
       where: { id: gameId },
       include: { players: true }

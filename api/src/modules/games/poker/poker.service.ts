@@ -30,17 +30,25 @@ export class PokerService {
   constructor(private readonly prisma: PrismaService) {}
 
   // Configuration
-  private readonly INITIAL_CHIPS = 1000;
+  private readonly INITIAL_CHIPS = 500;
   private readonly SMALL_BLIND = 10;
   private readonly BIG_BLIND = 20;
   private readonly MIN_BUY_IN = 100;
   private readonly MAX_BUY_IN = 5000;
 
-  /**
-   * Deep clone state to prevent mutations
-   */
   private cloneState(state: PokerState): PokerState {
     return structuredClone(state);
+  }
+
+  sanitizeStateForPlayer(state: PokerState, userId: string): PokerState {
+    const cloned = this.cloneState(state);
+    delete (cloned as any).deck;
+    for (const player of cloned.players) {
+      if (player.userId !== userId && !state.showdownRevealed) {
+        player.holeCards = [];
+      }
+    }
+    return cloned;
   }
 
   /**
@@ -63,7 +71,20 @@ export class PokerService {
   }
 
   /**
-   * Initialize a new poker game state
+   * Initialize a new poker game state for a heads-up (2-player) Texas Hold'em match.
+   *
+   * Flow:
+   *  1. Create and Fisher-Yates shuffle a standard 52-card deck.
+   *  2. Randomly assign the dealer (also the small blind in heads-up play).
+   *  3. Deal 2 hole cards to each player from the top of the deck.
+   *  4. Post blinds: small blind = 10, big blind = 20.  Players that run out
+   *     of chips posting are immediately marked 'all-in'.
+   *  5. Set `currentPlayerIndex` to the dealer (small blind) — they act first
+   *     pre-flop in heads-up poker.
+   *  6. Store the state in-memory under `gameId` and return it.
+   *
+   * @param gameId   Unique game identifier used as the in-memory map key.
+   * @param playerIds Array of exactly 2 user IDs; throws if length !== 2.
    */
   initializeState(gameId: string, playerIds: string[]): PokerState {
     if (playerIds.length !== 2) {
@@ -148,15 +169,7 @@ export class PokerService {
       isHandComplete: false,
     };
 
-    // Log initial state
-    this.logger.log(`[initializeState] ===== NEW GAME =====`);
-    this.logger.log(`[initializeState] Game ID: ${gameId}`);
-    this.logger.log(`[initializeState] Dealer: Player ${dealerIndex} (${players[dealerIndex].userId.slice(-6)})`);
-    this.logger.log(`[initializeState] Small Blind: Player ${smallBlindIndex} (${players[smallBlindIndex].userId.slice(-6)}) - ${smallBlindAmount} chips`);
-    this.logger.log(`[initializeState] Big Blind: Player ${bigBlindIndex} (${players[bigBlindIndex].userId.slice(-6)}) - ${bigBlindAmount} chips`);
-    this.logger.log(`[initializeState] First to act: Player ${currentPlayerIndex} (${players[currentPlayerIndex].userId.slice(-6)})`);
-    this.logger.log(`[initializeState] Pot: ${pot}, Min bet: ${minimumBet}`);
-    this.logger.log(`[initializeState] Players: ${players.map((p, i) => `[${i}] ${p.userId.slice(-6)} (chips=${p.chips}, bet=${p.betThisRound})`).join(' | ')}`);
+    this.logger.log(`[initializeState] Game ${gameId}: dealer=${dealerIndex}, pot=${pot}`);
 
     this.gameStates.set(gameId, state);
     return state;
@@ -187,8 +200,28 @@ export class PokerService {
   }
 
   /**
-   * Process a poker action (bet, call, fold, check, raise)
-   * Uses mutex locking to prevent race conditions when both players act simultaneously
+   * Process a player's poker action — the primary public entry point for gameplay.
+   *
+   * Uses a per-game mutex (promise-chain lock) to guarantee sequential processing
+   * even if two WebSocket messages arrive for the same game simultaneously.
+   *
+   * Internal pipeline (executed inside the lock):
+   *  1. Load state from memory (or DB fallback if evicted).
+   *  2. Reject if hand is already complete.
+   *  3. Reject if it is not `userId`'s turn.
+   *  4. `validateAction` — rule-check without mutating state.
+   *  5. `executeAction` — mutate chips, pot, player status.
+   *  6. Append to `actionHistory`.
+   *  7. Fold-win shortcut: if only one non-folded player remains, award pot.
+   *  8. `advanceToNextPlayer` — skip folded/all-in players.
+   *  9. All-in fast-forward: if ≤1 active player can still bet, deal remaining
+   *     community cards and go straight to showdown.
+   * 10. `isBettingRoundComplete` check → `advanceBettingRound` if true.
+   *
+   * @param gameId  Target game.
+   * @param userId  Acting player's ID — must match `currentPlayerIndex`.
+   * @param action  One of: fold | check | call | bet | raise | all-in.
+   * @param amount  Required for bet/raise; ignored for fold/check/call/all-in.
    */
   async processAction(
     gameId: string,
@@ -236,11 +269,7 @@ export class PokerService {
       }
     }
     
-    // Log detailed state for debugging
-    this.logger.log(`[processAction] ===== ACTION START =====`);
-    this.logger.log(`[processAction] Action: ${action} by ${userId}, amount: ${amount}`);
-    this.logger.log(`[processAction] Current state: index=${state.currentPlayerIndex}, round=${state.currentBettingRound}, pot=${state.pot}`);
-    this.logger.log(`[processAction] Players: ${state.players.map((p, i) => `[${i}] ${p.userId.slice(-6)} (${p.status}, chips=${p.chips}, bet=${p.betThisRound})`).join(' | ')}`);
+    this.logger.debug(`[processAction] ${action} by ${userId.slice(-6)}, amount=${amount}, round=${state.currentBettingRound}, pot=${state.pot}`);
 
     // Check if hand is already complete
     if (state.isHandComplete) {
@@ -293,7 +322,7 @@ export class PokerService {
         state.pot = 0;
         
         this.gameStates.set(gameId, state);
-        this.logger.log(`[processAction] Hand ended by fold. Winner: ${winner.userId}, pot: ${potAmount}`);
+        this.logger.debug(`[processAction] Fold win: ${winner.userId.slice(-6)}, pot=${potAmount}`);
         
         return {
           success: true,
@@ -311,21 +340,7 @@ export class PokerService {
     }
 
     // Advance to next player FIRST (before checking if round is complete)
-    const oldIndex = state.currentPlayerIndex;
-    const oldPlayer = state.players[oldIndex];
-    this.logger.log(`[processAction] Before advance: currentPlayerIndex=${oldIndex}, player=${oldPlayer?.userId?.slice(-6)}`);
-    
     this.advanceToNextPlayer(state);
-    
-    const newIndex = state.currentPlayerIndex;
-    const newPlayer = state.players[newIndex];
-    this.logger.log(`[processAction] After advance: currentPlayerIndex=${newIndex}, player=${newPlayer?.userId?.slice(-6)}`);
-    
-    // Safety check: if we didn't advance (same player), verify round should be complete
-    if (oldIndex === newIndex) {
-      const actableCount = state.players.filter(p => p.status === 'active').length;
-      this.logger.warn(`[processAction] WARNING: Did not advance (same player ${oldIndex}). Actable players: ${actableCount}`);
-    }
     
     // Check for all-in showdown (all active players are all-in or only one can act)
     const activePlayers = state.players.filter((p) => p.status === 'active' || p.status === 'all-in');
@@ -340,7 +355,7 @@ export class PokerService {
       );
       
       if (allBetsMatched || actablePlayers.length === 0) {
-        this.logger.log(`[processAction] All-in scenario detected, fast-forwarding to showdown`);
+        this.logger.debug(`[processAction] All-in fast-forward to showdown`);
         const showdownResult = this.fastForwardToShowdown(state);
         this.gameStates.set(gameId, state);
         return {
@@ -352,12 +367,9 @@ export class PokerService {
       }
     }
     
-    // Check if betting round is complete (AFTER advancing player)
     const bettingComplete = this.isBettingRoundComplete(state);
-    this.logger.debug(`[processAction] Betting round complete: ${bettingComplete}, currentPlayerIndex: ${state.currentPlayerIndex}`);
     
     if (bettingComplete) {
-      this.logger.debug(`[processAction] Advancing from ${state.currentBettingRound}`);
       const nextRoundResult = this.advanceBettingRound(state);
       
       if (nextRoundResult.handComplete) {
@@ -369,8 +381,6 @@ export class PokerService {
           winners: nextRoundResult.winners,
         };
       }
-      // After advancing round, currentPlayerIndex is set by advanceBettingRound
-      this.logger.debug(`[processAction] After advancing round, currentPlayerIndex: ${state.currentPlayerIndex}`);
     }
 
     // Ensure state is saved before cloning
@@ -386,11 +396,6 @@ export class PokerService {
     // Clone state for return (to prevent mutations)
     const clonedState = this.cloneState(state);
     
-    // Log final state being returned
-    this.logger.log(`[processAction] ===== ACTION END =====`);
-    this.logger.log(`[processAction] Final state: index=${clonedState.currentPlayerIndex}, round=${clonedState.currentBettingRound}, pot=${clonedState.pot}`);
-    this.logger.log(`[processAction] Next player: ${currentPlayer.userId.slice(-6)} (index ${state.currentPlayerIndex})`);
-    this.logger.log(`[processAction] Players after: ${clonedState.players.map((p, i) => `[${i}] ${p.userId.slice(-6)} (${p.status}, chips=${p.chips}, bet=${p.betThisRound})`).join(' | ')}`);
     
     return {
       success: true,
@@ -404,7 +409,19 @@ export class PokerService {
   }
 
   /**
-   * Validate an action
+   * Validate a proposed action against the current game rules without mutating state.
+   *
+   * Rules enforced per action:
+   *  - fold:   Always valid for an active player.
+   *  - check:  Only valid when `toCall === 0` (no outstanding bet).
+   *  - call:   Only valid when `toCall > 0`; partial call (all-in) is allowed.
+   *  - bet:    Only valid when `toCall === 0`; `amount` must be ≥ `minimumBet`
+   *            unless the player is going all-in for less.
+   *  - raise:  Only valid when `toCall > 0`; the raise increment must be ≥
+   *            `lastRaiseAmount` (or `bigBlind` if no prior raise this round)
+   *            unless going all-in for less; `toCall + amount` must not exceed
+   *            the player's remaining chips (use all-in for that case).
+   *  - all-in: Always valid as long as the player has chips remaining.
    */
   private validateAction(
     state: PokerState,
@@ -499,8 +516,24 @@ export class PokerService {
   }
 
   /**
-   * Execute an action
-   * Returns the amount actually bet for recording
+   * Apply a validated action to the game state, mutating it in-place.
+   *
+   * Chip accounting per action:
+   *  - fold:   Sets `player.status = 'folded'`.  No chip movement.
+   *  - check:  No-op on chips.
+   *  - call:   Deducts `min(toCall, player.chips)` from player, adds to pot.
+   *            If chips reach 0, status → 'all-in'.
+   *  - bet:    Deducts `amount`, updates `state.minimumBet` and
+   *            `state.lastRaiseAmount` to `amount`.
+   *  - raise:  Deducts `toCall + amount` (paying both the call and the raise
+   *            increment); updates `minimumBet` / `lastRaiseAmount` to
+   *            the raise increment only.
+   *  - all-in: Pushes all remaining chips into the pot; if this exceeds the
+   *            current max bet it is treated as a raise and updates
+   *            `lastRaiseAmount` only when the increment ≥ the previous
+   *            minimum raise (incomplete all-ins do not reopen full raises).
+   *
+   * @returns `{ success, amountBet }` — `amountBet` is recorded in action history.
    */
   private executeAction(
     state: PokerState,
@@ -599,54 +632,49 @@ export class PokerService {
   }
 
   /**
-   * Check if betting round is complete
-   * NOTE: This is called AFTER advanceToNextPlayer, so currentPlayerIndex points to the next player to act
-   * 
-   * A betting round is complete when:
-   * 1. Only one player remains (others folded)
-   * 2. All remaining players are all-in
-   * 3. All active players have matched the current bet AND each has had a chance to act since the last aggressive action
+   * Determine whether the current betting round is over.
+   *
+   * Called AFTER `advanceToNextPlayer`, so `currentPlayerIndex` already points
+   * at the next player to act.
+   *
+   * A round is complete when ANY of the following are true:
+   *  A) Only one non-folded player remains.
+   *  B) All remaining players are all-in (no one can act).
+   *  C) All active (non-all-in) players have matched the highest bet AND every
+   *     active player has taken at least one action since the last aggressive
+   *     action (bet, raise, or effective all-in raise) in this round.
+   *
+   * Pre-flop special case — the big blind option:
+   *  Before condition C is met, the big blind player must have had a chance to
+   *  act even if no one raised, because the BB's forced blind is not considered
+   *  a voluntary action.  We verify `bigBlindPlayer` appears in `actionHistory`
+   *  for this round before declaring it complete.
+   *
+   * Aggressor tracking:
+   *  We scan `actionHistory` backwards to find the most recent bet/raise/all-in.
+   *  All OTHER active players must appear in `actionHistory` AFTER that index.
+   *  If no aggressor exists this round (all checks/calls so far), every active
+   *  player simply needs to appear at least once.
    */
   private isBettingRoundComplete(state: PokerState): boolean {
-    this.logger.log(`[isBettingRoundComplete] Checking round: ${state.currentBettingRound}, currentPlayerIndex: ${state.currentPlayerIndex}`);
-    
     const activePlayers = state.players.filter(
       (p) => p.status === 'active' || p.status === 'all-in',
     );
-    this.logger.log(`[isBettingRoundComplete] Active players: ${activePlayers.length}`);
 
-    // Case 1: Only one player remains
-    if (activePlayers.length <= 1) {
-      this.logger.log(`[isBettingRoundComplete] Only ${activePlayers.length} active player(s), returning true`);
-      return true;
-    }
+    if (activePlayers.length <= 1) return true;
 
     const actablePlayers = activePlayers.filter(p => p.status === 'active');
-    this.logger.log(`[isBettingRoundComplete] Actable players: ${actablePlayers.map(p => p.userId.slice(-6)).join(', ')}`);
+    if (actablePlayers.length === 0) return true;
 
-    // Case 2: All remaining players are all-in
-    if (actablePlayers.length === 0) {
-      this.logger.log(`[isBettingRoundComplete] No actable players (all-in), returning true`);
-      return true;
-    }
-
-    // Case 3: Check if all active players have matched bets and had a chance to act
     const maxBet = this.getMaxBet(state.players);
     const allBetsMatched = actablePlayers.every(
       (p) => p.betThisRound === maxBet
     );
-    this.logger.log(`[isBettingRoundComplete] MaxBet: ${maxBet}, bets: ${actablePlayers.map(p => `${p.userId.slice(-6)}:${p.betThisRound}`).join(', ')}, allBetsMatched: ${allBetsMatched}`);
+    if (!allBetsMatched) return false;
 
-    if (!allBetsMatched) {
-      this.logger.log(`[isBettingRoundComplete] Bets not matched, returning false`);
-      return false;
-    }
-
-    // Get actions this round
     const actionsThisRound = state.actionHistory.filter(
       a => a.bettingRound === state.currentBettingRound
     );
-    this.logger.log(`[isBettingRoundComplete] Actions this round: ${actionsThisRound.map(a => `${a.userId.slice(-6)}:${a.action}`).join(', ')}`);
     
     // Find the last aggressive action (bet, raise, or blind posts count as well for pre-flop)
     let lastAggressorIndex = -1;
@@ -675,22 +703,14 @@ export class PokerService {
         const bigBlindPlayer = state.players.find(p => p.isBigBlind);
         if (bigBlindPlayer && bigBlindPlayer.status === 'active') {
           const bigBlindActed = actionsThisRound.some(a => a.userId === bigBlindPlayer.userId);
-          this.logger.log(`[isBettingRoundComplete] Pre-flop: bigBlind=${bigBlindPlayer.userId.slice(-6)}, bigBlindActed=${bigBlindActed}`);
-          
-          if (!bigBlindActed) {
-            // Big blind hasn't acted yet - they need their option
-            this.logger.log(`[isBettingRoundComplete] Big blind needs option, returning false`);
-            return false;
-          }
+          if (!bigBlindActed) return false;
         }
       }
       
       // Every actable player must have acted at least once
       const actablePlayerIds = new Set(actablePlayers.map(p => p.userId));
       const playersWhoActed = new Set(actionsThisRound.map(a => a.userId).filter(id => actablePlayerIds.has(id)));
-      const allActed = actablePlayers.every(p => playersWhoActed.has(p.userId));
-      this.logger.log(`[isBettingRoundComplete] No aggressive action, allActed=${allActed}`);
-      return allActed;
+      return actablePlayers.every(p => playersWhoActed.has(p.userId));
     }
     
     // There was an aggressive action - everyone after the aggressor must have acted
@@ -700,11 +720,7 @@ export class PokerService {
     
     // All actable players except the aggressor must have acted after the aggressive action
     const otherActablePlayers = actablePlayers.filter(p => p.userId !== aggressorUserId);
-    const allOthersActed = otherActablePlayers.every(p => playersWhoActedAfter.has(p.userId));
-    
-    this.logger.log(`[isBettingRoundComplete] Aggressor: ${aggressorUserId.slice(-6)}, actionsAfter: ${actionsAfterAggressor.map(a => a.userId.slice(-6)).join(',')}, allOthersActed=${allOthersActed}`);
-    
-    return allOthersActed;
+    return otherActablePlayers.every(p => playersWhoActedAfter.has(p.userId));
   }
 
   /**
@@ -717,44 +733,45 @@ export class PokerService {
       .filter(({ player }) => player.status === 'active')
       .map(({ idx }) => idx);
     
-    this.logger.log(`[advanceToNextPlayer] Players: ${state.players.map((p, i) => `[${i}]${p.userId.slice(-6)}(${p.status})`).join(' ')}`);
-    this.logger.log(`[advanceToNextPlayer] Actable indices: [${actablePlayerIndices.join(', ')}], current: ${state.currentPlayerIndex}`);
-    
-    if (actablePlayerIndices.length === 0) {
-      this.logger.warn(`[advanceToNextPlayer] No actable players - keeping index ${state.currentPlayerIndex}`);
-      return;
-    }
+    if (actablePlayerIndices.length === 0) return;
 
     const startIndex = state.currentPlayerIndex;
 
     if (actablePlayerIndices.length === 1) {
-      if (actablePlayerIndices[0] === startIndex) {
-        this.logger.log(`[advanceToNextPlayer] Only one actable player (${actablePlayerIndices[0]}) and it's current - keeping same`);
-        return;
-      }
+      if (actablePlayerIndices[0] === startIndex) return;
       state.currentPlayerIndex = actablePlayerIndices[0];
-      this.logger.log(`[advanceToNextPlayer] Only one actable player - moving to ${actablePlayerIndices[0]}`);
       return;
     }
     
-    // Find next actable player after current (wrapping around)
     for (let i = 1; i <= state.players.length; i++) {
       const nextIndex = (startIndex + i) % state.players.length;
       if (actablePlayerIndices.includes(nextIndex)) {
-        const oldIndex = state.currentPlayerIndex;
         state.currentPlayerIndex = nextIndex;
-        this.logger.log(`[advanceToNextPlayer] Moving from ${oldIndex} to ${nextIndex}`);
         return;
       }
     }
     
-    // Fallback
-    this.logger.warn(`[advanceToNextPlayer] Fallback to first actable: ${actablePlayerIndices[0]}`);
     state.currentPlayerIndex = actablePlayerIndices[0];
   }
 
   /**
-   * Advance to next betting round
+   * Transition the game to the next betting round, dealing community cards.
+   *
+   * Community card dealing schedule:
+   *  - pre-flop → flop:  Deal 3 cards (burn step omitted for simplicity).
+   *  - flop     → turn:  Deal 1 card.
+   *  - turn     → river: Deal 1 card.
+   *  - river    → showdown: Trigger `evaluateShowdown`.
+   *
+   * Between rounds:
+   *  - Reset every player's `betThisRound` to 0.
+   *  - Reset `minimumBet` and `lastRaiseAmount` to `bigBlind`.
+   *  - Set `currentPlayerIndex` to the first active player after the dealer
+   *    (standard post-flop order, not heads-up pre-flop order).
+   *
+   * Fast-forward shortcut: if after dealing there is ≤1 active (non-all-in)
+   * player but more than one player still in the hand, skip straight to
+   * `fastForwardToShowdown` rather than waiting for action.
    */
   private advanceBettingRound(state: PokerState): {
     handComplete: boolean;
@@ -820,7 +837,16 @@ export class PokerService {
   }
 
   /**
-   * Fast-forward to showdown when all players are all-in
+   * Fast-forward to showdown when no further betting is possible.
+   *
+   * Triggered when all remaining players are all-in (or only one player can
+   * still act and the bets are already matched).  Fills the community card
+   * board to exactly 5 cards, sets the round to 'showdown', and immediately
+   * calls `evaluateShowdown`.
+   *
+   * The number of cards dealt is `5 - communityCards.length`, covering all
+   * partial board states (e.g. all-in on the flop still needs the turn and
+   * river dealt face-up before comparing hands).
    */
   private fastForwardToShowdown(state: PokerState): {
     handComplete: boolean;
@@ -865,7 +891,19 @@ export class PokerService {
   }
 
   /**
-   * Calculate side pots for all-in scenarios
+   * Calculate side pots when one or more players are all-in for different amounts.
+   *
+   * Algorithm (standard poker side-pot construction):
+   *  1. Collect each all-in player's `totalBetThisHand` and sort ascending.
+   *  2. For each unique all-in threshold `t`:
+   *     - Contribution layer = `t − previousThreshold`.
+   *     - Eligible players = everyone whose `totalBetThisHand ≥ t`.
+   *     - Pot slice = sum of each player's actual contribution to this layer
+   *       (capped at `contribution` for players who bet ≥ t, pro-rated for those
+   *       who bet less than the full layer).
+   *  3. A final "main pot" layer covers any amount above the highest all-in.
+   *
+   * Returns an empty array if no player is all-in (no side pots needed).
    */
   private calculateSidePots(state: PokerState): SidePot[] {
     const activePlayers = state.players.filter(
@@ -945,7 +983,21 @@ export class PokerService {
   }
 
   /**
-   * Evaluate showdown and determine winners
+   * Evaluate all remaining players' hands and distribute the pot(s) to winner(s).
+   *
+   * Steps:
+   *  1. Evaluate every active/all-in player's 7-card hand (2 hole + up to 5 board)
+   *     using the `pokersolver` library via `evaluateHand`.  Hands with < 3
+   *     community cards fall back to a High Card placeholder.
+   *  2. Sort hands best-first using `compareHands` (which also uses pokersolver
+   *     to break ties within the same rank category).
+   *  3. If any player is all-in for different amounts, call `calculateSidePots`
+   *     and award each side pot to the best eligible hand independently.
+   *  4. If no side pots, split the main pot evenly among all tied winners
+   *     (odd chip goes to the first winner in sort order).
+   *  5. Set `state.isHandComplete = true`, `showdownRevealed = true`, clear `pot`.
+   *  6. Populate `state.lastWinnings` (userId → chips gained) for the frontend
+   *     to display win/loss deltas.
    */
   private evaluateShowdown(state: PokerState): {
     handComplete: boolean;
@@ -1078,11 +1130,38 @@ export class PokerService {
   }
 
   /**
-   * Start a new hand (after previous hand completes)
+   * Start a new hand after the previous one has completed.
+   *
+   * Pre-conditions: `state.isHandComplete` should be `true`.
+   *
+   * Game-over check:
+   *  If fewer than 2 players still have chips, the game is over.  The method
+   *  sets `winnerIds` to the surviving player and returns the current state
+   *  without starting a new hand (caller should emit `poker.gameOver`).
+   *
+   * Setup sequence:
+   *  1. Rotate dealer clockwise (skip players with 0 chips).
+   *  2. In heads-up: new dealer = small blind, other player = big blind.
+   *  3. Reset per-player hand state: betThisRound, totalBetThisHand, holeCards,
+   *     handRank, lastAction.  Players with 0 chips become 'out'.
+   *  4. Create and shuffle a fresh 52-card deck.
+   *  5. Deal 2 hole cards to each active player.
+   *  6. Post blinds (partial/all-in blinds handled gracefully).
+   *  7. Set first actor to the dealer (heads-up pre-flop rule).
+   *  8. Reset round-level state: communityCards, actionHistory, pot, round name.
+   *  9. Increment `handNumber`.
    */
   startNewHand(gameId: string): PokerState | null {
     const currentState = this.gameStates.get(gameId);
     if (!currentState) {
+      return null;
+    }
+
+    // Idempotency guard: if both clients auto-trigger this simultaneously, the
+    // second request arrives when the hand is already active.  Return null so
+    // the gateway silently ignores the duplicate instead of dealing twice.
+    if (!currentState.isHandComplete) {
+      this.logger.warn(`[startNewHand] Hand still in progress for ${gameId} — ignoring duplicate request`);
       return null;
     }
 

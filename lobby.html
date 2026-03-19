@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shitbox Shuffle — The Lobby</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --void: #08070a;
+  --surface: #0e0d12;
+  --surface-elevated: #141318;
+  --surface-hover: #1a1820;
+  --border: rgba(255,215,120,0.08);
+  --border-hover: rgba(255,215,120,0.18);
+  --gold: #c9a227;
+  --gold-light: #e8d48a;
+  --gold-bright: #ffd778;
+  --gold-dim: rgba(201,162,39,0.5);
+  --gold-glow: rgba(201,162,39,0.15);
+  --ivory: #f4f0e8;
+  --ivory-80: rgba(244,240,232,0.8);
+  --ivory-60: rgba(244,240,232,0.6);
+  --ivory-40: rgba(244,240,232,0.4);
+  --ivory-20: rgba(244,240,232,0.2);
+  --ivory-10: rgba(244,240,232,0.1);
+  --ivory-05: rgba(244,240,232,0.05);
+  --red: #d4453a;
+  --green: #4ade80;
+  --purple: #a78bfa;
+  --blue: #60a5fa;
+  --card-gradient: linear-gradient(135deg,#1a1820 0%,#0f0e14 25%,#141318 50%,#0a090d 75%,#12111a 100%);
+  --foil-gradient: linear-gradient(105deg,rgba(201,162,39,0) 0%,rgba(201,162,39,0.08) 25%,rgba(232,212,138,0.15) 50%,rgba(201,162,39,0.08) 75%,rgba(201,162,39,0) 100%);
+  --nav-h: 64px;
+}
+
+html { background: var(--void); }
+body { min-height: 100vh; background: var(--void); color: var(--ivory); font-family: 'IBM Plex Sans', sans-serif; overflow-x: hidden; }
+
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 65% 30%,rgba(201,162,39,0.03) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 70% at 20% 80%,rgba(201,162,39,0.02) 0%,transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: ''; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.5;
+}
+
+/* ── NAV ───────────────────────────────────── */
+nav {
+  display: flex; align-items: center; height: var(--nav-h);
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,7,10,0.95); backdrop-filter: blur(20px);
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 32px; gap: 24px;
+}
+.nav-back {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--ivory-40); cursor: pointer;
+  text-decoration: none; transition: color 0.2s; flex-shrink: 0;
+}
+.nav-back:hover { color: var(--gold); }
+.nav-back-arrow { font-size: 18px; line-height: 1; }
+.nav-brand { display: flex; flex-direction: column; justify-content: center; gap: 1px; flex-shrink: 0; }
+.brand-est { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); opacity: 0.6; }
+.brand-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; letter-spacing: 0.03em; color: var(--ivory); line-height: 1; }
+.brand-name em { font-style: italic; color: var(--gold); }
+.nav-sep { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+.nav-page-title { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.18em; color: var(--ivory-40); }
+.nav-spacer { flex: 1; }
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+.nav-btn {
+  display: flex; align-items: center; justify-content: center; padding: 8px 22px;
+  font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.12em;
+  cursor: pointer; border: 1px solid var(--border); border-radius: 4px; transition: all 0.25s;
+}
+.nav-btn.ghost { background: transparent; color: var(--ivory-40); }
+.nav-btn.ghost:hover { background: var(--ivory-05); color: var(--ivory); border-color: var(--border-hover); }
+.nav-btn.solid { background: var(--gold); color: var(--void); border-color: var(--gold); }
+.nav-btn.solid:hover { background: var(--gold-light); box-shadow: 0 0 24px rgba(201,162,39,0.25); }
+
+/* ── PAGE ────────────────────────────────── */
+.page-wrap { margin-top: var(--nav-h); position: relative; z-index: 2; }
+
+.lobby-header-strip {
+  border-bottom: 1px solid var(--border); padding: 32px 48px 28px;
+  background: rgba(14,13,18,0.6);
+}
+.lobby-headline {
+  font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 700;
+  font-style: italic; color: var(--ivory); line-height: 1.05; margin-bottom: 6px;
+}
+.lobby-headline em { color: var(--gold); }
+.lobby-subline { font-size: 13px; color: var(--ivory-40); letter-spacing: 0.04em; max-width: 520px; line-height: 1.5; }
+
+/* ── TAB BAR ─────────────────────────────── */
+.tab-bar {
+  display: flex; align-items: stretch; border-bottom: 1px solid var(--border);
+  background: rgba(14,13,18,0.4); padding: 0 48px;
+  position: sticky; top: var(--nav-h); z-index: 50;
+  backdrop-filter: blur(12px);
+}
+.tab-item {
+  padding: 14px 28px; font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px; letter-spacing: 0.14em; color: var(--ivory-40);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all 0.2s; user-select: none; display: flex; align-items: center; gap: 8px;
+}
+.tab-item:hover { color: var(--ivory-60); }
+.tab-item.active { color: var(--gold); border-bottom-color: var(--gold); }
+.tab-count {
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 10px; font-weight: 600;
+  background: rgba(201,162,39,0.1); color: var(--gold); border-radius: 10px;
+  padding: 2px 7px; letter-spacing: 0.06em; line-height: 1.3;
+}
+.tab-item.active .tab-count { background: rgba(201,162,39,0.2); }
+
+/* ── PANELS ──────────────────────────────── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── COMMUNITY FEED ──────────────────────── */
+.feed-layout { display: flex; gap: 0; min-height: calc(100vh - var(--nav-h) - 160px); }
+.feed-main { flex: 1; min-width: 0; border-right: 1px solid var(--border); }
+
+.compose-box { padding: 24px 32px; border-bottom: 1px solid var(--border); display: flex; gap: 14px; align-items: flex-start; }
+.compose-avatar {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg,rgba(201,162,39,0.15),rgba(201,162,39,0.05));
+  border: 1px solid rgba(201,162,39,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 700; color: var(--gold);
+}
+.compose-body { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+.compose-input {
+  width: 100%; background: transparent; border: none; outline: none; resize: none;
+  color: var(--ivory); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px;
+  line-height: 1.55; min-height: 44px; max-height: 120px;
+}
+.compose-input::placeholder { color: var(--ivory-20); }
+.compose-footer { display: flex; align-items: center; justify-content: space-between; }
+.compose-attach-row { display: flex; gap: 4px; }
+.compose-attach {
+  width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border);
+  background: transparent; color: var(--ivory-40); font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.compose-attach:hover { border-color: var(--border-hover); color: var(--gold); background: rgba(201,162,39,0.04); }
+.compose-post-btn {
+  padding: 7px 20px; font-family: 'Bebas Neue', sans-serif; font-size: 13px;
+  letter-spacing: 0.14em; border-radius: 4px; border: none;
+  background: var(--gold); color: var(--void); cursor: pointer; transition: all 0.25s;
+}
+.compose-post-btn:hover { background: var(--gold-light); box-shadow: 0 0 20px rgba(201,162,39,0.2); }
+.compose-post-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.feed-post {
+  padding: 22px 32px; border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.feed-post:hover { background: rgba(255,255,255,0.008); }
+.post-top { display: flex; gap: 12px; align-items: flex-start; }
+.post-avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg,rgba(201,162,39,0.12),rgba(201,162,39,0.04));
+  border: 1px solid rgba(201,162,39,0.12);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 700; color: var(--gold-dim);
+}
+.post-content { flex: 1; min-width: 0; }
+.post-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; flex-wrap: wrap; }
+.post-author { font-size: 14px; font-weight: 600; color: var(--ivory); }
+.post-handle { font-size: 12px; color: var(--ivory-40); }
+.post-dot { width: 2px; height: 2px; border-radius: 50%; background: var(--ivory-20); }
+.post-time { font-size: 11px; color: var(--ivory-20); }
+.post-body { font-size: 13.5px; color: var(--ivory-80); line-height: 1.6; margin-bottom: 12px; word-wrap: break-word; }
+
+.post-room-card {
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--card-gradient); overflow: hidden; margin-bottom: 14px;
+  transition: border-color 0.3s, box-shadow 0.3s; cursor: pointer;
+}
+.post-room-card:hover { border-color: var(--border-hover); box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+.room-card-inner { padding: 16px 18px; display: flex; align-items: center; gap: 14px; }
+.room-card-icon {
+  width: 44px; height: 44px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(201,162,39,0.06); border: 1px solid rgba(201,162,39,0.1);
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.room-card-info { flex: 1; min-width: 0; }
+.room-card-name { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 700; color: var(--ivory); margin-bottom: 2px; }
+.room-card-detail { font-size: 11px; color: var(--ivory-40); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.room-card-detail .sep { color: var(--ivory-20); }
+.room-card-join {
+  padding: 8px 18px; font-family: 'Bebas Neue', sans-serif; font-size: 12px;
+  letter-spacing: 0.14em; border-radius: 4px; border: 1px solid rgba(201,162,39,0.2);
+  background: transparent; color: var(--gold); cursor: pointer; transition: all 0.25s; flex-shrink: 0;
+}
+.room-card-join:hover { background: rgba(201,162,39,0.08); border-color: rgba(201,162,39,0.4); }
+.room-player-pips { display: flex; gap: 3px; align-items: center; }
+.room-player-pip { width: 6px; height: 6px; border-radius: 50%; background: rgba(74,222,128,0.5); }
+.room-player-pip.empty { background: var(--ivory-10); }
+
+.post-actions { display: flex; gap: 20px; }
+.post-action {
+  display: flex; align-items: center; gap: 6px; font-size: 12px;
+  color: var(--ivory-20); cursor: pointer; transition: color 0.2s; user-select: none; padding: 4px 0;
+}
+.post-action:hover { color: var(--ivory-60); }
+.post-action.liked { color: var(--red); }
+.post-action .icon { font-size: 14px; }
+
+/* ── FEED SIDEBAR ────────────────────────── */
+.feed-sidebar { width: 320px; flex-shrink: 0; padding: 24px; position: sticky; top: calc(var(--nav-h) + 52px); height: fit-content; }
+.sidebar-block { margin-bottom: 28px; }
+.sidebar-block-header {
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--gold); opacity: 0.7; margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.trending-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer;
+}
+.trending-item:last-child { border-bottom: none; }
+.trending-item:hover .trending-name { color: var(--gold); }
+.trending-rank { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--ivory-20); width: 24px; text-align: center; }
+.trending-info { flex: 1; }
+.trending-name { font-size: 13px; color: var(--ivory-80); transition: color 0.2s; font-weight: 500; }
+.trending-stat { font-size: 10px; color: var(--ivory-40); margin-top: 1px; }
+.sidebar-who-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+.sidebar-who-item:last-child { border-bottom: none; }
+.sidebar-who-avatar {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg,rgba(201,162,39,0.1),rgba(201,162,39,0.04));
+  border: 1px solid rgba(201,162,39,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--gold-dim); font-family: 'Cormorant Garamond', serif;
+}
+.sidebar-who-name { font-size: 12px; color: var(--ivory-60); flex: 1; }
+.sidebar-who-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); flex-shrink: 0; }
+
+/* ── PUBLIC ROOMS ────────────────────────── */
+.rooms-header { padding: 24px 48px 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.rooms-filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-chip {
+  padding: 6px 14px; font-size: 11px; letter-spacing: 0.1em;
+  border: 1px solid var(--border); border-radius: 20px;
+  background: transparent; color: var(--ivory-40);
+  cursor: pointer; transition: all 0.2s; font-family: 'IBM Plex Sans', sans-serif;
+}
+.filter-chip:hover { border-color: var(--border-hover); color: var(--ivory-60); }
+.filter-chip.active { border-color: rgba(201,162,39,0.3); color: var(--gold); background: rgba(201,162,39,0.06); }
+.rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; padding: 24px 48px 48px; }
+
+.room-tile {
+  background: var(--card-gradient); border: 1px solid var(--border); border-radius: 12px;
+  padding: 22px 20px; position: relative; overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s; cursor: pointer;
+}
+.room-tile:hover { border-color: var(--border-hover); transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 30px rgba(201,162,39,0.04); }
+.room-tile::before { content: ''; position: absolute; inset: 0; background: var(--foil-gradient); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+.room-tile:hover::before { opacity: 1; }
+.room-tile-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 14px; position: relative; }
+.room-tile-icon { font-size: 28px; }
+.room-tile-badges { display: flex; gap: 6px; align-items: center; }
+.room-badge { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; }
+.room-badge.public { color: var(--green); border: 1px solid rgba(74,222,128,0.2); background: rgba(74,222,128,0.06); }
+.room-badge.private { color: var(--purple); border: 1px solid rgba(167,139,250,0.2); background: rgba(167,139,250,0.06); }
+.room-badge.locked { color: var(--ivory-40); border: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+.room-badge.live { color: var(--gold); border: 1px solid rgba(201,162,39,0.2); background: rgba(201,162,39,0.06); }
+.room-tile-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; color: var(--ivory); margin-bottom: 4px; position: relative; }
+.room-tile-game { font-size: 11px; color: var(--ivory-40); letter-spacing: 0.08em; margin-bottom: 14px; position: relative; }
+.room-tile-footer { display: flex; align-items: center; justify-content: space-between; position: relative; }
+.room-tile-players { display: flex; align-items: center; gap: 8px; }
+.room-tile-player-count { font-size: 12px; color: var(--ivory-40); }
+.room-tile-avatars { display: flex; }
+.room-tile-avatar-small {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: linear-gradient(135deg,rgba(201,162,39,0.12),rgba(201,162,39,0.04));
+  border: 2px solid var(--surface); margin-left: -6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: var(--gold-dim); font-family: 'Cormorant Garamond', serif;
+}
+.room-tile-avatar-small:first-child { margin-left: 0; }
+.room-tile-join {
+  padding: 7px 16px; font-family: 'Bebas Neue', sans-serif; font-size: 12px;
+  letter-spacing: 0.14em; border-radius: 4px; border: 1px solid rgba(201,162,39,0.2);
+  background: transparent; color: var(--gold); cursor: pointer; transition: all 0.25s;
+}
+.room-tile-join:hover { background: rgba(201,162,39,0.1); border-color: rgba(201,162,39,0.4); }
+.room-tile-suit { position: absolute; bottom: -8px; right: -4px; font-size: 60px; color: rgba(201,162,39,0.03); pointer-events: none; user-select: none; line-height: 1; }
+
+/* ── YOUR ROOMS ──────────────────────────── */
+.your-rooms-layout { padding: 24px 48px 48px; }
+.your-rooms-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.your-rooms-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--ivory); }
+.create-room-btn {
+  padding: 10px 24px; font-family: 'Bebas Neue', sans-serif; font-size: 14px;
+  letter-spacing: 0.14em; border-radius: 5px; border: none;
+  background: var(--gold); color: var(--void); cursor: pointer; transition: all 0.25s;
+  display: flex; align-items: center; gap: 8px;
+}
+.create-room-btn:hover { background: var(--gold-light); box-shadow: 0 0 24px rgba(201,162,39,0.25); }
+
+.your-rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+.your-room-card {
+  background: var(--card-gradient); border: 1px solid var(--border); border-radius: 12px;
+  padding: 22px; position: relative; overflow: hidden;
+}
+.your-room-card::before { content: ''; position: absolute; inset: 0; background: var(--foil-gradient); opacity: 0.3; pointer-events: none; }
+.yrc-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 16px; position: relative; }
+.yrc-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; color: var(--ivory); }
+.yrc-game { font-size: 11px; color: var(--ivory-40); margin-top: 3px; display: flex; align-items: center; gap: 8px; }
+.yrc-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+.yrc-status-dot.active { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.yrc-status-dot.idle { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+
+.yrc-section-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ivory-20); margin-bottom: 6px; position: relative; }
+
+.yrc-invite-row { display: flex; gap: 8px; margin-bottom: 12px; position: relative; }
+.yrc-invite-code {
+  flex: 1; padding: 9px 12px; background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border); border-radius: 5px;
+  font-size: 12px; color: var(--ivory-40); letter-spacing: 0.04em;
+  font-family: 'IBM Plex Sans', sans-serif; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.yrc-copy-btn, .yrc-qr-btn {
+  padding: 0 14px; font-family: 'Bebas Neue', sans-serif; font-size: 11px;
+  letter-spacing: 0.12em; border: 1px solid var(--border); border-radius: 5px;
+  background: transparent; color: var(--ivory-40); cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.yrc-copy-btn:hover, .yrc-qr-btn:hover { border-color: var(--border-hover); color: var(--gold); background: rgba(201,162,39,0.04); }
+
+.yrc-footer { display: flex; align-items: center; justify-content: space-between; position: relative; }
+.yrc-players { font-size: 12px; color: var(--ivory-40); display: flex; align-items: center; gap: 6px; }
+.yrc-actions { display: flex; gap: 6px; }
+.yrc-action-btn {
+  padding: 6px 14px; font-size: 11px; letter-spacing: 0.1em;
+  border: 1px solid var(--border); border-radius: 4px;
+  background: transparent; color: var(--ivory-40); cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif; transition: all 0.2s;
+}
+.yrc-action-btn:hover { border-color: var(--border-hover); color: var(--ivory-80); }
+.yrc-action-btn.danger { border-color: rgba(212,69,58,0.15); color: rgba(212,69,58,0.6); }
+.yrc-action-btn.danger:hover { border-color: rgba(212,69,58,0.35); color: var(--red); background: rgba(212,69,58,0.04); }
+
+.empty-state { text-align: center; padding: 64px 24px; color: var(--ivory-20); }
+.empty-state-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+.empty-state-text { font-size: 14px; color: var(--ivory-40); margin-bottom: 8px; }
+.empty-state-sub { font-size: 12px; color: var(--ivory-20); }
+
+/* ── CREATE ROOM MODAL ───────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(8,7,10,0.92); backdrop-filter: blur(16px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-card {
+  width: 500px; max-width: 94vw; max-height: 90vh; overflow-y: auto;
+  background: var(--surface-elevated); border: 1px solid rgba(201,162,39,0.15);
+  border-radius: 12px; position: relative;
+  transform: translateY(28px) scale(0.96);
+  transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+  scrollbar-width: thin; scrollbar-color: rgba(201,162,39,0.1) transparent;
+}
+.modal-card::-webkit-scrollbar { width: 4px; }
+.modal-card::-webkit-scrollbar-thumb { background: rgba(201,162,39,0.12); border-radius: 2px; }
+.modal-overlay.active .modal-card { transform: translateY(0) scale(1); }
+.modal-card::before { content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg,transparent,rgba(201,162,39,0.2),transparent); pointer-events: none; }
+.modal-close {
+  position: absolute; top: 16px; right: 18px; width: 34px; height: 34px;
+  border-radius: 50%; border: 1px solid var(--border); background: transparent;
+  color: var(--ivory-40); cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; transition: all 0.25s; z-index: 2;
+}
+.modal-close:hover { border-color: var(--border-hover); color: var(--ivory); background: var(--ivory-05); }
+.modal-header { padding: 32px 32px 20px; text-align: center; border-bottom: 1px solid var(--border); }
+.modal-eyebrow { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); opacity: 0.7; margin-bottom: 8px; }
+.modal-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; font-style: italic; color: var(--ivory); }
+.modal-title em { color: var(--gold); }
+.modal-body { padding: 24px 32px 28px; }
+
+.field-group { margin-bottom: 18px; }
+.field-label { display: block; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ivory-40); margin-bottom: 7px; }
+.field-input {
+  width: 100%; padding: 11px 14px; background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--ivory); font-size: 14px; font-family: 'IBM Plex Sans', sans-serif;
+  outline: none; transition: border-color 0.25s;
+}
+.field-input:focus { border-color: rgba(201,162,39,0.4); background: rgba(201,162,39,0.03); }
+.field-input::placeholder { color: var(--ivory-20); }
+.field-hint { font-size: 10px; color: var(--ivory-20); margin-top: 5px; letter-spacing: 0.04em; }
+
+.privacy-toggle { display: flex; gap: 8px; margin-bottom: 18px; }
+.privacy-opt {
+  flex: 1; padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px;
+  background: transparent; cursor: pointer; transition: all 0.25s; text-align: left;
+}
+.privacy-opt:hover { border-color: var(--border-hover); }
+.privacy-opt.selected { border-color: rgba(201,162,39,0.3); background: rgba(201,162,39,0.04); }
+.privacy-opt-label { font-size: 13px; font-weight: 500; color: var(--ivory-80); margin-bottom: 3px; }
+.privacy-opt.selected .privacy-opt-label { color: var(--gold); }
+.privacy-opt-desc { font-size: 11px; color: var(--ivory-40); }
+
+.pw-field { margin-bottom: 18px; overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.35s ease, opacity 0.25s ease, margin 0.35s ease; }
+.pw-field.show { max-height: 120px; opacity: 1; }
+
+.game-select-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
+.game-select-item {
+  padding: 12px 8px; border: 1px solid var(--border); border-radius: 8px;
+  background: transparent; cursor: pointer; transition: all 0.25s;
+  text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.game-select-item:hover { border-color: var(--border-hover); }
+.game-select-item.selected { border-color: rgba(201,162,39,0.3); background: rgba(201,162,39,0.06); }
+.game-select-icon { font-size: 22px; }
+.game-select-name { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ivory-40); }
+.game-select-item.selected .game-select-name { color: var(--gold); }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.modal-submit {
+  width: 100%; padding: 14px; border: none; border-radius: 6px;
+  background: var(--gold); color: var(--void);
+  font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 0.14em;
+  cursor: pointer; transition: all 0.25s; margin-top: 8px;
+}
+.modal-submit:hover { background: var(--gold-light); box-shadow: 0 0 28px rgba(201,162,39,0.25); }
+.modal-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── QR MODAL ────────────────────────────── */
+.qr-modal-body { padding: 28px 32px; text-align: center; }
+.qr-canvas-wrap {
+  background: #fff; border-radius: 12px; padding: 20px;
+  display: inline-block; margin-bottom: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.qr-canvas-wrap canvas { display: block; }
+.qr-room-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; color: var(--ivory); margin-bottom: 4px; }
+.qr-room-link { font-size: 11px; color: var(--ivory-40); word-break: break-all; margin-bottom: 16px; }
+.qr-actions { display: flex; gap: 8px; justify-content: center; }
+
+/* ── JOIN MODAL (password prompt) ────────── */
+.join-modal-body { padding: 28px 32px; }
+
+/* ── TOAST ───────────────────────────────── */
+.toast {
+  position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
+  padding: 12px 26px; background: var(--surface-elevated); border: 1px solid var(--border);
+  border-radius: 6px; font-size: 14px; color: var(--ivory-60);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5); z-index: 400; opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), opacity 0.4s ease;
+  pointer-events: none; white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast .accent { color: var(--gold); font-weight: 500; }
+
+/* ── FOOTER ──────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border); padding: 18px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(14,13,18,0.98);
+}
+.footer-copy { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ivory-20); }
+.footer-links { display: flex; }
+.footer-links a {
+  font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--ivory-20); text-decoration: none; padding: 0 18px;
+  border-right: 1px solid var(--border); transition: color 0.25s;
+}
+.footer-links a:last-child { border-right: none; }
+.footer-links a:hover { color: var(--gold); }
+
+@media (max-width: 860px) {
+  .feed-sidebar { display: none; }
+  .lobby-header-strip, .rooms-header, .rooms-grid, .your-rooms-layout { padding-left: 20px; padding-right: 20px; }
+  .tab-bar { padding: 0 20px; }
+  .rooms-grid { grid-template-columns: 1fr; }
+  .your-rooms-grid { grid-template-columns: 1fr; }
+  .compose-box, .feed-post { padding-left: 20px; padding-right: 20px; }
+  .game-select-grid { grid-template-columns: repeat(3, 1fr); }
+  footer { padding: 18px 20px; }
+}
+@media (max-width: 520px) {
+  .game-select-grid { grid-template-columns: repeat(2, 1fr); }
+  .field-row { grid-template-columns: 1fr; }
+  .nav-brand { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="shitboxshuffle.html">
+    <span class="nav-back-arrow">←</span><span>Back</span>
+  </a>
+  <div class="nav-sep"></div>
+  <div class="nav-brand"><span class="brand-est">Est. 2024</span><span class="brand-name">Shitbox <em>&amp;</em> Shuffle</span></div>
+  <div class="nav-sep"></div>
+  <span class="nav-page-title">The Lobby</span>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions">
+    <button class="nav-btn ghost" id="navAuthBtn" onclick="openAuth()">Log In</button>
+    <button class="nav-btn solid" id="navCreateBtn" onclick="openCreateRoom()">+ New Room</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="lobby-header-strip">
+    <h1 class="lobby-headline">The <em>Lobby</em></h1>
+    <p class="lobby-subline">Host a private room for your crew, or jump into something public. The floor is always open.</p>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab-item active" data-tab="feed" onclick="switchPanel('feed')">Community <span class="tab-count" id="feedCount">—</span></div>
+    <div class="tab-item" data-tab="rooms" onclick="switchPanel('rooms')">Public Rooms <span class="tab-count" id="roomsCount">—</span></div>
+    <div class="tab-item" data-tab="yours" onclick="switchPanel('yours')">Your Rooms</div>
+  </div>
+
+  <!-- ═══ COMMUNITY FEED ═══ -->
+  <div class="panel active" id="panel-feed">
+    <div class="feed-layout">
+      <div class="feed-main">
+        <div class="compose-box" id="composeBox">
+          <div class="compose-avatar" id="composeAvatar">?</div>
+          <div class="compose-body">
+            <textarea class="compose-input" id="composeInput" placeholder="Share a room, talk trash, find players…" rows="2"></textarea>
+            <div class="compose-footer">
+              <div class="compose-attach-row">
+                <button class="compose-attach" title="Add game tag" onclick="addGameTag()">🎮</button>
+              </div>
+              <button class="compose-post-btn" id="composeBtn" onclick="submitPost()" disabled>Post</button>
+            </div>
+          </div>
+        </div>
+        <div id="feedList"></div>
+      </div>
+      <div class="feed-sidebar">
+        <div class="sidebar-block"><div class="sidebar-block-header">Trending Rooms</div><div id="trendingList"></div></div>
+        <div class="sidebar-block"><div class="sidebar-block-header">Online Now</div><div id="onlineList"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PUBLIC ROOMS ═══ -->
+  <div class="panel" id="panel-rooms">
+    <div class="rooms-header">
+      <div class="rooms-filter-row">
+        <button class="filter-chip active" data-filter="all" onclick="filterRooms('all')">All Rooms</button>
+        <button class="filter-chip" data-filter="open" onclick="filterRooms('open')">♠ Open Seats</button>
+        <button class="filter-chip" data-filter="free" onclick="filterRooms('free')">◎ Free Entry</button>
+        <button class="filter-chip" data-filter="ingame" onclick="filterRooms('ingame')">🎮 In Game</button>
+      </div>
+    </div>
+    <div class="rooms-grid" id="roomsGrid"></div>
+  </div>
+
+  <!-- ═══ YOUR ROOMS ═══ -->
+  <div class="panel" id="panel-yours">
+    <div class="your-rooms-layout">
+      <div class="your-rooms-top">
+        <div class="your-rooms-title">Your Rooms</div>
+        <button class="create-room-btn" onclick="openCreateRoom()"><span>+</span> Create Room</button>
+      </div>
+      <div class="your-rooms-grid" id="yourRoomsGrid"></div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-copy" id="footerCopy">© 2024 Shitbox Shuffle · US Only · 18+ Verified</span>
+    <div class="footer-links"><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Support</a></div>
+  </footer>
+</div>
+
+<!-- ═══ CREATE ROOM MODAL ═══ -->
+<div class="modal-overlay" id="createRoomOverlay">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeCreateRoom()">✕</button>
+    <div class="modal-header">
+      <div class="modal-eyebrow">Host a Game</div>
+      <div class="modal-title">Open a <em>Room</em></div>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label">Room Name</label>
+        <input class="field-input" id="roomNameInput" type="text" placeholder="e.g. Friday Night Poker" maxlength="60" />
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Description (optional)</label>
+        <input class="field-input" id="roomDescInput" type="text" placeholder="What's the vibe?" maxlength="200" />
+      </div>
+
+      <label class="field-label" style="margin-bottom:10px">Visibility</label>
+      <div class="privacy-toggle">
+        <div class="privacy-opt selected" data-vis="public" onclick="selectVisibility('public')">
+          <div class="privacy-opt-label">Public</div>
+          <div class="privacy-opt-desc">Anyone in the lobby can find and join</div>
+        </div>
+        <div class="privacy-opt" data-vis="private" onclick="selectVisibility('private')">
+          <div class="privacy-opt-label">Private</div>
+          <div class="privacy-opt-desc">Invite only — share the link or QR code</div>
+        </div>
+      </div>
+
+      <div class="pw-field" id="pwField">
+        <div class="field-group" style="margin-bottom:0">
+          <label class="field-label">Room Password (optional)</label>
+          <input class="field-input" id="roomPwInput" type="password" placeholder="Leave blank for no password" autocomplete="new-password" />
+          <div class="field-hint">Players will need this password to enter — even with the invite link</div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Max Players</label>
+          <input class="field-input" id="roomMaxMembers" type="number" value="2" min="2" max="16" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Entry Fee (tokens)</label>
+          <input class="field-input" id="roomEntryFee" type="number" value="0" min="0" placeholder="0 = free" />
+        </div>
+      </div>
+
+      <button class="modal-submit" id="createRoomSubmit" onclick="createRoom()">Open Room</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ QR CODE MODAL ═══ -->
+<div class="modal-overlay" id="qrOverlay">
+  <div class="modal-card" style="width:420px">
+    <button class="modal-close" onclick="closeQrModal()">✕</button>
+    <div class="modal-header">
+      <div class="modal-eyebrow">Invite</div>
+      <div class="modal-title">Share <em>Room</em></div>
+    </div>
+    <div class="qr-modal-body">
+      <div class="qr-canvas-wrap"><canvas id="qrCanvas"></canvas></div>
+      <div class="qr-room-name" id="qrRoomName"></div>
+      <div class="qr-room-link" id="qrRoomLink"></div>
+      <div class="qr-actions">
+        <button class="nav-btn ghost" onclick="copyCurrentQrLink()">Copy Link</button>
+        <button class="nav-btn ghost" onclick="downloadQr()">Download QR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ JOIN PASSWORD MODAL ═══ -->
+<div class="modal-overlay" id="joinPwOverlay">
+  <div class="modal-card" style="width:400px">
+    <button class="modal-close" onclick="closeJoinPwModal()">✕</button>
+    <div class="modal-header">
+      <div class="modal-eyebrow">Private Room</div>
+      <div class="modal-title">Enter <em>Password</em></div>
+    </div>
+    <div class="join-modal-body">
+      <div class="field-group">
+        <label class="field-label">Room Password</label>
+        <input class="field-input" id="joinPwInput" type="password" placeholder="Enter the room password" autocomplete="off" />
+      </div>
+      <button class="modal-submit" id="joinPwSubmit" onclick="submitJoinPassword()">Enter Room</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- QR Code library (lightweight, no dependencies) -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<script>
+
+// ═══ CONFIG ═══
+const _IS_LOCAL = ['localhost','127.0.0.1'].includes(location.hostname);
+const PROD_API_URL = 'https://REPLACE_WITH_RAILWAY_URL.up.railway.app';
+const PROD_APP_URL = 'https://REPLACE_WITH_YOUR_DOMAIN.com';
+const API_URL = _IS_LOCAL ? 'http://localhost:3001' : PROD_API_URL;
+const APP_URL = _IS_LOCAL ? location.origin : PROD_APP_URL;
+
+function getToken() { return localStorage.getItem('accessToken'); }
+function getMyRoomIds() { try { return JSON.parse(localStorage.getItem('myRoomIds') || '[]'); } catch(e) { return []; } }
+function saveMyRoomId(id) { const ids = getMyRoomIds(); if (!ids.includes(id)) { ids.push(id); localStorage.setItem('myRoomIds', JSON.stringify(ids)); } }
+function removeMyRoomId(id) { const ids = getMyRoomIds().filter(i => i !== id); localStorage.setItem('myRoomIds', JSON.stringify(ids)); }
+
+const GAME_ICONS = { CHESS:'♟', POKER:'♠', BLACKJACK:'21', CHECKERS:'⬤', CONNECT_FOUR:'●', UNO:'U', TRIVIA:'?', TICTACTOE:'✕', MEMORY_CARDS:'🧠', GEO_GUESSER:'🌍', PENGUIN_KNOCKOUT:'👊', TANKS:'🎯', TRUTHS_AND_LIE:'🎭', TWENTY_ONE_QUESTIONS:'❓', BILLIARDS:'🎱' };
+const GAME_NAMES = { CHESS:'Chess', POKER:'Poker', BLACKJACK:'Blackjack', CHECKERS:'Checkers', CONNECT_FOUR:'Connect 4', UNO:'Uno', TRIVIA:'Trivia', TICTACTOE:'Tic-Tac-Toe', MEMORY_CARDS:'Memory Cards', GEO_GUESSER:'GeoGuesser', PENGUIN_KNOCKOUT:'Knockout', TANKS:'Tanks', TRUTHS_AND_LIE:'2 Truths & a Lie', TWENTY_ONE_QUESTIONS:'21 Questions', BILLIARDS:'Billiards' };
+const SUITS = ['♠','♥','♣','♦'];
+
+// ═══ TOAST ═══
+let toastTimer;
+function showToast(msg, dur) {
+  dur = dur || 2800;
+  const t = document.getElementById('toast');
+  clearTimeout(toastTimer);
+  t.classList.remove('show');
+  requestAnimationFrame(() => { t.textContent = msg.replace(/<[^>]*>/g, ''); t.classList.add('show'); toastTimer = setTimeout(() => t.classList.remove('show'), dur); });
+}
+
+// ═══ AUTH ═══
+let currentUser = null;
+
+async function initAuth() {
+  const token = getToken();
+  if (!token) { updateNavForGuest(); return; }
+  try {
+    const r = await fetch(API_URL + '/api/users/me', { headers: { 'Authorization': 'Bearer ' + token } });
+    if (!r.ok) { updateNavForGuest(); return; }
+    currentUser = await r.json();
+    updateNavForUser();
+  } catch(e) { updateNavForGuest(); }
+}
+
+function updateNavForGuest() {
+  currentUser = null;
+  const btn = document.getElementById('navAuthBtn');
+  btn.textContent = 'Log In';
+  btn.onclick = openAuth;
+  document.getElementById('composeAvatar').textContent = '?';
+}
+
+function updateNavForUser() {
+  const btn = document.getElementById('navAuthBtn');
+  const name = currentUser.displayName || currentUser.username || 'Member';
+  const initials = name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+  btn.innerHTML = '<span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,rgba(201,162,39,0.2),rgba(201,162,39,0.08));border:1px solid rgba(201,162,39,0.2);display:inline-flex;align-items:center;justify-content:center;font-family:Cormorant Garamond,serif;font-size:10px;font-weight:700;color:#c9a227;margin-right:6px">' + initials + '</span>' + esc(name);
+  btn.onclick = null;
+  document.getElementById('composeAvatar').textContent = initials;
+}
+
+function openAuth() { window.location.href = 'shitboxshuffle.html'; }
+
+// ═══ TABS ═══
+function switchPanel(tab) {
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
+  if (tab === 'rooms') loadPublicRooms();
+  if (tab === 'yours') loadYourRooms();
+}
+
+// ═══ CREATE ROOM ═══
+let selectedVisibility = 'public';
+
+function openCreateRoom() {
+  if (!getToken()) { showToast('♠ <span class="accent">Sign in</span> to create a room'); openAuth(); return; }
+  document.getElementById('createRoomOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeCreateRoom() {
+  document.getElementById('createRoomOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.getElementById('createRoomOverlay').addEventListener('click', e => { if (e.target.id === 'createRoomOverlay') closeCreateRoom(); });
+
+function selectVisibility(vis) {
+  selectedVisibility = vis;
+  document.querySelectorAll('.privacy-opt').forEach(el => el.classList.toggle('selected', el.dataset.vis === vis));
+  document.getElementById('pwField').classList.toggle('show', vis === 'private');
+}
+
+async function createRoom() {
+  const token = getToken();
+  if (!token) return;
+
+  const title = document.getElementById('roomNameInput').value.trim();
+  const description = document.getElementById('roomDescInput').value.trim() || undefined;
+  const password = document.getElementById('roomPwInput').value || undefined;
+  const maxMembers = parseInt(document.getElementById('roomMaxMembers').value) || 2;
+  const entryFeeTokens = parseInt(document.getElementById('roomEntryFee').value) || 0;
+  const isPublic = selectedVisibility === 'public';
+
+  if (!title) { showToast('♠ <span class="accent">Name your room</span>'); return; }
+
+  const btn = document.getElementById('createRoomSubmit');
+  btn.disabled = true; btn.textContent = 'Creating…';
+
+  try {
+    const body = { title, isPublic, maxMembers, entryFeeTokens };
+    if (description) body.description = description;
+    if (password && !isPublic) body.password = password;
+
+    const r = await fetch(API_URL + '/api/rooms', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (r.ok) {
+      const room = await r.json();
+      saveMyRoomId(room.id);
+      closeCreateRoom();
+      showToast('🏠 <span class="accent">' + esc(title) + '</span> is open!');
+
+      document.getElementById('roomNameInput').value = '';
+      document.getElementById('roomDescInput').value = '';
+      document.getElementById('roomPwInput').value = '';
+
+      switchPanel('yours');
+      loadYourRooms();
+    } else {
+      const err = await r.json().catch(() => ({}));
+      const msg = Array.isArray(err.message) ? err.message.join('. ') : (err.message || 'Could not create room');
+      showToast('✕ <span class="accent">' + esc(msg) + '</span>', 4000);
+    }
+  } catch(e) {
+    showToast('✕ <span class="accent">Cannot reach the server</span> — is the API running on port 3001?', 4000);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Open Room';
+  }
+}
+
+// ═══ PUBLIC ROOMS ═══
+let allPublicRooms = [];
+
+async function loadPublicRooms() {
+  try {
+    const r = await fetch(API_URL + '/api/rooms');
+    if (r.ok) {
+      const data = await r.json();
+      allPublicRooms = Array.isArray(data) ? data : [];
+      renderRooms();
+      document.getElementById('roomsCount').textContent = allPublicRooms.length;
+      return;
+    }
+  } catch(e) { console.error('Request failed:', e); }
+  allPublicRooms = [];
+  renderRooms();
+  document.getElementById('roomsCount').textContent = '0';
+}
+
+function filterRooms(filter) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.dataset.filter === filter));
+  renderRooms(filter);
+}
+
+function renderRooms(filter) {
+  filter = filter || document.querySelector('.filter-chip.active')?.dataset.filter || 'all';
+  const grid = document.getElementById('roomsGrid');
+  let filtered = allPublicRooms;
+  if (filter === 'open') filtered = allPublicRooms.filter(r => (r.participantCount || 0) < (r.maxMembers || 2));
+  else if (filter === 'free') filtered = allPublicRooms.filter(r => !r.entryFeeTokens);
+  else if (filter === 'ingame') filtered = allPublicRooms.filter(r => r.status === 'IN_GAME' || r.status === 'VOTING');
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🃏</div><div class="empty-state-text">No public rooms right now</div><div class="empty-state-sub">Be the first — open a table and they\'ll come</div></div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(room => {
+    const roundGame = room.currentRound?.gameType;
+    const icon = roundGame ? (GAME_ICONS[roundGame] || '🎮') : '🃏';
+    const gameName = roundGame ? (GAME_NAMES[roundGame] || roundGame) : 'Lobby open';
+    const suit = SUITS[Math.floor(Math.random() * 4)];
+    const hostName = room.hostName || room.host?.displayName || 'Host';
+    const pCount = room.participantCount ?? room.participants?.length ?? 0;
+    const maxP = room.maxMembers || 2;
+    const hasPassword = room.hasPassword || !!room.passwordHash;
+    const isFull = pCount >= maxP;
+    const statusLabel = room.status === 'IN_GAME' ? 'In Game' : room.status === 'VOTING' ? 'Voting' : 'Lobby';
+    const fee = room.entryFeeTokens || 0;
+    let avatars = '';
+    for (let i = 0; i < Math.min(pCount, 4); i++) avatars += '<div class="room-tile-avatar-small">' + String.fromCharCode(65+i) + '</div>';
+    if (pCount > 4) avatars += '<div class="room-tile-avatar-small">+' + (pCount-4) + '</div>';
+
+    return '<div class="room-tile" onclick="handleJoinRoom(\'' + room.id + '\',' + hasPassword + ')">' +
+      '<div class="room-tile-suit">' + suit + '</div>' +
+      '<div class="room-tile-top"><span class="room-tile-icon">' + icon + '</span>' +
+        '<div class="room-tile-badges">' +
+          (hasPassword ? '<span class="room-badge locked">🔒</span>' : '') +
+          (fee > 0 ? '<span class="room-badge live">' + fee + ' tokens</span>' : '<span class="room-badge public">Free</span>') +
+          (pCount > 0 ? '<span class="room-badge live">' + statusLabel + '</span>' : '') +
+        '</div></div>' +
+      '<div class="room-tile-name">' + esc(room.title) + '</div>' +
+      '<div class="room-tile-game">' + gameName + ' · Hosted by ' + esc(hostName) + (room.description ? ' · ' + esc(room.description) : '') + '</div>' +
+      '<div class="room-tile-footer">' +
+        '<div class="room-tile-players"><div class="room-tile-avatars">' + avatars + '</div><span class="room-tile-player-count">' + pCount + '/' + maxP + '</span></div>' +
+        '<button class="room-tile-join">' + (isFull ? 'Full' : 'Join Table') + '</button>' +
+      '</div></div>';
+  }).join('');
+}
+
+// ═══ YOUR ROOMS ═══
+async function loadYourRooms() {
+  const grid = document.getElementById('yourRoomsGrid');
+  const token = getToken();
+  if (!token) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔒</div><div class="empty-state-text">Sign in to see your rooms</div><div class="empty-state-sub">Create and manage private or public rooms</div></div>';
+    return;
+  }
+
+  const myIds = getMyRoomIds();
+  if (myIds.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🃏</div><div class="empty-state-text">No rooms yet</div><div class="empty-state-sub">Create your first room and invite friends to play</div></div>';
+    return;
+  }
+
+  const rooms = [];
+  for (const id of myIds) {
+    try {
+      const r = await fetch(API_URL + '/api/rooms/' + id, { headers: { 'Authorization': 'Bearer ' + token } });
+      if (r.ok) {
+        rooms.push(await r.json());
+      } else if (r.status === 404) {
+        removeMyRoomId(id);
+      }
+    } catch(e) { console.error('Request failed:', e); }
+  }
+
+  if (rooms.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🃏</div><div class="empty-state-text">No rooms yet</div><div class="empty-state-sub">Create your first room and invite friends to play</div></div>';
+    return;
+  }
+
+  grid.innerHTML = rooms.map(room => {
+    const roundGame = room.currentRound?.gameType;
+    const gameName = roundGame ? (GAME_NAMES[roundGame] || roundGame) : 'Waiting for players';
+    const pCount = room.participantCount ?? room.participants?.length ?? 0;
+    const maxP = room.maxMembers || 2;
+    const isLive = room.status === 'LIVE' || room.status === 'VOTING' || room.status === 'IN_GAME';
+    const hasPassword = room.hasPassword || !!room.passwordHash;
+    const inviteLink = APP_URL + '/lobby.html?join=' + room.id;
+
+    return '<div class="your-room-card">' +
+      '<div class="yrc-header">' +
+        '<div><div class="yrc-name">' + esc(room.title) + '</div>' +
+          '<div class="yrc-game">' + gameName +
+            (room.isPublic ? ' · Public' : ' · Private') +
+            (hasPassword ? ' · 🔒' : '') +
+          '</div></div>' +
+        '<div class="yrc-status-dot ' + (isLive ? 'active' : 'idle') + '"></div>' +
+      '</div>' +
+      '<div class="yrc-section-label">Invite Link</div>' +
+      '<div class="yrc-invite-row">' +
+        '<div class="yrc-invite-code">' + esc(inviteLink) + '</div>' +
+        '<button class="yrc-copy-btn" onclick="event.stopPropagation();copyInvite(\'' + room.id + '\', this)">Copy</button>' +
+        '<button class="yrc-qr-btn" onclick="event.stopPropagation();showQr(\'' + room.id + '\',\'' + esc(room.title).replace(/'/g,"\\'") + '\')">QR</button>' +
+      '</div>' +
+      '<div class="yrc-footer">' +
+        '<div class="yrc-players"><span>' + pCount + '/' + maxP + ' players</span></div>' +
+        '<div class="yrc-actions">' +
+          '<button class="yrc-action-btn" onclick="event.stopPropagation();handleJoinRoom(\'' + room.id + '\',' + hasPassword + ')">Enter</button>' +
+          '<button class="yrc-action-btn danger" onclick="event.stopPropagation();endRoom(\'' + room.id + '\')">Close</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function copyInvite(roomId, btn) {
+  const link = APP_URL + '/lobby.html?join=' + roomId;
+  navigator.clipboard.writeText(link).then(() => {
+    btn.textContent = 'Copied!';
+    showToast('♠ <span class="accent">Invite link copied</span>');
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  }).catch(() => showToast('Could not copy'));
+}
+
+// ═══ QR CODE ═══
+let currentQrLink = '';
+
+function showQr(roomId, roomTitle) {
+  const link = APP_URL + '/lobby.html?join=' + roomId;
+  currentQrLink = link;
+  document.getElementById('qrRoomName').textContent = roomTitle;
+  document.getElementById('qrRoomLink').textContent = link;
+
+  const canvas = document.getElementById('qrCanvas');
+  if (typeof QRCode !== 'undefined') {
+    QRCode.toCanvas(canvas, link, {
+      width: 220, margin: 1,
+      color: { dark: '#08070a', light: '#ffffff' }
+    }, function(err) {
+      if (err) console.error(err);
+    });
+  } else {
+    const ctx = canvas.getContext('2d');
+    canvas.width = 220; canvas.height = 220;
+    ctx.fillStyle = '#fff'; ctx.fillRect(0,0,220,220);
+    ctx.fillStyle = '#08070a'; ctx.font = '12px IBM Plex Sans'; ctx.textAlign = 'center';
+    ctx.fillText('QR library loading…', 110, 110);
+  }
+
+  document.getElementById('qrOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeQrModal() {
+  document.getElementById('qrOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.getElementById('qrOverlay').addEventListener('click', e => { if (e.target.id === 'qrOverlay') closeQrModal(); });
+
+function copyCurrentQrLink() {
+  navigator.clipboard.writeText(currentQrLink).then(() => showToast('♠ <span class="accent">Link copied</span>')).catch(() => {});
+}
+
+function downloadQr() {
+  const canvas = document.getElementById('qrCanvas');
+  const link = document.createElement('a');
+  link.download = 'shitbox-room-qr.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  showToast('♠ <span class="accent">QR saved</span>');
+}
+
+// ═══ JOIN ROOM ═══
+let pendingJoinRoomId = null;
+
+function handleJoinRoom(roomId, hasPassword) {
+  const token = getToken();
+  if (!token) { showToast('♠ <span class="accent">Sign in</span> to join rooms'); openAuth(); return; }
+
+  if (hasPassword) {
+    pendingJoinRoomId = roomId;
+    document.getElementById('joinPwInput').value = '';
+    document.getElementById('joinPwOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('joinPwInput').focus(), 100);
+  } else {
+    doJoinRoom(roomId);
+  }
+}
+
+function closeJoinPwModal() {
+  document.getElementById('joinPwOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  pendingJoinRoomId = null;
+}
+document.getElementById('joinPwOverlay').addEventListener('click', e => { if (e.target.id === 'joinPwOverlay') closeJoinPwModal(); });
+
+async function submitJoinPassword() {
+  if (!pendingJoinRoomId) return;
+  const password = document.getElementById('joinPwInput').value;
+  closeJoinPwModal();
+  doJoinRoom(pendingJoinRoomId, password);
+}
+
+async function doJoinRoom(roomId, password) {
+  const token = getToken();
+  if (!token) return;
+
+  try {
+    const body = {};
+    if (password) body.password = password;
+
+    const r = await fetch(API_URL + '/api/rooms/' + roomId + '/join', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (r.ok) {
+      saveMyRoomId(roomId);
+      showToast('🎯 <span class="accent">Joined!</span> Entering room…');
+      setTimeout(() => { window.location.href = 'session.html?room=' + roomId; }, 600);
+    } else {
+      const err = await r.json().catch(() => ({}));
+      const msg = Array.isArray(err.message) ? err.message.join('. ') : (err.message || 'Could not join room');
+
+      if (msg.toLowerCase().includes('password required') || msg.toLowerCase().includes('password')) {
+        pendingJoinRoomId = roomId;
+        document.getElementById('joinPwInput').value = '';
+        document.getElementById('joinPwOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => document.getElementById('joinPwInput').focus(), 100);
+        return;
+      }
+
+      showToast('✕ <span class="accent">' + esc(msg) + '</span>', 4000);
+    }
+  } catch(e) {
+    showToast('✕ <span class="accent">Cannot reach the server</span>', 3000);
+  }
+}
+
+async function endRoom(roomId) {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const r = await fetch(API_URL + '/api/rooms/' + roomId + '/end', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (r.ok) {
+      removeMyRoomId(roomId);
+      showToast('♠ <span class="accent">Room closed</span>');
+      loadYourRooms();
+      loadPublicRooms();
+    } else {
+      const err = await r.json().catch(() => ({}));
+      showToast('✕ ' + (err.message || 'Could not close room'));
+    }
+  } catch(e) {
+    showToast('✕ Connection error');
+  }
+}
+
+// ═══ COMMUNITY FEED (local / demo) ═══
+const composeInput = document.getElementById('composeInput');
+const composeBtn = document.getElementById('composeBtn');
+
+composeInput.addEventListener('input', () => {
+  composeBtn.disabled = composeInput.value.trim().length === 0;
+  composeInput.style.height = 'auto';
+  composeInput.style.height = Math.min(composeInput.scrollHeight, 120) + 'px';
+});
+
+function getFeedPosts() { try { return JSON.parse(localStorage.getItem('lobbyFeed') || '[]'); } catch(e) { return []; } }
+function saveFeedPosts(posts) { localStorage.setItem('lobbyFeed', JSON.stringify(posts)); }
+
+function submitPost() {
+  if (!currentUser) { showToast('♠ <span class="accent">Sign in</span> to post'); openAuth(); return; }
+  const content = composeInput.value.trim();
+  if (!content) return;
+
+  const posts = getFeedPosts();
+  posts.unshift({
+    id: Date.now().toString(36),
+    content,
+    user: { displayName: currentUser.displayName || currentUser.username, username: currentUser.username },
+    createdAt: new Date().toISOString(),
+    likes: 0
+  });
+  saveFeedPosts(posts);
+  composeInput.value = '';
+  composeInput.style.height = 'auto';
+  composeBtn.disabled = true;
+  showToast('✓ <span class="accent">Posted</span>');
+  renderFeed();
+}
+
+function timeAgo(dateStr) {
+  const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+  if (diff < 60) return 'now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h';
+  return Math.floor(diff/86400) + 'd';
+}
+
+function renderFeed() {
+  const posts = getFeedPosts();
+  const demo = [
+    { user:{displayName:'Marcus "AceHigh" Davis',username:'acehigh'}, content:'Friday night poker is LIVE. No limit, no mercy. Pull up if you\'re about it.', createdAt:new Date(Date.now()-720000).toISOString(), likes:8 },
+    { user:{displayName:'Sofia Chen',username:'sofiaplay'}, content:'Anyone down for chess? I\'ve been studying the Sicilian defense and need to test it out on real people.', createdAt:new Date(Date.now()-1680000).toISOString(), likes:3 },
+    { user:{displayName:'Dex',username:'dexterous'}, content:'Just 3-0\'d someone in Connect 4 and they disconnected. Pain. Need a real opponent.', createdAt:new Date(Date.now()-2700000).toISOString(), likes:14 },
+    { user:{displayName:'Layla Brooks',username:'laylabr'}, content:'Hosting trivia night! Categories: pop culture, science, and "things that don\'t exist" — come through.', createdAt:new Date(Date.now()-3600000).toISOString(), likes:6 },
+    { user:{displayName:'Tommy Two-Pair',username:'tommy2p'}, content:'Who wants to run blackjack? I got 500 tokens and a dream.', createdAt:new Date(Date.now()-7200000).toISOString(), likes:11 },
+    { user:{displayName:'Nia Okafor',username:'niawin'}, content:'The knockout arena is empty rn, first 2 people to join get bragging rights for the week.', createdAt:new Date(Date.now()-10800000).toISOString(), likes:5 },
+  ];
+
+  const all = [...posts, ...demo];
+  const list = document.getElementById('feedList');
+
+  list.innerHTML = all.map(p => {
+    const name = p.user?.displayName || p.user?.username || 'Anonymous';
+    const handle = p.user?.username ? '@' + p.user.username : '';
+    const initials = name.replace(/["']/g,'').trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    const time = p.createdAt ? timeAgo(p.createdAt) : '';
+    return '<div class="feed-post"><div class="post-top">' +
+      '<div class="post-avatar">' + initials + '</div>' +
+      '<div class="post-content">' +
+        '<div class="post-meta"><span class="post-author">' + esc(name) + '</span>' +
+          (handle ? '<span class="post-handle">' + esc(handle) + '</span>' : '') +
+          '<div class="post-dot"></div><span class="post-time">' + time + '</span></div>' +
+        '<div class="post-body">' + esc(p.content || '') + '</div>' +
+        '<div class="post-actions">' +
+          '<div class="post-action" onclick="this.classList.toggle(\'liked\')"><span class="icon">♥</span> ' + (p.likes||'') + '</div>' +
+          '<div class="post-action"><span class="icon">↩</span></div>' +
+          '<div class="post-action"><span class="icon">⤴</span></div>' +
+        '</div></div></div></div>';
+  }).join('');
+
+  document.getElementById('feedCount').textContent = all.length;
+}
+
+function addGameTag() {
+  const tags = ['♟ Chess', '♠ Poker', '● Connect 4', '? Trivia', '✕ TicTacToe', '👊 Knockout'];
+  composeInput.value += (composeInput.value ? ' ' : '') + tags[Math.floor(Math.random() * tags.length)];
+  composeInput.dispatchEvent(new Event('input'));
+}
+
+// ═══ SIDEBAR ═══
+function loadSidebar() {
+  const trending = [
+    { name:'Friday Night No Limit', game:'Poker', players:'3/6' },
+    { name:'Layla\'s Trivia Night', game:'Trivia', players:'4/8' },
+    { name:'Tommy\'s 21 Table', game:'Blackjack', players:'2/4' },
+    { name:'Knockout Ring', game:'Knockout', players:'0/2' },
+  ];
+  document.getElementById('trendingList').innerHTML = trending.map((t,i) =>
+    '<div class="trending-item"><span class="trending-rank">'+(i+1)+'</span><div class="trending-info"><div class="trending-name">'+esc(t.name)+'</div><div class="trending-stat">'+t.game+' · '+t.players+'</div></div></div>'
+  ).join('');
+
+  const online = [
+    {name:'Marcus Davis',initials:'MD'},{name:'Sofia Chen',initials:'SC'},
+    {name:'Dex',initials:'DX'},{name:'Layla Brooks',initials:'LB'},{name:'Tommy Two-Pair',initials:'TT'},
+  ];
+  document.getElementById('onlineList').innerHTML = online.map(u =>
+    '<div class="sidebar-who-item"><div class="sidebar-who-avatar">'+u.initials+'</div><span class="sidebar-who-name">'+esc(u.name)+'</span><div class="sidebar-who-dot"></div></div>'
+  ).join('');
+}
+
+// ═══ HANDLE ?join= URL PARAM ═══
+(function checkJoinParam() {
+  const joinId = new URLSearchParams(window.location.search).get('join');
+  if (joinId) {
+    const token = getToken();
+    if (!token) {
+      showToast('♠ <span class="accent">Sign in</span> to join this room', 4000);
+      return;
+    }
+    doJoinRoom(joinId);
+  }
+})();
+
+// ═══ ESCAPE HTML ═══
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+// ═══ KEYBOARD ═══
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeCreateRoom();
+    closeQrModal();
+    closeJoinPwModal();
+  }
+});
+
+// Handle enter on password modal
+document.getElementById('joinPwInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitJoinPassword();
+});
+
+// ═══ INIT ═══
+document.getElementById('footerCopy').textContent = `© ${new Date().getFullYear()} Shitbox Shuffle · US Only · 18+ Verified`;
+initAuth();
+renderFeed();
+loadSidebar();
+loadPublicRooms();
+
+</script>
+</body>
+</html>

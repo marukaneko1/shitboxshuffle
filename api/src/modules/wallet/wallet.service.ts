@@ -68,15 +68,12 @@ export class WalletService {
   async debitTokens(userId: string, amount: number, type: WalletTransactionType, metadata?: Prisma.InputJsonValue, sessionId?: string) {
     if (amount <= 0) throw new BadRequestException("Amount must be positive");
     return this.prisma.$transaction(async (tx) => {
-      // Use FOR UPDATE to lock the row and prevent race conditions
-      // Check balance within transaction to prevent race conditions
-      const wallet = await tx.wallet.findUnique({ 
-        where: { userId },
-        select: { id: true, balanceTokens: true }
-      });
+      const locked = await tx.$queryRaw<{ id: string; balanceTokens: number }[]>`
+        SELECT id, "balanceTokens" FROM "Wallet" WHERE "userId" = ${userId} FOR UPDATE
+      `;
       
-      if (!wallet) throw new NotFoundException("Wallet not found");
-      if (wallet.balanceTokens < amount) throw new BadRequestException("Insufficient tokens");
+      if (!locked.length) throw new NotFoundException("Wallet not found");
+      if (locked[0].balanceTokens < amount) throw new BadRequestException("Insufficient tokens");
 
       return tx.wallet.update({
         where: { userId },
@@ -101,19 +98,17 @@ export class WalletService {
    */
   async sendGift(senderUserId: string, receiverUserId: string, amount: number, sessionId?: string) {
     if (amount <= 0) throw new BadRequestException("Amount must be positive");
+    if (senderUserId === receiverUserId) throw new BadRequestException("Cannot send a gift to yourself");
     
-    // Ensure both users have wallets
     await this.ensureWallet(senderUserId);
     await this.ensureWallet(receiverUserId);
     
     return this.prisma.$transaction(async (tx) => {
-      // Check sender balance
-      const senderWallet = await tx.wallet.findUnique({ 
-        where: { userId: senderUserId }, 
-        select: { id: true, balanceTokens: true } 
-      });
-      if (!senderWallet) throw new NotFoundException("Sender wallet not found");
-      if (senderWallet.balanceTokens < amount) throw new BadRequestException("Insufficient tokens");
+      const locked = await tx.$queryRaw<{ id: string; balanceTokens: number }[]>`
+        SELECT id, "balanceTokens" FROM "Wallet" WHERE "userId" = ${senderUserId} FOR UPDATE
+      `;
+      if (!locked.length) throw new NotFoundException("Sender wallet not found");
+      if (locked[0].balanceTokens < amount) throw new BadRequestException("Insufficient tokens");
 
       // Debit sender
       await tx.wallet.update({
@@ -151,7 +146,7 @@ export class WalletService {
       return { 
         success: true, 
         amount, 
-        senderBalance: senderWallet.balanceTokens - amount,
+        senderBalance: locked[0].balanceTokens - amount,
         receiverBalance: receiverWallet.balanceTokens
       };
     });
@@ -168,6 +163,8 @@ export class WalletService {
     });
     if (!wager) throw new NotFoundException("Wager not found");
     if (wager.status !== WagerStatus.LOCKED) throw new BadRequestException("Wager not locked");
+    const isParticipant = wager.participants.some(p => p.userId === winnerUserId);
+    if (!isParticipant) throw new BadRequestException("Winner is not a participant in this wager");
     const totalPot = wager.participants.reduce((sum, p) => sum + p.stakeTokens, 0);
     const rake = Math.floor(totalPot * 0.05);
     const payout = totalPot - rake;
@@ -238,26 +235,35 @@ export class WalletService {
         const tokens = this.packTokens[session.metadata.packId];
         if (!tokens) return { received: true };
 
-        // Check idempotency by both event ID and session ID for better reliability
-        const existing = await this.prisma.walletTransaction.findFirst({
-          where: {
-            OR: [
-              { metadata: { path: ["stripeEventId"], equals: event.id } },
-              { metadata: { path: ["stripeSessionId"], equals: session.id } }
-            ]
-          }
-        });
-        if (existing) return { received: true };
+        await this.prisma.$transaction(async (tx) => {
+          const existing = await tx.walletTransaction.findFirst({
+            where: {
+              OR: [
+                { metadata: { path: ["stripeEventId"], equals: event.id } },
+                { metadata: { path: ["stripeSessionId"], equals: session.id } }
+              ]
+            }
+          });
+          if (existing) return;
 
-        await this.creditTokens(
-          session.metadata.userId, 
-          tokens, 
-          { 
-            stripeEventId: event.id, 
-            stripeSessionId: session.id,
-            packId: session.metadata.packId 
-          }
-        );
+          await tx.wallet.update({
+            where: { userId: session.metadata!.userId! },
+            data: {
+              balanceTokens: { increment: tokens },
+              transactions: {
+                create: {
+                  type: WalletTransactionType.PURCHASE,
+                  amountTokens: tokens,
+                  metadata: { 
+                    stripeEventId: event.id, 
+                    stripeSessionId: session.id,
+                    packId: session.metadata!.packId 
+                  }
+                }
+              }
+            }
+          });
+        });
       }
     }
 

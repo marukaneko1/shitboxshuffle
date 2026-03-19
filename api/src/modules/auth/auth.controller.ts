@@ -69,7 +69,6 @@ export class AuthController {
     const refreshToken = dto.refreshToken || refreshTokenFromCookie;
     
     if (!refreshToken) {
-      console.error('[Refresh] No refresh token found in cookie or body');
       throw new UnauthorizedException("Missing refresh token. Please log in again.");
     }
     
@@ -88,7 +87,17 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response
   ) {
     await this.authService.logout(user.sub, (req.cookies?.refresh_token as string) || undefined);
-    res.clearCookie("refresh_token");
+    const isProduction = Boolean(
+      process.env.NODE_ENV === "production" || 
+      process.env.VERCEL === "1" || 
+      !!process.env.VERCEL_ENV
+    );
+    res.clearCookie("refresh_token", {
+      httpOnly: true,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
+      path: "/"
+    });
     return { success: true };
   }
 

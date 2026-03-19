@@ -40,9 +40,9 @@ export default () => ({
   intervals: {
     matchmakingCheck: parseInt(process.env.MATCHMAKING_CHECK_INTERVAL_MS || "2000", 10),
     votingDuration: parseInt(process.env.VOTING_DURATION_MS || "20000", 10),
-    triviaCountdown: parseInt(process.env.TRIVIA_COUNTDOWN_MS || "3000", 10),
+    triviaCountdown: parseInt(process.env.TRIVIA_COUNTDOWN_MS || "0", 10),
     triviaQuestionDuration: parseInt(process.env.TRIVIA_QUESTION_DURATION_MS || "10000", 10), // 10 seconds
-    triviaQuestionDelay: parseInt(process.env.TRIVIA_QUESTION_DELAY_MS || "4000", 10),
+    triviaQuestionDelay: parseInt(process.env.TRIVIA_QUESTION_DELAY_MS || "2500", 10),
     triviaQuestionPause: parseInt(process.env.TRIVIA_QUESTION_PAUSE_MS || "2000", 10),
     matchmakingCleanup: parseInt(process.env.MATCHMAKING_CLEANUP_INTERVAL_MS || "300000", 10), // 5 minutes
     matchmakingStaleTimeout: parseInt(process.env.MATCHMAKING_STALE_TIMEOUT_MS || "600000", 10) // 10 minutes

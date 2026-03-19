@@ -15,7 +15,7 @@ export interface UnoState {
   currentTurn: string;        // userId
   playerOrder: [string, string];
   currentColor: UnoColor;     // active color (matters for wilds)
-  phase: 'play' | 'ended';
+  phase: 'play' | 'draw_play_or_pass' | 'ended';
   winner: string | null;
   lastAction: string;
   drawCount: number;          // how many cards current player must draw (pending penalty)
@@ -30,7 +30,7 @@ export interface UnoClientState {
   currentTurn: string;
   playerOrder: [string, string];
   currentColor: UnoColor;
-  phase: 'play' | 'ended';
+  phase: 'play' | 'draw_play_or_pass' | 'ended';
   winner: string | null;
   lastAction: string;
 }

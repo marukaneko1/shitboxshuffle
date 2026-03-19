@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException, Logger } from "@nestjs/common";
+import { BadRequestException, Injectable, UnauthorizedException, Logger, OnModuleDestroy } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
@@ -9,7 +9,8 @@ import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { OAuth2Client } from "google-auth-library";
 import { v4 as uuidv4 } from "uuid";
-import { JwtPayload } from "../../types/auth";
+import * as crypto from "crypto";
+import { JwtPayload, AuthRole } from "../../types/auth";
 
 /**
  * SECURITY: Account lockout configuration
@@ -30,14 +31,15 @@ const MAX_REFRESH_ATTEMPTS = 10;
 const REFRESH_LOCKOUT_MS = 60 * 60 * 1000; // 1 hour
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleDestroy {
   private readonly logger = new Logger(AuthService.name);
   private googleClient: OAuth2Client | null = null;
+  private cleanupTimer: NodeJS.Timeout;
   
-  // SECURITY: In-memory tracking for failed attempts
-  // For production, use Redis for distributed tracking
   private loginAttempts = new Map<string, LoginAttempt>();
   private refreshAttempts = new Map<string, LoginAttempt>();
+
+  private static readonly DUMMY_HASH = '$argon2id$v=19$m=65536,t=3,p=4$c29tZXNhbHQ$RdescudvJCsgt3ub+b+daw';
 
   constructor(
     private readonly prisma: PrismaService,
@@ -49,8 +51,11 @@ export class AuthService {
       this.googleClient = new OAuth2Client(clientId);
     }
     
-    // Cleanup old entries every 30 minutes
-    setInterval(() => this.cleanupAttempts(), 30 * 60 * 1000);
+    this.cleanupTimer = setInterval(() => this.cleanupAttempts(), 30 * 60 * 1000);
+  }
+
+  onModuleDestroy() {
+    clearInterval(this.cleanupTimer);
   }
   
   /**
@@ -123,57 +128,59 @@ export class AuthService {
   }
 
   async register(dto: RegisterDto) {
-    const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
-    if (existing) {
-      throw new BadRequestException("Email already registered");
-    }
-    const existingUsername = await this.prisma.user.findUnique({ where: { username: dto.username } });
-    if (existingUsername) {
-      throw new BadRequestException("Username already taken");
-    }
-
+    const normalizedEmail = dto.email.toLowerCase().trim();
+    
     const passwordHash = await argon2.hash(dto.password);
 
-    const user = await this.prisma.user.create({
-      data: {
-        email: dto.email,
-        passwordHash,
-        displayName: dto.displayName,
-        username: dto.username,
-        dateOfBirth: dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined,
-        wallet: {
-          create: {}
-        },
-        subscription: {
-          create: {}
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          email: normalizedEmail,
+          passwordHash,
+          displayName: dto.displayName,
+          username: dto.username,
+          dateOfBirth: dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined,
+          wallet: {
+            create: {}
+          },
+          subscription: {
+            create: {}
+          }
         }
-      }
-    });
+      });
 
-    const tokens = await this.issueTokens(user);
-    return tokens;
+      const tokens = await this.issueTokens(user);
+      return tokens;
+    } catch (error: any) {
+      if (error?.code === 'P2002') {
+        const target = error.meta?.target;
+        if (Array.isArray(target) && target.includes('username')) {
+          throw new BadRequestException("Username already taken");
+        }
+        throw new BadRequestException("Email already registered");
+      }
+      throw error;
+    }
   }
 
   async login(dto: LoginDto) {
-    // SECURITY: Check for account lockout before attempting login
-    this.checkLockout(dto.email.toLowerCase(), this.loginAttempts, MAX_LOGIN_ATTEMPTS, LOCKOUT_DURATION_MS);
+    const normalizedEmail = dto.email.toLowerCase().trim();
+    this.checkLockout(normalizedEmail, this.loginAttempts, MAX_LOGIN_ATTEMPTS, LOCKOUT_DURATION_MS);
     
-    const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+    const user = await this.prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (!user || !user.passwordHash) {
-      // SECURITY: Record failed attempt even if user doesn't exist (timing attack protection)
-      this.recordFailedAttempt(dto.email.toLowerCase(), this.loginAttempts, MAX_LOGIN_ATTEMPTS, LOCKOUT_DURATION_MS);
+      await argon2.verify(AuthService.DUMMY_HASH, dto.password).catch(() => {});
+      this.recordFailedAttempt(normalizedEmail, this.loginAttempts, MAX_LOGIN_ATTEMPTS, LOCKOUT_DURATION_MS);
       throw new UnauthorizedException("Invalid credentials");
     }
     
     const valid = await argon2.verify(user.passwordHash, dto.password);
     if (!valid) {
-      // SECURITY: Record failed attempt
-      this.recordFailedAttempt(dto.email.toLowerCase(), this.loginAttempts, MAX_LOGIN_ATTEMPTS, LOCKOUT_DURATION_MS);
+      this.recordFailedAttempt(normalizedEmail, this.loginAttempts, MAX_LOGIN_ATTEMPTS, LOCKOUT_DURATION_MS);
       throw new UnauthorizedException("Invalid credentials");
     }
     
-    // SECURITY: Clear failed attempts on successful login
-    this.clearAttempts(dto.email.toLowerCase(), this.loginAttempts);
+    this.clearAttempts(normalizedEmail, this.loginAttempts);
     
     this.assertNotBanned(user);
     await this.ensureWalletAndSubscription(user.id);
@@ -224,78 +231,83 @@ export class AuthService {
   }
 
   async refresh(dto: RefreshDto, refreshTokenFromCookie?: string, clientIp?: string) {
-    // Accept refresh token from either body or cookie parameter
     const raw = refreshTokenFromCookie || dto.refreshToken;
     if (!raw) {
       throw new UnauthorizedException("Missing refresh token");
     }
     
-    // SECURITY: Use IP-based rate limiting for refresh token brute force protection
     const rateLimitKey = clientIp || 'unknown';
     this.checkLockout(rateLimitKey, this.refreshAttempts, MAX_REFRESH_ATTEMPTS, REFRESH_LOCKOUT_MS);
     
-    // Find the matching token by checking all recent tokens
-    // Note: We check all tokens because we can't identify the user until we verify the hash
-    // To improve security, we limit the search to recent tokens only
-    const allRecentTokens = await this.prisma.refreshToken.findMany({
-      where: { revokedAt: null, expiresAt: { gt: new Date() } },
+    const { prefix } = this.splitToken(raw);
+    const candidates = await this.prisma.refreshToken.findMany({
+      where: { tokenPrefix: prefix, revokedAt: null, expiresAt: { gt: new Date() } },
       orderBy: { createdAt: "desc" },
-      take: 100 // Limit to most recent 100 tokens for performance
+      take: 5
     });
     
-    const matched = await this.findMatchingRefreshToken(allRecentTokens, raw);
+    const matched = await this.findMatchingRefreshToken(candidates, raw);
     if (!matched) {
-      // SECURITY: Record failed refresh attempt
       this.recordFailedAttempt(rateLimitKey, this.refreshAttempts, MAX_REFRESH_ATTEMPTS, REFRESH_LOCKOUT_MS);
       throw new UnauthorizedException("Invalid refresh token");
     }
     
-    // SECURITY: Clear failed attempts on successful refresh
     this.clearAttempts(rateLimitKey, this.refreshAttempts);
     
-    // Fetch user and check ban status before proceeding
     const user = await this.prisma.user.findUnique({ 
       where: { id: matched.userId },
-      select: { id: true, email: true, isBanned: true, banReason: true }
+      select: { id: true, email: true, isBanned: true, isAdmin: true, banReason: true }
     });
     if (!user) {
       throw new UnauthorizedException("Invalid refresh token");
     }
     this.assertNotBanned(user);
     
-    // Revoke the old refresh token (token rotation for security)
     await this.prisma.refreshToken.update({
       where: { id: matched.id },
       data: { revokedAt: new Date() }
     });
     
-    // Issue new tokens with a new refresh token
     return this.issueTokens(user);
   }
 
   async logout(userId: string, providedToken?: string) {
     if (!providedToken) return;
-    const hashed = await this.hash(providedToken);
-    await this.prisma.refreshToken.updateMany({
-      where: { userId, tokenHash: hashed, revokedAt: null },
-      data: { revokedAt: new Date() }
+
+    const { prefix } = this.splitToken(providedToken);
+    const candidates = await this.prisma.refreshToken.findMany({
+      where: { userId, tokenPrefix: prefix, revokedAt: null, expiresAt: { gt: new Date() } },
+      select: { id: true, tokenHash: true }
     });
+
+    for (const candidate of candidates) {
+      const valid = await argon2.verify(candidate.tokenHash, providedToken);
+      if (valid) {
+        await this.prisma.refreshToken.update({
+          where: { id: candidate.id },
+          data: { revokedAt: new Date() }
+        });
+        return;
+      }
+    }
   }
 
-  private async issueTokens(user: { id: string; email: string; isBanned: boolean }) {
+  private async issueTokens(user: { id: string; email: string; isBanned: boolean; isAdmin?: boolean }) {
+    const roles: AuthRole[] = [];
+    if (user.isAdmin) roles.push('admin');
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
       isBanned: user.isBanned,
-      roles: []
+      roles,
     };
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: this.configService.get<string>("jwt.accessSecret"),
       expiresIn: this.configService.get<string>("jwt.accessExpiresIn") || "15m"
     });
 
-    // Always create a new refresh token (token rotation)
     const refreshToken = uuidv4();
+    const { prefix } = this.splitToken(refreshToken);
     const hashed = await this.hash(refreshToken);
     const expiresIn = this.configService.get<string>("jwt.refreshExpiresIn") || "7d";
     const expiresAt = new Date(Date.now() + this.parseExpiresInMs(expiresIn));
@@ -303,6 +315,7 @@ export class AuthService {
       data: {
         userId: user.id,
         tokenHash: hashed,
+        tokenPrefix: prefix,
         expiresAt
       }
     });
@@ -346,6 +359,10 @@ export class AuthService {
     
     // Fallback to UUID-based username if all attempts fail
     return `${base}_${uuidv4().slice(0, 8)}`;
+  }
+
+  private splitToken(token: string): { prefix: string } {
+    return { prefix: crypto.createHash('sha256').update(token).digest('hex').slice(0, 16) };
   }
 
   private async hash(value: string) {

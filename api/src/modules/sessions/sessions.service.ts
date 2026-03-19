@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException, ForbiddenException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { SessionStatus, SessionEndReason } from "@prisma/client";
 
@@ -28,8 +28,14 @@ export class SessionsService {
     const session = await this.prisma.session.findUnique({
       where: { id: sessionId }
     });
-    if (!session || (session.userAId !== userId && session.userBId !== userId)) {
-      throw new Error("Session not found or unauthorized");
+    if (!session) {
+      throw new NotFoundException("Session not found");
+    }
+    if (session.userAId !== userId && session.userBId !== userId) {
+      throw new ForbiddenException("Not a participant in this session");
+    }
+    if (session.status === SessionStatus.ENDED) {
+      return session;
     }
     return this.prisma.session.update({
       where: { id: sessionId },

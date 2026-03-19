@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from "uuid";
 import * as argon2 from "argon2";
 import { ConfigService } from "@nestjs/config";
 
-// Game player limits configuration
 const GAME_PLAYER_LIMITS: Record<string, { min: number; max: number }> = {
   TICTACTOE: { min: 2, max: 2 },
   CHESS: { min: 2, max: 2 },
@@ -15,6 +14,15 @@ const GAME_PLAYER_LIMITS: Record<string, { min: number; max: number }> = {
   POKER: { min: 2, max: 10 },
   TRUTHS_AND_LIE: { min: 2, max: 2 },
   TWENTY_ONE_QUESTIONS: { min: 2, max: 2 },
+  BS: { min: 2, max: 2 },
+  BLACKJACK: { min: 2, max: 2 },
+  CONNECT_FOUR: { min: 2, max: 2 },
+  CHECKERS: { min: 2, max: 2 },
+  MEMORY_CARDS: { min: 2, max: 2 },
+  UNO: { min: 2, max: 2 },
+  GEO_GUESSER: { min: 2, max: 2 },
+  TANKS: { min: 2, max: 2 },
+  PENGUIN_KNOCKOUT: { min: 2, max: 2 },
 };
 
 @Injectable()
@@ -93,10 +101,10 @@ export class RoomsService {
       throw new BadRequestException("Room has ended");
     }
 
-    // Check if already in room
+    // If already in room and hasn't left, treat as success (idempotent join)
     const existingParticipant = room.participants.find(p => p.userId === userId);
     if (existingParticipant && !existingParticipant.leftAt) {
-      throw new BadRequestException("Already in this room");
+      return this.getRoomDetails(roomId);
     }
 
     // Check room capacity
@@ -116,47 +124,47 @@ export class RoomsService {
       }
     }
 
-    // Deduct entry fee if applicable
-    if (room.entryFeeTokens > 0) {
-      const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
-      if (!wallet || wallet.balanceTokens < room.entryFeeTokens) {
-        throw new BadRequestException("Insufficient tokens for entry fee");
-      }
+    await this.prisma.$transaction(async (tx) => {
+      if (room.entryFeeTokens > 0) {
+        const locked = await tx.$queryRaw<{ id: string; balanceTokens: number }[]>`
+          SELECT id, "balanceTokens" FROM "Wallet" WHERE "userId" = ${userId} FOR UPDATE
+        `;
+        if (!locked.length || locked[0].balanceTokens < room.entryFeeTokens) {
+          throw new BadRequestException("Insufficient tokens for entry fee");
+        }
 
-      await this.prisma.wallet.update({
-        where: { userId },
-        data: {
-          balanceTokens: { decrement: room.entryFeeTokens },
-          transactions: {
-            create: {
-              type: WalletTransactionType.WAGER_LOCK,
-              amountTokens: room.entryFeeTokens,
-              roomId,
-              metadata: { reason: "room_entry_fee" }
+        await tx.wallet.update({
+          where: { userId },
+          data: {
+            balanceTokens: { decrement: room.entryFeeTokens },
+            transactions: {
+              create: {
+                type: WalletTransactionType.WAGER_LOCK,
+                amountTokens: room.entryFeeTokens,
+                roomId,
+                metadata: { reason: "room_entry_fee" }
+              }
             }
           }
-        }
-      });
-    }
+        });
+      }
 
-    // Join or rejoin room
-    if (existingParticipant) {
-      // Rejoin
-      await this.prisma.roomParticipant.update({
-        where: { id: existingParticipant.id },
-        data: { leftAt: null, tokensInPool: room.entryFeeTokens }
-      });
-    } else {
-      // New join
-      await this.prisma.roomParticipant.create({
-        data: {
-          roomId,
-          userId,
-          role: RoomRole.PLAYER,
-          tokensInPool: room.entryFeeTokens
-        }
-      });
-    }
+      if (existingParticipant) {
+        await tx.roomParticipant.update({
+          where: { id: existingParticipant.id },
+          data: { leftAt: null, tokensInPool: room.entryFeeTokens }
+        });
+      } else {
+        await tx.roomParticipant.create({
+          data: {
+            roomId,
+            userId,
+            role: RoomRole.PLAYER,
+            tokensInPool: room.entryFeeTokens
+          }
+        });
+      }
+    });
 
     return this.getRoomDetails(roomId);
   }
@@ -215,39 +223,35 @@ export class RoomsService {
     if (!room) throw new NotFoundException("Room not found");
     if (room.hostUserId !== userId) throw new ForbiddenException("Only host can end room");
 
-    // Refund all participants' tokens
-    for (const p of room.participants) {
-      if (p.tokensInPool > 0 && !p.leftAt) {
-        await this.prisma.wallet.update({
-          where: { userId: p.userId },
-          data: {
-            balanceTokens: { increment: p.tokensInPool },
-            transactions: {
-              create: {
-                type: WalletTransactionType.REFUND,
-                amountTokens: p.tokensInPool,
-                roomId,
-                metadata: { reason: "room_ended_refund" }
+    await this.prisma.$transaction(async (tx) => {
+      for (const p of room.participants) {
+        if (p.tokensInPool > 0 && !p.leftAt) {
+          await tx.wallet.update({
+            where: { userId: p.userId },
+            data: {
+              balanceTokens: { increment: p.tokensInPool },
+              transactions: {
+                create: {
+                  type: WalletTransactionType.REFUND,
+                  amountTokens: p.tokensInPool,
+                  roomId,
+                  metadata: { reason: "room_ended_refund" }
+                }
               }
             }
-          }
-        });
+          });
+        }
       }
-    }
 
-    // Update room status
-    await this.prisma.room.update({
-      where: { id: roomId },
-      data: {
-        status: RoomStatus.ENDED,
-        endedAt: new Date()
-      }
-    });
+      await tx.room.update({
+        where: { id: roomId },
+        data: { status: RoomStatus.ENDED, endedAt: new Date() }
+      });
 
-    // Mark all participants as left
-    await this.prisma.roomParticipant.updateMany({
-      where: { roomId, leftAt: null },
-      data: { leftAt: new Date(), tokensInPool: 0 }
+      await tx.roomParticipant.updateMany({
+        where: { roomId, leftAt: null },
+        data: { leftAt: new Date(), tokensInPool: 0 }
+      });
     });
 
     return { success: true };
@@ -397,10 +401,13 @@ export class RoomsService {
   async voteForGame(roundId: string, odUserId: string, gameType: GameType) {
     const round = await this.prisma.roomRound.findUnique({ 
       where: { id: roundId },
-      include: { participants: true }
+      include: { participants: { include: { roomParticipant: true } } }
     });
     if (!round) throw new NotFoundException("Round not found");
     if (round.status !== RoundStatus.VOTING) throw new BadRequestException("Voting not active");
+    
+    const isParticipant = round.participants.some(p => p.roomParticipant.userId === odUserId);
+    if (!isParticipant) throw new ForbiddenException("You are not a participant in this round");
 
     // Validate game is compatible with player count
     const playerCount = round.participants.length;
@@ -586,7 +593,9 @@ export class RoomsService {
 
   // ==================== QUERIES ====================
 
-  async getPublicRooms(region?: string) {
+  async getPublicRooms(region?: string, page = 1, limit = 50) {
+    const safePage = Math.max(1, page);
+    const safeLimit = Math.min(Math.max(1, limit), 100);
     const where: any = {
       isPublic: true,
       status: { not: RoomStatus.ENDED }
@@ -597,6 +606,8 @@ export class RoomsService {
 
     const rooms = await this.prisma.room.findMany({
       where,
+      skip: (safePage - 1) * safeLimit,
+      take: safeLimit,
       include: {
         host: { select: { id: true, displayName: true, username: true } },
         participants: {

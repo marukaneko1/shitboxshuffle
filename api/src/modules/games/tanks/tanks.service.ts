@@ -151,10 +151,11 @@ export class TanksService {
 
   // ── Tick ──────────────────────────────────────────────────────────────────
 
-  tick(gameId: string): { state: TanksState } {
+  tick(gameId: string): { state: TanksState } | null {
     const state = this.gameStates.get(gameId);
-    if (!state || state.phase === 'ended') {
-      return { state: state! };
+    if (!state) return null;
+    if (state.phase === 'ended') {
+      return { state };
     }
 
     const now = Date.now();

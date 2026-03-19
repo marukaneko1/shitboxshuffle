@@ -87,7 +87,7 @@ const LOCATIONS: GeoGuesserLocation[] = [
   { lat: -1.2921, lng: 36.8219, country: "Kenya", city: "Nairobi" },
   { lat: 5.6037, lng: -0.1870, country: "Ghana", city: "Accra" },
   { lat: 6.5244, lng: 3.3792, country: "Nigeria", city: "Lagos" },
-  { lat: 36.8065, lng: 10.1815, country: "Tunisia", city: "Tunis" },
+  { lat: 33.9716, lng: -6.8498, country: "Morocco", city: "Rabat" },
   { lat: -18.9249, lng: 47.5185, country: "Madagascar", city: "Antananarivo" },
   // Oceania
   { lat: -33.8688, lng: 151.2093, country: "Australia", city: "Sydney" },
@@ -291,7 +291,11 @@ export class GeoGuesserService {
   }
 
   private pickRandomLocations(count: number): GeoGuesserLocation[] {
-    const shuffled = [...LOCATIONS].sort(() => Math.random() - 0.5);
+    const shuffled = [...LOCATIONS];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
     return shuffled.slice(0, count);
   }
 

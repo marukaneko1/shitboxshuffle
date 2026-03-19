@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PrismaService } from "../../prisma/prisma.service";
 import { RtcRole, RtcTokenBuilder } from "agora-access-token";
@@ -34,16 +34,16 @@ export class VideoService {
   getAppId() {
     const appId = this.configService.get<string>("agora.appId");
     if (!appId || appId.trim() === "") {
-      throw new Error("AGORA_APP_ID is not configured");
+      throw new BadRequestException("AGORA_APP_ID is not configured");
     }
     return appId.trim();
   }
 
   buildToken(channelName: string, userId: string) {
-    const appId = this.configService.get<string>("agora.appId")?.trim();
+    const appId = this.getAppId();
     const appCertificate = this.configService.get<string>("agora.appCertificate")?.trim();
-    if (!appId || !appCertificate) {
-      throw new Error("Agora credentials missing. Please set AGORA_APP_ID and AGORA_APP_CERTIFICATE in your .env file");
+    if (!appCertificate) {
+      throw new BadRequestException("Agora credentials missing. Please set AGORA_APP_CERTIFICATE in your .env file");
     }
     // Note: Video features will fail if Agora is not configured, but the service can still be instantiated
     const expireSeconds = 60 * 60; // 1 hour

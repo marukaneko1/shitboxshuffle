@@ -56,6 +56,20 @@ enum GameType {
   GEO_GUESSER
   TANKS
   PENGUIN_KNOCKOUT
+  BLACKJACK
+  WORDLE
+  SPELLING_BEE
+  LETTER_BOXED
+  BANANAGRAMS
+  SCRABBLE_GAME
+  BOGGLE
+  HANGMAN
+  SCATTERGORIES
+  GHOST
+  JOTTO
+  MONOPOLY
+  BS
+  SPIN_THE_WHEEL
 }
 
 enum GameStatus {
@@ -163,15 +177,17 @@ model UserInterest {
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  tokenHash String
-  expiresAt DateTime
-  revokedAt DateTime?
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  tokenHash   String
+  tokenPrefix String?
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  createdAt   DateTime @default(now())
 
   @@index([userId])
+  @@index([tokenPrefix])
 }
 
 model Subscription {
@@ -212,6 +228,9 @@ model WalletTransaction {
   createdAt    DateTime              @default(now())
 
   @@index([walletId])
+  @@index([sessionId])
+  @@index([gameId])
+  @@index([roomId])
 }
 
 model Session {
@@ -251,6 +270,11 @@ model Game {
   players            GamePlayer[]
   wager              Wager?
   walletTransactions WalletTransaction[]
+
+  @@index([sessionId])
+  @@index([status])
+  @@index([winnerUserId])
+  @@index([createdAt])
 }
 
 model GamePlayer {
@@ -264,6 +288,7 @@ model GamePlayer {
   result    String?
   createdAt DateTime @default(now())
 
+  @@unique([gameId, userId])
   @@index([gameId])
   @@index([userId])
 }
@@ -415,5 +440,8 @@ model ModerationAction {
   reason       String
   createdAt    DateTime             @default(now())
   expiresAt    DateTime?
+
+  @@index([targetUserId])
+  @@index([adminUserId])
 }
 

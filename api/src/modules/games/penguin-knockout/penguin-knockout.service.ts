@@ -18,14 +18,6 @@ import {
 
 @Injectable()
 export class PenguinKnockoutService {
-  /**
-   * In-memory store for the current round's submitted moves.
-   * Keyed by gameId → { userId → PKMove }.
-   * Cleared after each round resolves.
-   */
-  private pendingMoves = new Map<string, Map<string, PKMove>>();
-
-  /** Full in-memory state cache (also persisted to DB after each round). */
   private states = new Map<string, PenguinKnockoutState>();
 
   constructor(private readonly prisma: PrismaService) {}
@@ -42,7 +34,6 @@ export class PenguinKnockoutService {
 
   deleteState(gameId: string): void {
     this.states.delete(gameId);
-    this.pendingMoves.delete(gameId);
   }
 
   // ─── Initialize ───────────────────────────────────────────────────────────
@@ -316,6 +307,8 @@ export class PenguinKnockoutService {
 
   // ─── Win condition ────────────────────────────────────────────────────────
 
+  private readonly MAX_ROUNDS = 50;
+
   checkGameEnd(state: PenguinKnockoutState): PKGameEndResult | null {
     const p1elim = state.penguins[state.player1].isEliminated;
     const p2elim = state.penguins[state.player2].isEliminated;
@@ -328,6 +321,10 @@ export class PenguinKnockoutService {
     }
     if (p2elim) {
       return { winnerId: state.player1, isDraw: false, reason: 'win' };
+    }
+
+    if (state.round > this.MAX_ROUNDS) {
+      return { winnerId: null, isDraw: true, reason: 'draw' };
     }
 
     return null;

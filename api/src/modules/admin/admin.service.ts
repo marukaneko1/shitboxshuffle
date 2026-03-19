@@ -7,6 +7,7 @@ export class AdminService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getAllUsers(page = 1, limit = 50) {
+    limit = Math.min(Math.max(1, limit), 200);
     const skip = (page - 1) * limit;
     const [users, total] = await Promise.all([
       this.prisma.user.findMany({
@@ -212,18 +213,18 @@ export class AdminService {
       updatedAt: new Date()
     };
 
+    if (!user.subscription) {
+      subscriptionData.userId = userId;
+    }
+
     if (status === SubscriptionStatus.ACTIVE) {
       if (!user.subscription) {
-        // Create new subscription
-        subscriptionData.userId = userId;
         subscriptionData.startedAt = new Date();
-        subscriptionData.currentPeriodEnd = currentPeriodEnd || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+        subscriptionData.currentPeriodEnd = currentPeriodEnd || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
       } else {
         subscriptionData.startedAt = user.subscription.startedAt || new Date();
         subscriptionData.currentPeriodEnd = currentPeriodEnd || user.subscription.currentPeriodEnd || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
       }
-    } else if (status === SubscriptionStatus.CANCELED || status === SubscriptionStatus.INACTIVE) {
-      // Keep existing dates but update status
     }
 
     if (user.subscription) {

@@ -1,5 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 
 /**
  * SECURITY: Simple in-memory rate limiter for WebSocket and HTTP requests
@@ -34,13 +33,17 @@ const DEFAULT_RATE_LIMITS: Record<string, RateLimitConfig> = {
 };
 
 @Injectable()
-export class RateLimitGuard implements CanActivate {
+export class RateLimitGuard implements CanActivate, OnModuleDestroy {
   private readonly logger = new Logger(RateLimitGuard.name);
   private readonly rateLimitMap = new Map<string, RateLimitEntry>();
+  private readonly cleanupTimer: NodeJS.Timeout;
   
-  // Cleanup old entries every 5 minutes
   constructor() {
-    setInterval(() => this.cleanup(), 5 * 60 * 1000);
+    this.cleanupTimer = setInterval(() => this.cleanup(), 5 * 60 * 1000);
+  }
+
+  onModuleDestroy() {
+    clearInterval(this.cleanupTimer);
   }
   
   canActivate(context: ExecutionContext): boolean {
@@ -80,7 +83,7 @@ export class RateLimitGuard implements CanActivate {
     
     if (entry.count >= config.limit) {
       this.logger.warn(`Rate limit exceeded for ${identifier} on ${action}`);
-      return false;
+      throw new HttpException('Too Many Requests', HttpStatus.TOO_MANY_REQUESTS);
     }
     
     // Increment count
@@ -102,9 +105,9 @@ export class RateLimitGuard implements CanActivate {
   }
   
   private getRateLimitConfig(action: string): RateLimitConfig {
-    // Check for exact match
     for (const [key, config] of Object.entries(DEFAULT_RATE_LIMITS)) {
-      if (action.includes(key)) {
+      if (key === 'default') continue;
+      if (action === key || action.endsWith('/' + key) || action.endsWith(':' + key)) {
         return config;
       }
     }
@@ -130,12 +133,17 @@ export class RateLimitGuard implements CanActivate {
  * WebSocket-specific rate limiter for high-frequency events
  */
 @Injectable()
-export class WsRateLimitGuard implements CanActivate {
+export class WsRateLimitGuard implements CanActivate, OnModuleDestroy {
   private readonly logger = new Logger(WsRateLimitGuard.name);
   private readonly rateLimitMap = new Map<string, RateLimitEntry>();
+  private readonly cleanupTimer: NodeJS.Timeout;
   
   constructor() {
-    setInterval(() => this.cleanup(), 5 * 60 * 1000);
+    this.cleanupTimer = setInterval(() => this.cleanup(), 5 * 60 * 1000);
+  }
+
+  onModuleDestroy() {
+    clearInterval(this.cleanupTimer);
   }
   
   canActivate(context: ExecutionContext): boolean {

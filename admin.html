@@ -185,7 +185,7 @@ tr:hover td{background:rgba(201,162,39,0.025);color:var(--ivory-80)}
   </div>
   <div class="nav-right">
     <span class="nav-user" id="navUser"></span>
-    <button class="btn-sm" onclick="window.location.href='http://localhost:8080/shitbox-combined_2.html'">← Main Site</button>
+    <button class="btn-sm" onclick="window.location.href='http://localhost:8080/shitboxshuffle.html'">← Main Site</button>
     <button class="btn-sm danger" id="logoutBtn" onclick="doLogout()">Log Out</button>
   </div>
 </nav>
@@ -790,11 +790,11 @@ function confirmResolve(ok){
 
 // ── TOAST ─────────────────────────────────────────────
 let toastTimer;
-function toast(html,dur=2400){
+function toast(msg,dur=2400){
   clearTimeout(toastTimer);
   const el=document.getElementById('toast');
   el.classList.remove('show');
-  requestAnimationFrame(()=>{el.innerHTML=html;el.classList.add('show');toastTimer=setTimeout(()=>el.classList.remove('show'),dur)});
+  requestAnimationFrame(()=>{el.textContent=msg;el.classList.add('show');toastTimer=setTimeout(()=>el.classList.remove('show'),dur)});
 }
 
 // ── UTIL ─────────────────────────────────────────────

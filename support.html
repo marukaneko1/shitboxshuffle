@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — Shitbox Shuffle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400;1,900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --void: #030303;
+  --ink: #141210;
+  --smoke: #1c1a17;
+  --ember: #c9a227;
+  --flame: #e8c547;
+  --bone: #e8e0d0;
+  --chalk: #f5f0e6;
+  --dust: rgba(232,224,208,0.7);
+  --ash: rgba(232,224,208,0.4);
+  --ghost: rgba(232,224,208,0.15);
+  --phantom: rgba(232,224,208,0.06);
+}
+
+html { background: var(--void); scroll-behavior: smooth; }
+body {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  background: var(--void);
+  color: var(--bone);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+::selection { background: var(--ember); color: var(--void); }
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: stretch;
+  height: 70px;
+  background: rgba(3,3,3,0.92);
+  border-bottom: 1px solid var(--phantom);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  text-decoration: none;
+  border-right: 1px solid var(--phantom);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-logo::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--ember);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+
+.nav-logo:hover::before { transform: scaleX(1); }
+
+.logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.15em;
+  color: var(--chalk);
+}
+
+.logo-text .amp {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ember);
+  margin: 0 2px;
+}
+
+.nav-spacer { flex: 1; }
+
+.nav-enter {
+  display: flex;
+  align-items: center;
+  padding: 0 36px;
+  background: var(--ember);
+  color: var(--void);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+
+.nav-enter:hover { background: var(--flame); letter-spacing: 0.25em; }
+
+.page-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 140px 40px 100px;
+}
+
+.page-overline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-overline::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ember));
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.page-sub {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 16px;
+  font-style: italic;
+  color: var(--dust);
+  line-height: 1.8;
+  margin-bottom: 60px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--phantom);
+  max-width: 560px;
+}
+
+.gold-divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ember), var(--flame));
+  margin-bottom: 60px;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--phantom);
+  margin-bottom: 0;
+}
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--bone);
+  font-family: 'Libre Baskerville', serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  transition: color 0.3s;
+}
+
+.faq-question:hover { color: var(--ember); }
+
+.faq-icon {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  color: var(--ember);
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  line-height: 1;
+}
+
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+
+.faq-item.open .faq-answer { max-height: 400px; }
+
+.faq-answer p {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--dust);
+  padding-bottom: 24px;
+}
+
+.contact-block {
+  margin-top: 72px;
+  border: 1px solid var(--phantom);
+  border-top: 2px solid var(--ember);
+  padding: 40px;
+  background: var(--phantom);
+}
+
+.contact-block h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 0.15em;
+  color: var(--chalk);
+  margin-bottom: 12px;
+}
+
+.contact-block p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--dust);
+  margin-bottom: 28px;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ash);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: var(--void);
+  border: 1px solid var(--ghost);
+  color: var(--bone);
+  font-family: 'Libre Baskerville', serif;
+  font-size: 14px;
+  padding: 14px 16px;
+  outline: none;
+  transition: border-color 0.3s;
+  resize: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--ember);
+}
+
+.form-group select option {
+  background: var(--smoke);
+}
+
+.btn-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 48px;
+  background: var(--ember);
+  color: var(--void);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+  align-self: flex-start;
+}
+
+.btn-submit:hover { background: var(--flame); letter-spacing: 0.28em; }
+
+.form-note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--ash);
+  margin-top: 4px;
+}
+
+footer {
+  margin-top: 100px;
+  padding: 40px;
+  border-top: 1px solid var(--phantom);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-wordmark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  color: var(--ash);
+}
+
+.footer-links {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ash);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover { color: var(--ember); }
+.footer-links a.active { color: var(--ember); }
+
+.footer-copy {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(232,224,208,0.25);
+}
+
+@media (max-width: 768px) {
+  nav { height: 60px; }
+  .nav-logo { padding: 0 20px; }
+  .nav-enter { padding: 0 24px; font-size: 12px; }
+  .page-wrap { padding: 110px 24px 80px; }
+  .form-row { grid-template-columns: 1fr; }
+  .contact-block { padding: 28px 24px; }
+  footer { flex-direction: column; text-align: center; padding: 32px 24px; }
+  .footer-links { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo" aria-label="Shitbox Shuffle home">
+    <span class="logo-text">SHITBOX <span class="amp">&</span> SHUFFLE</span>
+  </a>
+  <div class="nav-spacer"></div>
+  <a href="shitboxshuffle.html" class="nav-enter">ENTER THE ROOM</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-overline">Help</div>
+  <h1>Support</h1>
+  <p class="page-sub">The house answers its players. Browse the FAQs below or drop us a message and we'll get back to you within 24 hours.</p>
+  <div class="gold-divider"></div>
+
+  <div class="faq-list">
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        How does the matching work?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>When you enter the room, our system randomly pairs you with another active player at the same wager level. Both players must confirm the match before the game begins. Average wait time is under 8 seconds.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        What games are available?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>We currently offer seven games: Poker, Chess, Billiards, Tic-Tac-Toe, Trivia, 21 Questions, and Truth & Lie. Once matched, both players agree on the game before it starts. New games are added monthly.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        How do I deposit or withdraw funds?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Deposits and withdrawals are managed from your Wallet in the account dashboard. We accept major credit cards, debit cards, and select e-wallets. Withdrawals require identity verification and typically process within 1–3 business days.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        My camera isn't working. What do I do?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Make sure your browser has permission to access your camera. In Chrome, go to Settings → Privacy and Security → Site Settings → Camera. In Safari, go to Preferences → Websites → Camera. Refresh the page after granting access. If the issue persists, try a different browser or device.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        What happens if my opponent disconnects mid-game?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>If your opponent disconnects, the system allows a 60-second reconnect window. If they do not reconnect, the match is awarded to you and the wager is credited to your wallet. If both players disconnect simultaneously, the wager is refunded to both.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        Is Shitbox Shuffle legal in my state?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Shitbox Shuffle is available to US residents 18 and older. Certain states may have additional restrictions on skill-based wagering. It is your responsibility to verify that participation is legal in your jurisdiction before playing. We block access from states where the Service is explicitly prohibited.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        How do I report a player for misconduct?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>After any match, you can report your opponent using the Report button in the post-game summary. For urgent matters, use the contact form below and select "Player Misconduct" as the subject. Our team reviews all reports within 24 hours.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        How do I close my account?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Account closure requests can be submitted via the contact form below. Please note that any remaining wallet balance must be withdrawn before closure. If you are closing your account for responsible gaming reasons, see our <a href="responsible-gaming.html" style="color: var(--ember); text-decoration: none;">Responsible Gaming</a> page for self-exclusion options.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="contact-block">
+    <h2>Still Need Help?</h2>
+    <p>Send us a message and we'll respond within 24 hours.</p>
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" placeholder="Full name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="you@email.com" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <select id="subject" name="subject" required>
+          <option value="" disabled selected>Select a topic</option>
+          <option value="account">Account & Login</option>
+          <option value="billing">Deposits & Withdrawals</option>
+          <option value="technical">Technical Issue</option>
+          <option value="misconduct">Player Misconduct</option>
+          <option value="responsible">Responsible Gaming</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Describe your issue in detail..." required></textarea>
+      </div>
+      <button type="submit" class="btn-submit">SEND MESSAGE</button>
+      <p class="form-note">We respond to all inquiries within 24 hours.</p>
+    </form>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-wordmark">SHITBOX SHUFFLE</div>
+  <div class="footer-links">
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="support.html" class="active">Support</a>
+    <a href="responsible-gaming.html">Responsible Gaming</a>
+  </div>
+  <span class="footer-copy">© 2026 Shitbox Shuffle</span>
+</footer>
+
+<script>
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.btn-submit');
+  btn.textContent = 'SENT ✓';
+  btn.style.background = '#4ade80';
+  btn.style.color = '#030303';
+  btn.disabled = true;
+}
+</script>
+
+</body>
+</html>

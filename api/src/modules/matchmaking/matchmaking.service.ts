@@ -180,10 +180,13 @@ export class MatchmakingService implements OnModuleDestroy {
   /**
    * Cleanup on module destroy
    */
-  onModuleDestroy() {
+  async onModuleDestroy() {
     if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval);
       this.cleanupInterval = null;
+    }
+    if (this.redis) {
+      try { await this.redis.quit(); } catch {}
     }
   }
 
@@ -369,38 +372,30 @@ export class MatchmakingService implements OnModuleDestroy {
       return null;
     }
     
-    const queueRequests: Array<{ request: QueueRequest; distance: number }> = [];
-    
+    const parsedRequests: QueueRequest[] = [];
     for (const item of allItems) {
       try {
         const request = JSON.parse(item) as QueueRequest;
-        if (request.userId === userId) {
-          // Skip self - never match with yourself
-          continue;
-        }
-        
-        // Verify user is still eligible
-        const eligible = await this.ensureEligible(request.userId);
-        if (!eligible) {
-          const userDetails = await this.prisma.user.findUnique({
-            where: { id: request.userId },
-            select: { isBanned: true, is18PlusVerified: true, subscription: { select: { status: true } } }
-          });
-          this.logger.warn(`[MATCHMAKING] User ${request.userId} is not eligible - banned: ${userDetails?.isBanned}, verified: ${userDetails?.is18PlusVerified}, subscription: ${userDetails?.subscription?.status}`);
-          continue;
-        }
-        
-        let distance = Infinity;
-        if (userLat !== undefined && userLon !== undefined && request.latitude !== undefined && request.longitude !== undefined) {
-          distance = this.calculateDistance(userLat, userLon, request.latitude, request.longitude);
-        }
-        
-        this.logger.debug(`Found eligible user ${request.userId}, distance: ${distance}`);
-        queueRequests.push({ request, distance });
-      } catch (e) {
-        this.logger.error("Error parsing queue item:", e);
+        if (request.userId !== userId) parsedRequests.push(request);
+      } catch {
         continue;
       }
+    }
+
+    const candidateIds = parsedRequests.map(r => r.userId);
+    const eligibleSet = await this.batchCheckEligibility(candidateIds);
+
+    const queueRequests: Array<{ request: QueueRequest; distance: number }> = [];
+    
+    for (const request of parsedRequests) {
+      if (!eligibleSet.has(request.userId)) continue;
+
+      let distance = Infinity;
+      if (userLat !== undefined && userLon !== undefined && request.latitude !== undefined && request.longitude !== undefined) {
+        distance = this.calculateDistance(userLat, userLon, request.latitude, request.longitude);
+      }
+      
+      queueRequests.push({ request, distance });
     }
     
     if (queueRequests.length === 0) {
@@ -539,6 +534,24 @@ export class MatchmakingService implements OnModuleDestroy {
 
   queueKey(region: string, language: string) {
     return `match_queue:${region}:${language}`;
+  }
+
+  private async batchCheckEligibility(userIds: string[]): Promise<Set<string>> {
+    if (userIds.length === 0) return new Set();
+    const users = await this.prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: { id: true, isBanned: true, is18PlusVerified: true, subscription: { select: { status: true } } }
+    });
+    const eligible = new Set<string>();
+    const isDev = process.env.NODE_ENV === 'development';
+    for (const user of users) {
+      if (user.isBanned) continue;
+      if (isDev) { eligible.add(user.id); continue; }
+      if (!user.is18PlusVerified) continue;
+      if (user.subscription?.status !== "ACTIVE") continue;
+      eligible.add(user.id);
+    }
+    return eligible;
   }
 
   private async ensureEligible(userId: string): Promise<boolean> {
