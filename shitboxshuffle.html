@@ -405,7 +405,7 @@ nav {
 .toast .toast-accent { color: var(--gold); font-weight: 500; }
 
 /* ── LOGIN MODAL ─────────────────────────── */
-.login-overlay { position:fixed;inset:0;z-index:300;background:rgba(8,7,10,0.92);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s ease; }
+.login-overlay { position:fixed;inset:0;z-index:300;background:rgba(8,7,10,0.92);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s ease;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(20px,env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch;box-sizing:border-box; }
 .login-overlay.active { opacity:1;pointer-events:auto; }
 .login-card {
   width:420px;max-width:92vw;
@@ -414,6 +414,7 @@ nav {
   border-radius:12px;overflow:hidden;position:relative;
   transform:translateY(28px) scale(0.96);
   transition:transform 0.4s cubic-bezier(0.23,1,0.32,1);
+  margin:auto;flex-shrink:0;
 }
 .login-overlay.active .login-card { transform:translateY(0) scale(1); }
 .login-card::before { content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,0.2),transparent); }
@@ -1644,14 +1645,17 @@ async function handleEmailLogin(e){
     let res,data;
     if(currentTab==='register'){
       const username=document.getElementById('registerUsername').value.trim();
-      const dateOfBirth=document.getElementById('registerDob').value;
-      res=await fetch(API_URL+'/api/auth/register',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,displayName:username,username,dateOfBirth})});
+      const dob=document.getElementById('registerDob').value.trim();
+      const regBody={email,password,displayName:username,username};
+      if(dob) regBody.dateOfBirth=dob;
+      res=await fetch(API_URL+'/api/auth/register',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(regBody)});
     } else {
       res=await fetch(API_URL+'/api/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
     }
     data=await res.json();
     if(!res.ok){
-      const msg=Array.isArray(data.message)?data.message.join('. '):(data.message||'Something went wrong');
+      let msg=Array.isArray(data.message)?data.message.join('. '):(data.message||'Something went wrong');
+      if(res.status>=500) msg+=' If this keeps happening, check Railway deploy logs for the API.';
       showLoginError(msg);
     } else {
       if(data.accessToken){localStorage.setItem('accessToken',data.accessToken)}

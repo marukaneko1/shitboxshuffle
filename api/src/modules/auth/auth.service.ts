@@ -152,13 +152,16 @@ export class AuthService implements OnModuleDestroy {
       const tokens = await this.issueTokens(user);
       return tokens;
     } catch (error: any) {
-      if (error?.code === 'P2002') {
-        const target = error.meta?.target;
-        if (Array.isArray(target) && target.includes('username')) {
+      if (error?.code === "P2002") {
+        const raw = error.meta?.target;
+        const targets = Array.isArray(raw) ? raw.map(String) : raw != null ? [String(raw)] : [];
+        const joined = targets.join(" ");
+        if (joined.includes("username")) {
           throw new BadRequestException("Username already taken");
         }
         throw new BadRequestException("Email already registered");
       }
+      this.logger.error(`register failed: ${error?.message ?? error}`, error?.stack);
       throw error;
     }
   }

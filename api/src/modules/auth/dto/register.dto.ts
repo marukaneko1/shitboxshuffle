@@ -1,3 +1,4 @@
+import { Transform } from "class-transformer";
 import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString, Length, Matches, MinLength, MaxLength } from "class-validator";
 
 export class RegisterDto {
@@ -27,7 +28,9 @@ export class RegisterDto {
   })
   username!: string;
 
+  /** Empty string from `<input type="date">` must not reach @IsDateString (would fail validation). */
   @IsOptional()
+  @Transform(({ value }) => (value === "" || value === null ? undefined : value))
   @IsDateString()
   dateOfBirth?: string;
 }

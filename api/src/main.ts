@@ -1,11 +1,14 @@
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import * as cookieParser from "cookie-parser";
 import { raw, Request, Response, NextFunction } from "express";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // Railway / reverse proxies — correct IPs for rate limiting and cookies
+  app.set("trust proxy", 1);
 
   // Root health for load balancers / Railway (no /api prefix, no CORS origin required)
   const expressApp = app.getHttpAdapter().getInstance();
