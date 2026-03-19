@@ -27,12 +27,17 @@ Your frontend is live at **https://shitboxshuffle.com** (GitHub Pages + Squaresp
 
 ---
 
-## 4. Generate a public URL for the API
+## 4. Generate a public URL for the API (port must match the app)
 
 1. Click your **API service** (the one that’s not Postgres or Redis).
-2. Open **Settings** → **Networking** → **Public Networking**.
-3. Click **Generate Domain**. You’ll get a URL like `https://shitboxshuffle-production-xxxx.up.railway.app`.
-4. **Copy that URL** (no trailing slash). You’ll use it in step 5 and step 6.
+2. Open **Deployments** → latest deploy → **Deploy Logs** and find:
+   `[Bootstrap] API listening on 0.0.0.0:XXXX`
+   — that `XXXX` is the port Node is **actually** using (often **8080** when Railway injects `PORT`).
+3. Open **Settings** → **Networking** → **Public Networking**.
+4. Set the service’s **public port** to **the same `XXXX`** (if it says `→ Port 3001` but logs say `8080`, you get **502** — change it to **8080**).
+5. Click **Generate Domain** (or keep your existing domain). Copy the URL (no trailing slash) for step 6.
+
+**Do not** guess 3001 vs 8080 — they must match the log line above (or set a `PORT` variable and use that same number here).
 
 ---
 
@@ -43,7 +48,7 @@ In your API service go to **Variables** and add/confirm:
 | Variable | Value |
 |----------|--------|
 | `NODE_ENV` | `production` |
-| `PORT` | `3001` |
+| `PORT` | *(optional — omit unless you want a fixed port; if you set e.g. `3001`, use **3001** in Networking too)* |
 | `WEB_BASE_URL` | `https://shitboxshuffle.com` |
 | `ALLOWED_ORIGINS` | `https://shitboxshuffle.com,https://www.shitboxshuffle.com` |
 | `JWT_ACCESS_SECRET` | *(generate — see below)* |

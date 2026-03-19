@@ -1284,10 +1284,10 @@ window.addEventListener('scroll',()=>{const y=window.scrollY;if(y>30&&!isExpande
 window.addEventListener('resize',()=>{if(!isExpanded)hero.style.height=(window.innerHeight-96)+'px';else hero.style.height=Math.max(compactH(),420)+'px'});
 
 // ═══ CONFIG ═══
-// Auto-detects local vs production — update the two PROD_ values after Railway setup
+// Production: MUST be your real Railway URL (no placeholder). Wrong host → CORS / failed fetch.
 const _IS_LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
-const PROD_API_URL = 'https://REPLACE_WITH_RAILWAY_URL.up.railway.app'; // ← update after Railway setup
-const PROD_APP_URL = 'https://REPLACE_WITH_YOUR_DOMAIN.com';            // ← update after Railway setup
+const PROD_API_URL = 'https://shitboxshuffle-production.up.railway.app';
+const PROD_APP_URL = 'https://shitboxshuffle.com';
 const API_URL = _IS_LOCAL ? 'http://localhost:3001' : PROD_API_URL;
 const WS_URL  = API_URL;
 const APP_URL = _IS_LOCAL ? 'http://localhost:8080' : PROD_APP_URL;
@@ -1659,7 +1659,9 @@ async function handleEmailLogin(e){
       showToast('✅ <span class="toast-accent">Welcome!</span> You\'re signed in');
     }
   }catch(err){
-    showLoginError('Cannot reach the server. Make sure the API is running on port 3001.');
+    showLoginError(_IS_LOCAL
+      ? 'Cannot reach the API. Run it locally on port 3001 (e.g. npm run start in /api).'
+      : 'Cannot reach the API. In shitboxshuffle.html set PROD_API_URL to your Railway URL, commit, and redeploy GitHub Pages.');
   } finally {
     btn.disabled=false;btn.textContent=currentTab==='register'?'Create Account':'Sign In';
   }

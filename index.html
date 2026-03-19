@@ -11,6 +11,10 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
+  /* Fixed nav height — keep in sync with nav { height } below */
+  --nav-h: 70px;
+  /* Hero vertical anchor (below nav, not dead-center of full viewport) */
+  --hero-v-center: 44%;
   --void: #030303;
   --abyss: #080706;
   --tar: #0c0b09;
@@ -104,7 +108,7 @@ nav {
   z-index: 1000;
   display: flex;
   align-items: stretch;
-  height: 70px;
+  height: var(--nav-h);
   background: rgba(3,3,3,0.85);
   border-bottom: 1px solid var(--phantom);
   transform: translateY(-100%);
@@ -271,10 +275,14 @@ nav.scrolled {
 
 .hero {
   width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   height: 100vh;
+  height: 100dvh;
   position: relative;
   overflow: hidden;
-  padding: 100px 80px 120px;
+  /* Side/bottom only — top padding was stacking with “50%” centering and pushed the cluster down */
+  padding: 0 80px 100px;
 }
 
 .hero-constellation {
@@ -303,7 +311,7 @@ nav.scrolled {
   position: absolute;
   left: 80px;
   right: 60%;
-  top: 50%;
+  top: var(--hero-v-center);
   transform: translateY(-50%);
   z-index: 10;
   text-align: left;
@@ -442,7 +450,7 @@ nav.scrolled {
   z-index: 10;
   left: 42%;
   right: 40px;
-  top: 50%;
+  top: var(--hero-v-center);
   transform: translateY(-50%);
   transform-origin: center center;
   will-change: transform;
@@ -2362,8 +2370,9 @@ footer {
 }
 
 @media (max-width: 1024px) {
+  :root { --hero-v-center: 46%; }
   .hero {
-    padding: 120px 40px 140px;
+    padding: 0 40px 120px;
   }
   .hero-content {
     left: 40px;
@@ -2402,7 +2411,7 @@ footer {
   .nav-actions { width: 100%; justify-content: center; }
   .nav-link { display: none; }
   .nav-enter { width: 100%; justify-content: center; padding: 18px; }
-  .hero { padding: 100px 24px 140px; gap: 40px; }
+  .hero { padding: 12px 24px 120px; gap: 32px; }
   .hero-title { font-size: clamp(40px, 12vw, 72px); }
   .hero-frame-container { left: auto; max-width: 100%; }
   .hero-frame-corners { display: none; }
@@ -2847,6 +2856,7 @@ footer.sticky-footer {
 
 /* ── Mobile Overrides (Issue 8) ── */
 @media (max-width: 768px) {
+  :root { --nav-h: 60px; }
   .hamburger { display: flex; }
   .sound-toggle.mobile-sound { display: flex !important; }
   nav { height: 60px !important; flex-direction: row !important; }
@@ -3985,10 +3995,10 @@ function rSmoothstep(t) { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2
 function rGetPositions() {
   const vw = window.innerWidth, vh = window.innerHeight;
   const fw = rFrameWrap.offsetWidth, fh = rFrameWrap.offsetHeight;
-  // The frame is CSS-positioned at left:42%, top:50%, transform:translateY(-50%)
-  // Its pixel start: left = vw * 0.42, top = vh * 0.5 - fh/2
+  // Match CSS --hero-v-center (default 0.44) + translateY(-50%): top = vh * anchor - fh/2
+  const vAnchor = vw <= 1024 ? 0.46 : 0.44;
   const sL = vw * 0.42;
-  const sT = vh * 0.5 - fh / 2;
+  const sT = vh * vAnchor - fh / 2;
   // End: center of the element at viewport center (scale shrinks from center)
   const eCenterL = (vw - fw) / 2;
   const eCenterT = (vh - fh) / 2;

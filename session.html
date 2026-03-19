@@ -3245,10 +3245,10 @@ nav {
 // ══════════════════════════════════════════
 //  CONFIG
 // ══════════════════════════════════════════
-// Auto-detects local vs production — update the two PROD_ values after Railway setup
+// Auto-detects local vs production — set PROD_API_URL after Railway gives you a domain
 const _IS_LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
-const PROD_API_URL = 'https://REPLACE_WITH_RAILWAY_URL.up.railway.app'; // ← update after Railway setup
-const PROD_APP_URL = 'https://REPLACE_WITH_YOUR_DOMAIN.com';            // ← update after Railway setup
+const PROD_API_URL = 'https://shitboxshuffle-production.up.railway.app';
+const PROD_APP_URL = 'https://shitboxshuffle.com';
 const API_URL = _IS_LOCAL ? 'http://localhost:3001' : PROD_API_URL;
 const WS_URL  = API_URL;
 const APP_URL = _IS_LOCAL ? 'http://localhost:8080' : PROD_APP_URL;

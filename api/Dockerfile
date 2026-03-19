@@ -73,8 +73,10 @@ RUN printf '%s\n' \
 
 WORKDIR /app/api
 
-# Expose the port Railway will route to
-EXPOSE 3001
+# Document only — the app listens on process.env.PORT (Railway often sets 8080).
+# In Railway → Settings → Networking, the public port must match that log line:
+#   [Bootstrap] API listening on 0.0.0.0:XXXX
+EXPOSE 8080
 
 # Migrations + server (entrypoint prints help if DATABASE_URL missing)
 ENTRYPOINT ["./docker-entrypoint.sh"]
