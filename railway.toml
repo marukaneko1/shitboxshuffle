@@ -3,7 +3,7 @@ dockerfilePath = "api/Dockerfile"
 watchPatterns = ["api/**", "shared/**"]
 
 [deploy]
-startCommand = "sh -c 'npx prisma migrate deploy && node dist/main.js'"
+# Startup: api/Dockerfile ENTRYPOINT (docker-entrypoint.sh runs migrate + node). Do not override here.
 # Root path — registered before global /api prefix (see main.ts)
 healthcheckPath = "/health"
 # First deploy: prisma migrate can be slow
