@@ -12,6 +12,10 @@ export default () => ({
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID
   },
+  /** Browser Maps JS API key for GeoGuesser (Street View + map). Restrict by referrer in GCP. */
+  googleMaps: {
+    browserKey: (process.env.GOOGLE_MAPS_API_KEY || "").trim()
+  },
   stripe: {
     secretKey: process.env.STRIPE_SECRET_KEY,
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,

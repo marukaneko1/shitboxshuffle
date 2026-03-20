@@ -6,8 +6,8 @@
 <title>Shitbox Shuffle — Session</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script>
-  window.GOOGLE_MAPS_API_KEY = '';
-  // TODO: Load API key from server endpoint
+  /* Optional override when not using API (local). Otherwise session boot loads from GET /api/config/maps-key */
+  window.GOOGLE_MAPS_API_KEY = window.GOOGLE_MAPS_API_KEY || '';
 </script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -172,10 +172,12 @@ nav {
 .placeholder-icon { font-size: 36px; opacity: 0.2; }
 .placeholder-text { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ivory-20); }
 
-/* Camera button overlay */
-.cam-toggle { position: absolute; bottom: 48px; right: 10px; z-index: 6; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: rgba(8,7,10,0.8); color: var(--ivory-40); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.25s; }
-.cam-toggle:hover { border-color: var(--border-hover); color: var(--ivory); }
+/* Mic + camera overlays (bottom-right on your video slot) */
+.media-toggle-group { position: absolute; bottom: 48px; right: 10px; z-index: 6; display: flex; flex-direction: row; align-items: center; gap: 8px; }
+.cam-toggle { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: rgba(8,7,10,0.8); color: var(--ivory-40); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; transition: all 0.25s; padding: 0; }
+.cam-toggle:hover:not(:disabled) { border-color: var(--border-hover); color: var(--ivory); }
 .cam-toggle.on { border-color: rgba(74,222,128,0.3); color: var(--green); }
+.cam-toggle:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* Video slot info bar */
 /* Reconnect overlay on opponent video slot */
@@ -2063,7 +2065,10 @@ nav {
         <div class="placeholder-icon">📷</div>
         <div class="placeholder-text">Camera Off</div>
       </div>
-      <button class="cam-toggle" id="camToggleBtn" title="Toggle camera" onclick="toggleCamera()">📷</button>
+      <div class="media-toggle-group" id="selfMediaToggles">
+        <button type="button" class="cam-toggle" id="micToggleBtn" title="Microphone" onclick="toggleMicrophone()" disabled aria-label="Microphone">🔇</button>
+        <button type="button" class="cam-toggle" id="camToggleBtn" title="Camera" onclick="toggleCamera()" aria-label="Camera">📷</button>
+      </div>
       <div class="slot-info-bar">
         <span class="slot-info-name" id="selfInfoName">—</span>
         <span class="slot-info-tokens"><span class="slot-token-icon">◉</span> <span id="selfInfoTokens">—</span></span>
@@ -3346,6 +3351,17 @@ function decodeJwt(t) {
     agoraAppId = d.appId || null;
   } catch(e) {}
 
+  // GeoGuesser: Maps JavaScript API key from server (set GOOGLE_MAPS_API_KEY on API host)
+  try {
+    if (!String(window.GOOGLE_MAPS_API_KEY || '').trim()) {
+      const r = await fetch(API_URL + '/api/config/maps-key');
+      if (r.ok) {
+        const d = await r.json();
+        if (d.mapsApiKey) window.GOOGLE_MAPS_API_KEY = d.mapsApiKey;
+      }
+    }
+  } catch(e) {}
+
   // Refresh token only if close to expiring (< 5 min remaining)
   try {
     const _p = JSON.parse(atob(myToken.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
@@ -4379,13 +4395,53 @@ async function setupLocalCamera() {
   // Only show placeholder until user toggles or Agora takes over
 }
 
+function syncMicToggleButton() {
+  const btn = document.getElementById('micToggleBtn');
+  if (!btn) return;
+  if (!localAudioTrack) {
+    btn.disabled = true;
+    btn.classList.remove('on');
+    btn.textContent = '🔇';
+    btn.title = 'Microphone (available when video call connects)';
+    return;
+  }
+  btn.disabled = false;
+  const live = localAudioTrack.enabled !== false;
+  btn.classList.toggle('on', live);
+  btn.textContent = live ? '🔊' : '🔇';
+  btn.title = live ? 'Mute microphone' : 'Unmute microphone';
+}
+
+function syncVideoToggleButton() {
+  const btn = document.getElementById('camToggleBtn');
+  if (!btn) return;
+  if (localVideoTrack) {
+    const live = localVideoTrack.enabled !== false;
+    btn.classList.toggle('on', live);
+    btn.title = live ? 'Turn camera off' : 'Turn camera on';
+    btn.textContent = '📷';
+    return;
+  }
+  btn.classList.toggle('on', cameraOn);
+  btn.title = cameraOn ? 'Turn camera off' : 'Turn camera on';
+}
+
+function toggleMicrophone() {
+  if (!localAudioTrack) {
+    showToast('🎤 <span class="ta">Mic is available after video connects</span>', 2800);
+    return;
+  }
+  const next = !localAudioTrack.enabled;
+  localAudioTrack.setEnabled(next);
+  syncMicToggleButton();
+}
+
 async function toggleCamera() {
   const btn = document.getElementById('camToggleBtn');
   if (localVideoTrack) {
-    // Agora track exists — toggle enabled
-    const en = localVideoTrack.isPlaying;
-    en ? localVideoTrack.setEnabled(false) : localVideoTrack.setEnabled(true);
-    btn.classList.toggle('on', !en);
+    const next = !localVideoTrack.enabled;
+    localVideoTrack.setEnabled(next);
+    syncVideoToggleButton();
     return;
   }
   // Fallback: browser getUserMedia
@@ -4408,6 +4464,7 @@ async function toggleCamera() {
     cameraOn = false;
     btn.classList.remove('on');
   }
+  syncVideoToggleButton();
 }
 
 // ══════════════════════════════════════════
@@ -4441,11 +4498,14 @@ async function initAgora(appId, channelName, token) {
     localAudioTrack = aTrack;
     localVideoTrack.play('localVideoContainer');
     document.getElementById('selfPlaceholder').classList.add('hidden');
-    document.getElementById('camToggleBtn').classList.add('on');
     await agoraClient.publish([localVideoTrack, localAudioTrack]);
     cameraOn = true;
+    syncMicToggleButton();
+    syncVideoToggleButton();
   } catch(e) {
     console.warn('Agora init failed:', e.message);
+    syncMicToggleButton();
+    syncVideoToggleButton();
     // Graceful: just keep placeholder
   }
 }
@@ -7436,29 +7496,59 @@ let ggRoundDuration = 60;
 let ggRoundStartedAt = 0;
 let ggHasGuessed = false;
 let ggMapsLoaded = false;
+let ggMapsLoading = false;
 let ggMapsCallbacks = [];
+
+function ggMapsKeyValid(k) {
+  const key = String(k || '').trim();
+  return key.length > 0 && key !== 'YOUR_GOOGLE_MAPS_API_KEY';
+}
 
 // Load Google Maps API dynamically (only once)
 function ggEnsureMapsLoaded(cb) {
   if (ggMapsLoaded) { cb(); return; }
   ggMapsCallbacks.push(cb);
-  if (document.getElementById('ggMapsScript')) return;
-  const key = window.GOOGLE_MAPS_API_KEY || '';
-  if (!key || key === 'YOUR_GOOGLE_MAPS_API_KEY') {
-    showToast('⚠️ Google Maps API key not configured', 5000);
-    return;
-  }
-  window._ggMapsReady = function() {
-    ggMapsLoaded = true;
-    ggMapsCallbacks.forEach(fn => fn());
-    ggMapsCallbacks = [];
-  };
-  const s = document.createElement('script');
-  s.id = 'ggMapsScript';
-  s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=_ggMapsReady`;
-  s.async = true;
-  s.defer = true;
-  document.head.appendChild(s);
+  if (document.getElementById('ggMapsScript') || ggMapsLoading) return;
+  ggMapsLoading = true;
+
+  (async function loadGgMaps() {
+    let key = ggMapsKeyValid(window.GOOGLE_MAPS_API_KEY) ? String(window.GOOGLE_MAPS_API_KEY).trim() : '';
+    if (!key) {
+      try {
+        const r = await fetch(API_URL + '/api/config/maps-key');
+        if (r.ok) {
+          const d = await r.json();
+          if (d.mapsApiKey) {
+            window.GOOGLE_MAPS_API_KEY = d.mapsApiKey;
+            key = String(d.mapsApiKey).trim();
+          }
+        }
+      } catch (e) {}
+    }
+    if (!ggMapsKeyValid(key)) {
+      ggMapsLoading = false;
+      ggMapsCallbacks = [];
+      showToast('⚠️ GeoGuesser needs a Maps key. Set <span class="toast-accent">GOOGLE_MAPS_API_KEY</span> on the API & enable Maps JavaScript API in Google Cloud.', 8000);
+      return;
+    }
+    window._ggMapsReady = function() {
+      ggMapsLoaded = true;
+      ggMapsLoading = false;
+      ggMapsCallbacks.forEach(fn => fn());
+      ggMapsCallbacks = [];
+    };
+    const s = document.createElement('script');
+    s.id = 'ggMapsScript';
+    s.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(key) + '&callback=_ggMapsReady';
+    s.async = true;
+    s.defer = true;
+    s.onerror = function() {
+      ggMapsLoading = false;
+      ggMapsCallbacks = [];
+      showToast('⚠️ Google Maps script failed to load — check API key & billing in Google Cloud.', 6000);
+    };
+    document.head.appendChild(s);
+  })();
 }
 
 function initGeoGuesser(data) {

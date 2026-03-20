@@ -13,6 +13,7 @@ import { AdminModule } from "./modules/admin/admin.module";
 import { RoomsModule } from "./modules/rooms/rooms.module";
 import { ReportsModule } from "./modules/reports/reports.module";
 import { DictionaryModule } from "./modules/games/word-games/dictionary.module";
+import { ClientConfigModule } from "./modules/client-config/client-config.module";
 
 // Conditionally include WebSocket module only if not in serverless mode
 // WebSockets require persistent connections, which Vercel serverless functions don't support
@@ -37,7 +38,8 @@ const isServerless = process.env.IS_SERVERLESS === 'true' || process.env.VERCEL 
     VideoModule,
     AdminModule,
     RoomsModule,
-    ReportsModule
+    ReportsModule,
+    ClientConfigModule
   ]
 })
 export class AppModule {}

@@ -259,7 +259,8 @@ export default async function handler(req: Request, res: Response) {
           auth: '/api/auth',
           users: '/api/users',
           games: '/api/games',
-          video: '/api/video'
+          video: '/api/video',
+          config: '/api/config/maps-key'
         }
       });
     }

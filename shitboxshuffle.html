@@ -621,6 +621,19 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
 .danger-btn { padding:9px 20px;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:0.15em;border-radius:4px;border:1px solid rgba(212,69,58,0.3);background:transparent;color:rgba(212,69,58,0.7);cursor:pointer;transition:all 0.25s;flex-shrink:0; }
 .danger-btn:hover { background:rgba(212,69,58,0.1);border-color:rgba(212,69,58,0.5);color:var(--red); }
 
+/* Settings — media test */
+.media-test-block { margin-bottom: 4px; }
+.media-test-head { font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ivory-40);margin-bottom:10px; }
+.media-test-preview-wrap { position:relative;width:100%;max-width:380px;aspect-ratio:4/3;background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px; }
+.media-test-video { width:100%;height:100%;object-fit:cover;display:none;transform:scaleX(-1); }
+.media-test-video.active { display:block; }
+.media-test-placeholder { position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ivory-40);letter-spacing:0.06em;text-align:center;padding:16px; }
+.media-test-placeholder.hidden { display:none; }
+.media-test-meter-wrap { margin-bottom:12px;max-width:380px; }
+.media-test-meter-bg { height:10px;border-radius:5px;background:rgba(255,255,255,0.06);border:1px solid var(--border);overflow:hidden; }
+.media-test-meter-fill { height:100%;width:0%;max-width:100%;background:linear-gradient(90deg,rgba(201,162,39,0.35),var(--gold));border-radius:4px;transition:width 0.06s linear; }
+.media-test-btn { margin-top:0; }
+
 .settings-close { position:absolute;top:18px;right:20px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--ivory-40);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.25s;z-index:3; }
 .settings-close:hover { border-color:var(--border-hover);color:var(--ivory);background:var(--ivory-05); }
 
@@ -930,6 +943,9 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
       <div class="settings-nav-item" onclick="switchSettingsTab('privacy')" id="stab-privacy">
         <span class="settings-nav-icon">◇</span> Privacy
       </div>
+      <div class="settings-nav-item" onclick="switchSettingsTab('media')" id="stab-media">
+        <span class="settings-nav-icon">▶</span> Media
+      </div>
       <div class="settings-nav-spacer"></div>
       <div class="settings-nav-item" onclick="doLogOut()" style="color:var(--ivory-40);">
         <span class="settings-nav-icon">→</span> Log Out
@@ -1076,6 +1092,40 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
             <div class="toggle-desc">Auto-enable camera when entering sessions</div>
           </div>
           <label class="toggle-switch"><input type="checkbox" id="priv-cam" onchange="savePrivacyPref()"><div class="toggle-track"><div class="toggle-thumb"></div></div></label>
+        </div>
+      </div>
+
+      <!-- Media test -->
+      <div class="settings-panel" id="spanel-media">
+        <div class="settings-section-title">Audio &amp; <em style="font-style:italic;color:var(--gold)">Video</em></div>
+        <div class="settings-section-sub">Test your camera, mic, and speakers before a match</div>
+
+        <div class="media-test-block">
+          <div class="media-test-head">Camera</div>
+          <div class="media-test-preview-wrap">
+            <video id="settingsMediaVideo" class="media-test-video" playsinline muted autoplay></video>
+            <div class="media-test-placeholder" id="settingsCameraPlaceholder">Preview off — start to see your camera</div>
+          </div>
+          <button type="button" class="sf-save media-test-btn" id="settingsCameraBtn" onclick="settingsToggleCameraTest()">Start camera preview</button>
+        </div>
+
+        <div class="settings-divider"></div>
+
+        <div class="media-test-block">
+          <div class="media-test-head">Microphone</div>
+          <p class="sf-hint" style="margin-bottom:10px;">Speak normally — the bar should move with your voice</p>
+          <div class="media-test-meter-wrap">
+            <div class="media-test-meter-bg"><div class="media-test-meter-fill" id="settingsMicMeter"></div></div>
+          </div>
+          <button type="button" class="sf-save media-test-btn" id="settingsMicBtn" onclick="settingsToggleMicTest()">Start microphone test</button>
+        </div>
+
+        <div class="settings-divider"></div>
+
+        <div class="media-test-block">
+          <div class="media-test-head">Speakers</div>
+          <p class="sf-hint" style="margin-bottom:12px;">Plays a short tone — check your system volume</p>
+          <button type="button" class="sf-save media-test-btn" onclick="settingsPlayTestTone()">Play test sound</button>
         </div>
       </div>
 
@@ -1461,6 +1511,7 @@ function openSettings(){
   loadSettingsProfile(token);
 }
 function closeSettings(){
+  stopSettingsMediaTest();
   settingsOverlay.classList.remove('active');
   document.body.style.overflow='';
 }
@@ -1468,12 +1519,135 @@ settingsOverlay.addEventListener('click',(e)=>{ if(e.target===settingsOverlay) c
 document.addEventListener('keydown',(e)=>{ if(e.key==='Escape'&&settingsOverlay.classList.contains('active')) closeSettings(); });
 
 function switchSettingsTab(tab){
+  if(tab!=='media') stopSettingsMediaTest();
   document.querySelectorAll('.settings-nav-item,.settings-nav-danger').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.settings-panel').forEach(el=>el.classList.remove('active'));
   const navEl=document.getElementById('stab-'+tab);
   if(navEl) navEl.classList.add('active');
   const panelEl=document.getElementById('spanel-'+tab);
   if(panelEl) panelEl.classList.add('active');
+}
+
+// ── Settings: media device test (streams stopped when closing settings or leaving tab)
+let settingsTestCameraStream=null;
+let settingsTestMicStream=null;
+let settingsMicContext=null;
+let settingsMicAnalyser=null;
+let settingsMicRaf=null;
+
+function stopSettingsMediaTest(){
+  if(settingsMicRaf){ cancelAnimationFrame(settingsMicRaf); settingsMicRaf=null; }
+  settingsMicAnalyser=null;
+  if(settingsMicContext){
+    settingsMicContext.close().catch(()=>{});
+    settingsMicContext=null;
+  }
+  if(settingsTestMicStream){
+    settingsTestMicStream.getTracks().forEach(t=>t.stop());
+    settingsTestMicStream=null;
+  }
+  if(settingsTestCameraStream){
+    settingsTestCameraStream.getTracks().forEach(t=>t.stop());
+    settingsTestCameraStream=null;
+  }
+  const vid=document.getElementById('settingsMediaVideo');
+  if(vid){ vid.srcObject=null; vid.classList.remove('active'); }
+  const ph=document.getElementById('settingsCameraPlaceholder');
+  if(ph) ph.classList.remove('hidden');
+  const meter=document.getElementById('settingsMicMeter');
+  if(meter) meter.style.width='0%';
+  const cBtn=document.getElementById('settingsCameraBtn');
+  const mBtn=document.getElementById('settingsMicBtn');
+  if(cBtn) cBtn.textContent='Start camera preview';
+  if(mBtn) mBtn.textContent='Start microphone test';
+}
+
+async function settingsToggleCameraTest(){
+  const btn=document.getElementById('settingsCameraBtn');
+  const vid=document.getElementById('settingsMediaVideo');
+  const ph=document.getElementById('settingsCameraPlaceholder');
+  if(settingsTestCameraStream){
+    settingsTestCameraStream.getTracks().forEach(t=>t.stop());
+    settingsTestCameraStream=null;
+    if(vid){ vid.srcObject=null; vid.classList.remove('active'); }
+    if(ph) ph.classList.remove('hidden');
+    if(btn) btn.textContent='Start camera preview';
+    return;
+  }
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({ video:true, audio:false });
+    settingsTestCameraStream=stream;
+    vid.srcObject=stream;
+    vid.classList.add('active');
+    if(ph) ph.classList.add('hidden');
+    if(btn) btn.textContent='Stop camera preview';
+    vid.play().catch(()=>{});
+  }catch(e){
+    showToast('📷 <span class="toast-accent">Camera unavailable</span> — check permissions');
+  }
+}
+
+function settingsMicLevelLoop(){
+  if(!settingsMicAnalyser)return;
+  const data=new Uint8Array(settingsMicAnalyser.frequencyBinCount);
+  settingsMicAnalyser.getByteFrequencyData(data);
+  let sum=0;
+  for(let i=0;i<data.length;i++) sum+=data[i];
+  const avg=data.length?sum/data.length:0;
+  const pct=Math.min(100,(avg/96)*100);
+  const meter=document.getElementById('settingsMicMeter');
+  if(meter) meter.style.width=pct+'%';
+  settingsMicRaf=requestAnimationFrame(settingsMicLevelLoop);
+}
+
+async function settingsToggleMicTest(){
+  const btn=document.getElementById('settingsMicBtn');
+  if(settingsTestMicStream){
+    if(settingsMicRaf){ cancelAnimationFrame(settingsMicRaf); settingsMicRaf=null; }
+    settingsMicAnalyser=null;
+    if(settingsMicContext){ settingsMicContext.close().catch(()=>{}); settingsMicContext=null; }
+    settingsTestMicStream.getTracks().forEach(t=>t.stop());
+    settingsTestMicStream=null;
+    const meter=document.getElementById('settingsMicMeter');
+    if(meter) meter.style.width='0%';
+    if(btn) btn.textContent='Start microphone test';
+    return;
+  }
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({ audio:true, video:false });
+    settingsTestMicStream=stream;
+    settingsMicContext=new (window.AudioContext||window.webkitAudioContext)();
+    if(settingsMicContext.state==='suspended') await settingsMicContext.resume();
+    const src=settingsMicContext.createMediaStreamSource(stream);
+    settingsMicAnalyser=settingsMicContext.createAnalyser();
+    settingsMicAnalyser.fftSize=256;
+    src.connect(settingsMicAnalyser);
+    if(btn) btn.textContent='Stop microphone test';
+    settingsMicLevelLoop();
+  }catch(e){
+    showToast('🎤 <span class="toast-accent">Microphone unavailable</span> — check permissions');
+  }
+}
+
+function settingsPlayTestTone(){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    if(ctx.state==='suspended') ctx.resume();
+    const osc=ctx.createOscillator();
+    const g=ctx.createGain();
+    g.gain.setValueAtTime(0.0001,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.12,ctx.currentTime+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.35);
+    osc.type='sine';
+    osc.frequency.value=880;
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime+0.36);
+    setTimeout(()=>{ ctx.close().catch(()=>{}); }, 500);
+  }catch(e){
+    showToast('Could not play test sound');
+  }
 }
 
 async function loadSettingsProfile(token){

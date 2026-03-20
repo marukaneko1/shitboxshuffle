@@ -68,6 +68,7 @@ In your Railway service → **Variables** tab, add these:
 | Variable | When needed |
 |---|---|
 | `GOOGLE_CLIENT_ID` | Google OAuth login |
+| `GOOGLE_MAPS_API_KEY` | GeoGuesser — Maps JavaScript API (enable in GCP; referrer-restrict the key) |
 | `STRIPE_SECRET_KEY` | Stripe payments |
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhooks |
 | `AGORA_APP_ID` + `AGORA_APP_CERTIFICATE` | Video chat |

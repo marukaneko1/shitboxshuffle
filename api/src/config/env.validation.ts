@@ -13,6 +13,7 @@ export const validationSchema = Joi.object({
   JWT_ACCESS_EXPIRES_IN: Joi.string().default("15m"),
   JWT_REFRESH_EXPIRES_IN: Joi.string().default("7d"),
   GOOGLE_CLIENT_ID: Joi.string().allow("").optional(),
+  GOOGLE_MAPS_API_KEY: Joi.string().allow("").optional(),
   STRIPE_SECRET_KEY: Joi.string().allow("").optional(),
   STRIPE_WEBHOOK_SECRET: Joi.string().allow("").optional(),
   STRIPE_BASIC_PRICE_ID: Joi.string().allow("").optional(),

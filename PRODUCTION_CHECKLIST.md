@@ -76,6 +76,7 @@ Run it **twice** for two different values.
 **Optional** (only if you use the feature):
 
 - `GOOGLE_CLIENT_ID` — Google sign-in on the site.
+- `GOOGLE_MAPS_API_KEY` — GeoGuesser (Maps JavaScript API + Street View; restrict key by HTTP referrer in Google Cloud).
 - `STRIPE_*` — subscriptions / token packs.
 - `AGORA_APP_ID`, `AGORA_APP_CERTIFICATE` — video matching.
 - `PERSONA_*` — age verification.
