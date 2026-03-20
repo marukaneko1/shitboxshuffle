@@ -47,6 +47,29 @@ try {
 // Mark as serverless environment
 process.env.IS_SERVERLESS = 'true';
 
+/** Keep in sync with api/src/common/allowed-origins.ts */
+function getAllowedOriginsForServerless(): string[] {
+  const fromEnv =
+    process.env.ALLOWED_ORIGINS?.split(',')
+      .map((o) => o.trim())
+      .filter(Boolean) ?? [];
+  const fallback = [process.env.WEB_BASE_URL?.trim() || 'http://localhost:3000'];
+  const base = fromEnv.length > 0 ? fromEnv : fallback;
+  const web = process.env.WEB_BASE_URL?.trim();
+  const projectFrontends = ['https://shitboxshuffle.com', 'https://www.shitboxshuffle.com'];
+  const merged = [...base, ...(web && !base.includes(web) ? [web] : []), ...projectFrontends];
+  return [...new Set(merged)];
+}
+
+function isOriginAllowedServerless(origin: string | undefined): boolean {
+  if (!origin) return false;
+  if (getAllowedOriginsForServerless().includes(origin)) return true;
+  const isDev = process.env.NODE_ENV === 'development';
+  if (isDev && (origin.includes('localhost') || origin.includes('127.0.0.1'))) return true;
+  if (origin.includes('.vercel.app')) return true;
+  return false;
+}
+
 let cachedApp: express.Express;
 
 async function createApp(): Promise<express.Express> {
@@ -115,43 +138,15 @@ async function createApp(): Promise<express.Express> {
     next();
   });
 
-  // CORS configuration - must allow Vercel frontend domains
-  const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
-    : [process.env.WEB_BASE_URL || 'http://localhost:3000'];
-  
-  // Add common Vercel patterns to allowed origins
-  const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV;
-  if (isVercel) {
-    // Allow any vercel.app subdomain in production (be more restrictive in production)
-    // In production, you should set ALLOWED_ORIGINS explicitly
-  }
-
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, Postman, etc.) in development only
       if (!origin) {
         const isDev = process.env.NODE_ENV === 'development';
         return callback(null, isDev);
       }
-      
-      // In development, allow localhost
-      const isDev = process.env.NODE_ENV === 'development';
-      if (isDev && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+      if (isOriginAllowedServerless(origin)) {
         return callback(null, true);
       }
-      
-      // Check if origin is in allowed list
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      
-      // In production on Vercel, allow vercel.app subdomains (for flexibility)
-      // You should set ALLOWED_ORIGINS explicitly for better security
-      if (origin.includes('.vercel.app')) {
-        return callback(null, true);
-      }
-      
       callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
@@ -232,18 +227,7 @@ async function createApp(): Promise<express.Express> {
 
 // Helper to set CORS headers
 function setCorsHeaders(res: Response, origin: string | undefined) {
-  const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-    : [process.env.WEB_BASE_URL || 'http://localhost:3000'];
-  
-  const isDev = process.env.NODE_ENV === 'development';
-  const isAllowed = origin && (
-    allowedOrigins.includes(origin) || 
-    origin.includes('.vercel.app') ||
-    (isDev && (origin.includes('localhost') || origin.includes('127.0.0.1')))
-  );
-  
-  if (isAllowed) {
+  if (origin && isOriginAllowedServerless(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin!);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');

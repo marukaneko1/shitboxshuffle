@@ -12,6 +12,7 @@ import { ConfigService } from "@nestjs/config";
 import { WsException } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { WsJwtGuard } from "../../common/guards/ws-jwt.guard";
+import { isOriginAllowed } from "../../common/allowed-origins";
 import { MatchmakingService } from "../matchmaking/matchmaking.service";
 import { SessionsService } from "../sessions/sessions.service";
 import { GamesService } from "../games/games.service";
@@ -91,22 +92,9 @@ import {
         const isDev = process.env.NODE_ENV === "development";
         return callback(null, isDev);
       }
-      
-      // Get allowed origins from environment
-      const allowedOrigins = process.env.ALLOWED_ORIGINS
-        ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
-        : [process.env.WEB_BASE_URL || "http://localhost:3000"];
-      
-      // In development, allow localhost variations
-      const isDev = process.env.NODE_ENV === "development";
-      if (isDev && (origin.includes("localhost") || origin.includes("127.0.0.1"))) {
+      if (isOriginAllowed(origin)) {
         return callback(null, true);
       }
-      
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      
       callback(new Error("Not allowed by CORS"));
     },
     credentials: true

@@ -3253,6 +3253,24 @@ const API_URL = _IS_LOCAL ? 'http://localhost:3001' : PROD_API_URL;
 const WS_URL  = API_URL;
 const APP_URL = _IS_LOCAL ? 'http://localhost:8080' : PROD_APP_URL;
 
+// Browsers often block remote audio until a gesture — Agora calls this if play() fails
+if (typeof AgoraRTC !== 'undefined') {
+  AgoraRTC.onAutoplayFailed = () => {
+    showToast('🔊 Tap anywhere to hear your opponent', 6500);
+    const unlock = () => {
+      try {
+        if (agoraClient && agoraClient.remoteUsers) {
+          agoraClient.remoteUsers.forEach((u) => {
+            try { if (u.audioTrack) u.audioTrack.play(); } catch (e) {}
+          });
+        }
+      } catch (e) {}
+    };
+    document.body.addEventListener('click', unlock, { once: true });
+    document.body.addEventListener('touchstart', unlock, { once: true });
+  };
+}
+
 // ══════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════

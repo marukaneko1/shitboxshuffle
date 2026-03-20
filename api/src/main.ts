@@ -4,6 +4,7 @@ import type { NestExpressApplication } from "@nestjs/platform-express";
 import * as cookieParser from "cookie-parser";
 import { raw, Request, Response, NextFunction } from "express";
 import { AppModule } from "./app.module";
+import { isOriginAllowed } from "./common/allowed-origins";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -35,29 +36,16 @@ async function bootstrap() {
     next();
   });
   
-  // Enable CORS for frontend - support multiple origins
-  const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(",").map(origin => origin.trim())
-    : [process.env.WEB_BASE_URL || "http://localhost:3000"];
-  
   app.enableCors({
     origin: (origin, callback) => {
       // No Origin: Railway health checks, curl, mobile — must not block or probes fail
       if (!origin) {
         return callback(null, true);
       }
-      
-      // In development, allow localhost variations
-      const isDev = process.env.NODE_ENV === "development";
-      if (isDev && (origin.includes("localhost") || origin.includes("127.0.0.1"))) {
+      if (isOriginAllowed(origin)) {
         return callback(null, true);
       }
-      
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
+      callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],

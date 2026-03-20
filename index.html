@@ -378,7 +378,7 @@ nav.scrolled {
   font-size: clamp(15px, 1.5vw, 18px);
   font-style: italic;
   color: var(--dust);
-  max-width: 440px;
+  max-width: min(440px, 42vw);
   margin: 0 0 44px;
   line-height: 1.9;
   opacity: 0;
@@ -2369,23 +2369,68 @@ footer {
   .rsc2, .rsc3 { right: 24px; }
 }
 
-@media (max-width: 1024px) {
-  :root { --hero-v-center: 46%; }
+/* Compact laptops (13" MacBook ~1280–1440px): widen gutter + slightly smaller type — avoids headline + frame colliding */
+@media (max-width: 1440px) and (min-width: 1181px) {
   .hero {
-    padding: 0 40px 120px;
+    padding: 0 clamp(24px, 4vw, 72px) 92px;
   }
   .hero-content {
-    left: 40px;
-    right: 40px;
+    left: clamp(20px, 3.5vw, 64px);
+    right: 56%;
+  }
+  .hero-frame-container {
+    left: 48%;
+    right: clamp(18px, 2.5vw, 40px);
+  }
+  .hero-title {
+    font-size: clamp(36px, 5vw, 88px);
+    margin-bottom: 22px;
+  }
+  .hero-sub {
+    max-width: min(380px, 34vw);
+    margin-bottom: 28px;
+    line-height: 1.75;
+  }
+  .hero-overline { margin-bottom: 18px; letter-spacing: 0.38em; }
+  .hero-cta { gap: 12px; flex-wrap: wrap; }
+  .video-panel {
+    padding: clamp(28px, 3.5vw, 48px) clamp(16px, 2vw, 32px) clamp(20px, 2.5vw, 32px);
+  }
+  .frame-status-bar { height: 36px; padding: 0 14px; }
+  .status-wager { font-size: 12px; }
+}
+
+@media (max-width: 1280px) and (min-width: 1181px) {
+  .hero-content { right: 54%; }
+  .hero-frame-container { left: 50%; }
+  .hero-title { font-size: clamp(32px, 4.6vw, 76px); }
+}
+
+/* Stack hero sooner than 1024 — small laptops / large tablets were still in squeezed two-column mode */
+@media (max-width: 1180px) {
+  :root { --hero-v-center: 46%; }
+  .hero {
+    padding: clamp(16px, 3vw, 28px) clamp(20px, 4vw, 40px) 100px;
+  }
+  .hero-content {
+    left: auto;
+    right: auto;
+    width: 100%;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
     text-align: center;
     position: relative;
     top: auto;
     transform: none;
-    margin-bottom: 40px;
+    margin-bottom: clamp(28px, 4vh, 44px);
+    padding: 0 8px;
+    box-sizing: border-box;
   }
   .hero-overline { justify-content: center; }
   .hero-overline::before { display: none; }
   .hero-cta { justify-content: center; }
+  .hero-sub { max-width: 520px; margin-left: auto; margin-right: auto; }
   .hero-frame-container {
     position: relative;
     left: auto;
@@ -2393,7 +2438,7 @@ footer {
     top: auto;
     transform: none;
     width: 100%;
-    max-width: 600px;
+    max-width: min(600px, 100%);
     margin: 0 auto;
   }
   .hero-video-frame {
@@ -3995,14 +4040,11 @@ function rSmoothstep(t) { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2
 function rGetPositions() {
   const vw = window.innerWidth, vh = window.innerHeight;
   const fw = rFrameWrap.offsetWidth, fh = rFrameWrap.offsetHeight;
-  // Match CSS --hero-v-center (default 0.44) + translateY(-50%): top = vh * anchor - fh/2
-  const vAnchor = vw <= 1024 ? 0.46 : 0.44;
-  const sL = vw * 0.42;
-  const sT = vh * vAnchor - fh / 2;
-  // End: center of the element at viewport center (scale shrinks from center)
+  const rect = rFrameWrap.getBoundingClientRect();
+  // Use real layout position (works for 1440/1280/1180 breakpoints + stacked hero)
   const eCenterL = (vw - fw) / 2;
   const eCenterT = (vh - fh) / 2;
-  return { dx: eCenterL - sL, dy: eCenterT - sT };
+  return { dx: eCenterL - rect.left, dy: eCenterT - rect.top };
 }
 
 function rUpdateConnectors(step) {
