@@ -1,0 +1,9 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+Disallow: /admin.html
+Disallow: /session.html
+Disallow: /api/
+
+Sitemap: https://shitboxshuffle.com/sitemap.xml

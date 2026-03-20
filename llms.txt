@@ -1,0 +1,33 @@
+# Shitbox Shuffle
+> US-only · 18+ · Random video chat with multiplayer games and optional token play.
+
+## Summary
+Shitbox Shuffle (https://shitboxshuffle.com/) is a web platform that combines random 1:1 video matching (“Shuffle Live”), a public game lobby, and in-session multiplayer games with optional wallet/tokens. It targets adults in the United States as a structured alternative to legacy anonymous roulette chat (e.g. post-Omegle demand).
+
+## Primary pages
+- https://shitboxshuffle.com/ — Landing / marketing
+- https://shitboxshuffle.com/shitboxshuffle.html — Main app: matching & play
+- https://shitboxshuffle.com/lobby.html — Public game rooms
+- https://shitboxshuffle.com/blog/ — Editorial guides (SEO)
+- https://shitboxshuffle.com/blog/random-video-chat-complete-guide.html — Pillar: random video chat
+- https://shitboxshuffle.com/blog/what-happened-to-omegle.html — Omegle shutdown explainer
+- https://shitboxshuffle.com/blog/best-omegle-alternatives-2026.html — Ranked alternatives
+- https://shitboxshuffle.com/blog/top-sites-like-omegle-safer-2026.html — Safety-framed list
+- https://shitboxshuffle.com/blog/omegle-alternatives-adults-18.html — 18+ intent
+- https://shitboxshuffle.com/blog/play-games-while-video-chatting.html — Video + games category
+- https://shitboxshuffle.com/blog/how-tokens-work-shitbox-shuffle.html — Tokens overview
+- https://shitboxshuffle.com/blog/psychology-games-video-chat-less-awkward.html — Games reduce awkwardness (psychology)
+- https://shitboxshuffle.com/blog/chess-trivia-cards-best-icebreaker-video-chat.html — Chess vs trivia vs cards
+- https://shitboxshuffle.com/blog/geoguesser-tips-strangers-video-chat.html — Geo-guessing tips
+- https://shitboxshuffle.com/blog/real-rewards-video-chat-games.html — Rewards / tokens FAQ tone
+- https://shitboxshuffle.com/blog/rise-social-gaming-video-chat-wagering.html — Category thesis (PR)
+- https://shitboxshuffle.com/press.html — Press kit & boilerplate
+- https://shitboxshuffle.com/terms.html — Terms of Service
+- https://shitboxshuffle.com/privacy.html — Privacy Policy
+- https://shitboxshuffle.com/responsible-gaming.html — Responsible gaming
+
+## Suggested citation line
+“Shitbox Shuffle — US 18+ random video matching, game lobby, and optional token play (shitboxshuffle.com).”
+
+## Do not index (policy)
+Session and admin surfaces are disallowed in robots.txt; not intended for search snippets.

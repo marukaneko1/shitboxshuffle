@@ -4,6 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shitbox Shuffle — The House Always Deals</title>
+<meta name="description" content="Meet strangers on random video chat, play real games together, and put tokens on the line. The Omegle-era alternative for US adults 18+. Games, lobby rooms, and Shuffle Live matching.">
+<link rel="canonical" href="https://shitboxshuffle.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shitbox Shuffle">
+<meta property="og:url" content="https://shitboxshuffle.com/">
+<meta property="og:title" content="Shitbox Shuffle — Random Video Chat, Games &amp; Stakes">
+<meta property="og:description" content="Random 1:1 video matching, multiplayer lobby, and in-session games with token play. Built for US adults 18+. The next evolution after Omegle.">
+<meta property="og:image" content="https://shitboxshuffle.com/assets/og-default.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Shitbox Shuffle — Random Video Chat, Games &amp; Stakes">
+<meta name="twitter:description" content="Random 1:1 video matching, lobby games, and token play for US adults 18+.">
+<meta name="twitter:image" content="https://shitboxshuffle.com/assets/og-default.svg">
+<!-- GA4: create a property and replace G-XXXXXXXXXX, then uncomment the block below.
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
+-->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+  {"@type":"Organization","@id":"https://shitboxshuffle.com/#organization","name":"Shitbox Shuffle","url":"https://shitboxshuffle.com/","description":"Random video chat with in-session games and token play for US adults 18+."},
+  {"@type":"WebSite","@id":"https://shitboxshuffle.com/#website","name":"Shitbox Shuffle","url":"https://shitboxshuffle.com/","publisher":{"@id":"https://shitboxshuffle.com/#organization"}},
+  {"@type":"WebApplication","name":"Shitbox Shuffle","url":"https://shitboxshuffle.com/shitboxshuffle.html","applicationCategory":"GameApplication","operatingSystem":"Web","browserRequirements":"Requires JavaScript. WebRTC recommended for video.","description":"Random video matching, game lobby, and multiplayer games with optional token wagering. US only, 18+.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://shitboxshuffle.com/#organization"}}
+]}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400;1,900&display=swap" rel="stylesheet">
@@ -2802,6 +2828,32 @@ footer.sticky-footer {
   text-decoration: none;
 }
 .footer-back-top:hover { border-color: var(--ember); color: var(--ember); }
+.footer-blog-cta {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--phantom);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.footer-blog-btn {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  color: var(--void);
+  background: var(--ember);
+  padding: 14px 36px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s;
+  display: inline-block;
+  border: 1px solid rgba(201,162,39,0.4);
+}
+.footer-blog-btn:hover {
+  background: var(--flame);
+  box-shadow: 0 0 28px rgba(201,162,39,0.25);
+  color: var(--void);
+}
 .footer-gold-line {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--ember), transparent);
@@ -2942,6 +2994,8 @@ footer.sticky-footer {
   .footer-wordmark { font-size: clamp(36px, 10vw, 56px); }
   .footer-bottom-row { flex-direction: column; gap: 12px; }
   .footer-links-row { flex-wrap: wrap; }
+  .footer-blog-cta { margin-top: 20px; padding-top: 20px; }
+  .footer-blog-btn { font-size: 12px; letter-spacing: 0.14em; padding: 12px 22px; }
   .cta-buttons .btn-shuffle::after { display: none; }
 }
 </style>
@@ -3261,7 +3315,7 @@ footer.sticky-footer {
         <span class="title-line"><span><em>Stranger.</em></span></span>
         <span class="title-line hero-phrase-line" id="heroPhraseLine"><span><span class="hero-cycle-wrap"><span class="hero-cycle-text" id="heroCycleText">Play a Game.</span></span></span></span>
       </h1>
-      <p class="hero-sub" id="heroSub">Random 1:1 video matching meets real-money wagering. The house never tells you what's on the other side of the table.</p>
+      <p class="hero-sub" id="heroSub">Meet a stranger. Play a game. Put something on it. Random video chat, real games, and real stakes for US adults 18+ only. The house never tells you what's on the other side of the table.</p>
       <div class="hero-cta" id="heroCta">
         <div class="magnetic-wrap" data-magnetic>
           <button class="btn-shuffle" onclick="transitionTo('shitboxshuffle.html')" aria-label="Start shuffling - enter the game room"><span>START SHUFFLING</span></button>
@@ -3554,11 +3608,14 @@ footer.sticky-footer {
   <div class="footer-inner">
     <div class="footer-wordmark">SHITBOX SHUFFLE</div>
     <div class="footer-links footer-links-row">
-      <a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="support.html">Support</a><a href="responsible-gaming.html">Responsible Gaming</a>
+      <a href="blog/">Guides</a><a href="press.html">Press</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="support.html">Support</a><a href="responsible-gaming.html">Responsible Gaming</a>
     </div>
     <div class="footer-bottom-row">
       <span class="footer-copy">© 2026 Shitbox Shuffle</span>
       <a href="#heroSection" class="footer-back-top" id="backToTop">↑ BACK TO TOP</a>
+    </div>
+    <div class="footer-blog-cta">
+      <a href="blog/" class="footer-blog-btn">ALL BLOGS &amp; ARTICLES</a>
     </div>
   </div>
 </footer>

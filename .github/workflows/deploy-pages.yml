@@ -4,7 +4,12 @@ on:
   push:
     branches: [main]
     paths:
-      - '*.html'
+      - '**/*.html'
+      - 'blog/**'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - 'llms.txt'
+      - 'assets/**'
       - '.github/workflows/deploy-pages.yml'
 
 permissions:

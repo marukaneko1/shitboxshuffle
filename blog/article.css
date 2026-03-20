@@ -1,0 +1,57 @@
+/* Shared styles for Shuffle Journal articles */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --void: #030303; --ember: #c9a227; --bone: #e8e0d0;
+  --dust: rgba(232,224,208,0.75); --ash: rgba(232,224,208,0.45);
+  --phantom: rgba(232,224,208,0.08);
+}
+html { background: var(--void); scroll-behavior: smooth; }
+body { font-family: 'Libre Baskerville', Georgia, serif; background: var(--void); color: var(--bone); min-height: 100vh; line-height: 1.75; }
+nav { display: flex; align-items: center; height: 70px; border-bottom: 1px solid var(--phantom); background: rgba(3,3,3,0.92); position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
+.nav-logo { padding: 0 40px; text-decoration: none; }
+.logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.2em; color: var(--bone); }
+.logo-text .amp { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ember); }
+.nav-spacer { flex: 1; }
+.nav-enter { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.18em; color: var(--ember); text-decoration: none; padding: 0 40px; border-left: 1px solid var(--phantom); height: 70px; display: flex; align-items: center; }
+.nav-enter:hover { color: var(--bone); }
+.page-wrap { max-width: 680px; margin: 0 auto; padding: 120px 28px 100px; }
+.page-overline { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ember); margin-bottom: 14px; }
+h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4.5vw, 40px); font-weight: 700; margin-bottom: 12px; line-height: 1.2; }
+.meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ash); margin-bottom: 28px; }
+.toc { border: 1px solid var(--phantom); padding: 22px 24px; margin-bottom: 40px; border-radius: 6px; background: rgba(201,162,39,0.03); }
+.toc strong { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.12em; display: block; margin-bottom: 14px; color: var(--bone); }
+.toc ul { list-style: none; padding: 0; }
+.toc li { margin-bottom: 8px; }
+.toc a { color: var(--ember); text-decoration: none; font-size: 14px; }
+.toc a:hover { text-decoration: underline; }
+.content-section { margin-bottom: 36px; }
+.content-section h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 14px; color: var(--bone); }
+.content-section h3 { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.1em; margin: 28px 0 12px; color: var(--ember); }
+.content-section p { font-size: 16px; color: var(--dust); margin-bottom: 16px; }
+.content-section ul { padding-left: 22px; margin-bottom: 16px; color: var(--dust); font-size: 16px; }
+.content-section li { margin-bottom: 10px; }
+.content-section li::marker { color: var(--ember); }
+.content-section a { color: var(--ember); text-decoration: underline; text-underline-offset: 3px; }
+.callout { border-left: 3px solid var(--ember); padding: 16px 20px; margin: 28px 0; background: rgba(201,162,39,0.06); font-size: 15px; color: var(--dust); }
+.pick { border: 1px solid var(--phantom); border-radius: 8px; padding: 22px 24px; margin-bottom: 22px; background: rgba(255,255,255,0.02); }
+.pick-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--ember); margin-bottom: 8px; }
+.pick h3 { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.06em; color: var(--bone); margin-bottom: 12px; }
+.pick.our-pick { border-color: rgba(201,162,39,0.35); background: rgba(201,162,39,0.06); }
+.pick p { font-size: 16px; color: var(--dust); margin-bottom: 12px; }
+.pick p:last-child { margin-bottom: 0; }
+.pick a { color: var(--ember); }
+.faq-section { margin-top: 48px; }
+.faq-section > h2 { font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 24px; }
+.faq-item { margin-bottom: 24px; }
+.faq-item h3 { font-family: 'Libre Baskerville', serif; font-size: 17px; letter-spacing: 0; color: var(--bone); margin: 0 0 8px; }
+.faq-item p { margin: 0; font-size: 16px; color: var(--dust); }
+footer { margin-top: 60px; padding: 40px 0; border-top: 1px solid var(--phantom); display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; }
+.footer-wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 0.2em; color: var(--ash); }
+.footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-links a { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ash); text-decoration: none; }
+.footer-links a:hover { color: var(--ember); }
+.footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(232,224,208,0.25); flex-basis: 100%; }
+@media (max-width: 640px) {
+  .nav-logo { padding: 0 20px; }
+  .nav-enter { padding: 0 20px; font-size: 11px; }
+}
