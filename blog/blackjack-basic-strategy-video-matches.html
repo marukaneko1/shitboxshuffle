@@ -3,232 +3,653 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blackjack Basic Strategy Guide for Video Match Play | Shitbox Shuffle</title>
-  <meta name="description" content="Learn blackjack basic strategy—hit, stand, split, double down decisions based on your hand and the dealer's upcard. Applied to video match play." />
+  <title>Blackjack Basic Strategy for Video Chat Matches: The Complete Guide</title>
+  <meta name="description" content="Master blackjack basic strategy for video chat matches. Complete strategy charts, hard/soft totals, pairs, bankroll management, and the unique dynamics of playing against a real person on screen." />
   <link rel="canonical" href="https://shitboxshuffle.com/blog/blackjack-basic-strategy-video-matches.html" />
-  <meta property="og:title" content="Blackjack Basic Strategy for Video Match Play" />
-  <meta property="og:description" content="Hit, stand, split, double down—every blackjack decision mapped to basic strategy. How it applies when playing against a stranger on Shitbox Shuffle." />
+  <meta property="og:title" content="Blackjack Basic Strategy for Video Chat Matches: The Complete Guide" />
+  <meta property="og:description" content="Master blackjack basic strategy for video chat matches. Complete strategy charts, hard/soft totals, pairs, bankroll management, and the unique dynamics of playing against a real person on screen." />
   <meta property="og:url" content="https://shitboxshuffle.com/blog/blackjack-basic-strategy-video-matches.html" />
-  <meta property="og:image" content="https://shitboxshuffle.com/assets/og-default.svg" />
   <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="Shitbox Shuffle" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Blackjack Basic Strategy for Video Match Play" />
-  <meta name="twitter:description" content="Hit, stand, split, double down decisions mapped to basic strategy." />
-  <meta name="twitter:image" content="https://shitboxshuffle.com/assets/og-default.svg" />
-  <link rel="stylesheet" href="article.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root { --void:#030303; --smoke:#1c1a17; --ink:#141210; --ember:#c9a227; --flame:#e8c547; --bone:#e8e0d0; --chalk:#f5f0e6; --dust:rgba(232,224,208,0.75); --ash:rgba(232,224,208,0.45); --ghost:rgba(232,224,208,0.15); --phantom:rgba(232,224,208,0.08); }
+    html { background:var(--void); scroll-behavior:smooth; }
+    body { font-family:'Libre Baskerville',Georgia,serif; background:var(--void); color:var(--bone); min-height:100vh; line-height:1.8; overflow-x:hidden; }
+    nav { display:flex; align-items:center; height:70px; border-bottom:1px solid var(--phantom); background:rgba(3,3,3,0.95); position:fixed; top:0; left:0; right:0; z-index:50; }
+    .nav-logo { padding:0 40px; text-decoration:none; }
+    .logo-text { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:0.2em; color:var(--bone); }
+    .logo-text .amp { font-family:'Playfair Display',serif; font-style:italic; color:var(--ember); }
+    .nav-spacer { flex:1; }
+    .nav-blog-link { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ash); text-decoration:none; padding:0 28px; height:70px; display:flex; align-items:center; border-left:1px solid var(--phantom); }
+    .nav-enter { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:0.18em; color:var(--void); background:var(--ember); text-decoration:none; padding:0 40px; height:70px; display:flex; align-items:center; }
+    .page-wrap { max-width:720px; margin:0 auto; padding:120px 28px 100px; }
+    h1 { font-family:'Playfair Display',serif; font-size:clamp(26px,4.5vw,44px); font-weight:900; line-height:1.15; color:var(--chalk); margin-bottom:16px; }
+    .section { margin-bottom:48px; }
+    .section h2 { font-family:'Playfair Display',serif; font-size:clamp(20px,3vw,28px); font-weight:900; color:var(--chalk); margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--phantom); padding-top:16px; }
+    .section h3 { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ember); margin:32px 0 12px; }
+    .section p { font-size:16px; color:var(--dust); margin-bottom:18px; line-height:1.85; }
+    .section p:first-of-type { font-size:17px; color:var(--bone); }
+    .section a { color:var(--ember); text-decoration:underline; }
+    .section strong { color:var(--chalk); }
+    .section ul, .section ol { padding-left:24px; margin-bottom:18px; color:var(--dust); font-size:16px; }
+    .section li { margin-bottom:10px; line-height:1.75; }
+    .section li::marker { color:var(--ember); }
+    .callout { border-left:3px solid var(--ember); padding:18px 22px; margin:28px 0; background:rgba(201,162,39,0.06); font-size:15px; color:var(--dust); }
+    .pull-quote { border-left:3px solid var(--ghost); margin:36px 0; padding:16px 24px; background:rgba(232,224,208,0.03); }
+    .pull-quote p { font-size:18px!important; font-style:italic; color:var(--bone)!important; margin:0!important; }
+    .cta-block { background:linear-gradient(135deg,var(--smoke),var(--ink)); border:1px solid var(--ember); border-radius:4px; padding:48px 40px; margin:64px 0 0; text-align:center; }
+    .cta-eyebrow { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--ember); margin-bottom:16px; }
+    .cta-headline { font-family:'Playfair Display',serif; font-size:clamp(22px,4vw,34px); font-weight:900; color:var(--chalk); margin-bottom:16px; }
+    .cta-body { font-size:16px; color:var(--dust); margin-bottom:28px; max-width:460px; margin-left:auto; margin-right:auto; }
+    .cta-btn { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--void); background:var(--ember); padding:16px 44px; text-decoration:none; border-radius:2px; }
+    .cta-fine { margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ash); }
+    .faq-item { margin-bottom:28px; padding-bottom:28px; border-bottom:1px solid var(--phantom); }
+    .faq-q { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--chalk); margin-bottom:10px; }
+    .faq-a { font-size:15px; color:var(--dust); line-height:1.8; }
+    footer { margin-top:72px; padding:40px 0; border-top:1px solid var(--phantom); display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:space-between; }
+    .footer-wordmark { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.2em; color:var(--ash); }
+    .footer-links { display:flex; gap:24px; flex-wrap:wrap; }
+    .footer-links a { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--ash); text-decoration:none; }
+    .footer-copy { font-family:'JetBrains Mono',monospace; font-size:10px; color:rgba(232,224,208,0.25); flex-basis:100%; }
+    @media(max-width:640px) { .nav-blog-link{display:none;} .nav-enter{padding:0 20px;font-size:11px;} .cta-block{padding:36px 24px;} }
+
+    /* ── VISUAL 1: Strategy Decision Table ── */
+    .strategy-wrap { margin:36px 0; }
+    .strategy-section-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--ember); padding:12px 0 6px; }
+    .strategy-table-scroll { overflow-x:auto; }
+    .strategy-table { border-collapse:collapse; min-width:580px; width:100%; font-family:'JetBrains Mono',monospace; }
+    .strategy-table th { background:#0e0d0b; color:var(--ash); letter-spacing:0.1em; text-transform:uppercase; padding:7px 5px; text-align:center; border:1px solid rgba(232,224,208,0.07); font-size:9px; }
+    .strategy-table td { padding:6px 3px; text-align:center; border:1px solid rgba(232,224,208,0.05); font-size:9px; letter-spacing:0.05em; font-weight:700; }
+    .row-label { background:#0e0d0b; color:var(--ash); text-align:right!important; padding:6px 10px!important; font-size:9px; white-space:nowrap; border-right:1px solid rgba(201,162,39,0.2)!important; }
+    .cell-h  { background:rgba(201,162,39,0.15); color:#e8c547; }
+    .cell-s  { background:rgba(14,13,11,0.95); color:rgba(232,224,208,0.38); }
+    .cell-d  { background:rgba(201,162,39,0.52); color:#0e0d0b; }
+    .cell-sp { background:rgba(201,162,39,0.28); color:var(--chalk); }
+    .cell-ds { background:rgba(201,162,39,0.36); color:var(--chalk); }
+    .strategy-legend { display:flex; gap:18px; flex-wrap:wrap; margin-top:16px; padding:14px; background:rgba(232,224,208,0.03); border:1px solid var(--phantom); }
+    .legend-item { display:flex; align-items:center; gap:7px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ash); }
+    .legend-swatch { width:16px; height:16px; border-radius:2px; flex-shrink:0; }
+
+    /* ── VISUAL 2: Hard vs Soft Hand Cards ── */
+    .hand-compare { display:flex; gap:28px; margin:36px 0; flex-wrap:wrap; }
+    .hand-group { flex:1; min-width:200px; background:rgba(232,224,208,0.03); border:1px solid var(--phantom); border-radius:4px; padding:20px; }
+    .hand-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ember); margin-bottom:14px; }
+    .hand-cards { display:flex; gap:7px; margin-bottom:12px; }
+    .playing-card { width:48px; height:68px; background:#f0ece0; border-radius:3px; display:flex; flex-direction:column; align-items:flex-start; justify-content:space-between; padding:4px 5px; box-shadow:0 3px 10px rgba(0,0,0,0.7); position:relative; }
+    .playing-card .c-rank { font-family:'Playfair Display',serif; font-size:14px; font-weight:700; line-height:1; }
+    .playing-card .c-suit { font-size:11px; line-height:1; }
+    .playing-card .c-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:20px; }
+    .playing-card .c-rank-bot { font-family:'Playfair Display',serif; font-size:14px; font-weight:700; line-height:1; transform:rotate(180deg); align-self:flex-end; }
+    .card-red .c-rank, .card-red .c-suit, .card-red .c-center, .card-red .c-rank-bot { color:#b91c1c; }
+    .card-black .c-rank, .card-black .c-suit, .card-black .c-center, .card-black .c-rank-bot { color:#0e0d0b; }
+    .hand-total { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--dust); margin-bottom:6px; }
+    .hand-verdict { font-size:12px; color:var(--ash); font-style:italic; line-height:1.5; }
+
+    /* Breadcrumb + meta */
+    .breadcrumb { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; color:var(--ash); margin-bottom:24px; }
+    .breadcrumb a { color:var(--ash); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--ember); }
+    .breadcrumb span { color:var(--phantom); margin:0 7px; }
+    .article-meta { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ash); margin-bottom:40px; display:flex; gap:16px; flex-wrap:wrap; }
+    .meta-sep { color:var(--ember); }
+  </style>
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "Blackjack Basic Strategy Guide for Video Match Play",
-    "description": "Complete blackjack basic strategy covering hard totals, soft totals, splits, and doubles. Applied to token match play on Shitbox Shuffle.",
-    "url": "https://shitboxshuffle.com/blog/blackjack-basic-strategy-video-matches.html",
-    "datePublished": "2026-03-19",
-    "dateModified": "2026-03-19",
-    "author": { "@type": "Organization", "name": "Shitbox Shuffle" },
-    "publisher": { "@type": "Organization", "name": "Shitbox Shuffle", "url": "https://shitboxshuffle.com" }
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
+    "@graph": [
       {
-        "@type": "Question",
-        "name": "What is blackjack basic strategy?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Basic strategy is a mathematically derived set of rules that tells you the statistically optimal play (hit, stand, double, split) for every possible combination of your hand total and the dealer's visible upcard. Playing basic strategy minimizes the house edge to under 0.5% in standard rule sets." }
+        "@type": "Article",
+        "@id": "https://shitboxshuffle.com/blog/blackjack-basic-strategy-video-matches.html#article",
+        "headline": "Blackjack Basic Strategy for Video Chat Matches: The Complete Guide",
+        "description": "Master blackjack basic strategy for video chat matches. Complete strategy charts for hard totals, soft totals, and pairs, plus bankroll management and the unique dynamics of playing against a real person on screen.",
+        "url": "https://shitboxshuffle.com/blog/blackjack-basic-strategy-video-matches.html",
+        "datePublished": "2026-03-20",
+        "dateModified": "2026-03-20",
+        "author": { "@type": "Organization", "name": "Shitbox Shuffle" },
+        "publisher": { "@type": "Organization", "name": "Shitbox Shuffle", "url": "https://shitboxshuffle.com" },
+        "mainEntityOfPage": "https://shitboxshuffle.com/blog/blackjack-basic-strategy-video-matches.html",
+        "keywords": ["blackjack basic strategy", "blackjack strategy chart", "how to play blackjack", "video chat blackjack", "blackjack tips"]
       },
       {
-        "@type": "Question",
-        "name": "Should you always hit on 16 against a dealer 10?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Basic strategy says yes—hit 16 against dealer 10. You're in a bad spot either way, but statistically hitting gives a slightly better expected outcome than standing, because a dealer showing 10 is more likely to have 20 than to bust." }
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://shitboxshuffle.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://shitboxshuffle.com/blog/" },
+          { "@type": "ListItem", "position": 3, "name": "Blackjack Basic Strategy for Video Chat Matches", "item": "https://shitboxshuffle.com/blog/blackjack-basic-strategy-video-matches.html" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is blackjack basic strategy?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Blackjack basic strategy is a mathematically derived set of decisions — hit, stand, double down, or split — for every possible combination of your hand total and the dealer's upcard. Playing perfect basic strategy reduces the house edge to roughly 0.5% in standard rules." }
+          },
+          {
+            "@type": "Question",
+            "name": "Does basic strategy change when playing against a person instead of a dealer?",
+            "acceptedAnswer": { "@type": "Answer", "text": "The mathematically correct plays remain identical. However, playing peer-vs-peer on video adds psychological layers — your opponent's visible reactions, pace, and betting behavior can supplement your strategy decisions even though the core math doesn't change." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I use a strategy chart while playing?",
+            "acceptedAnswer": { "@type": "Answer", "text": "In peer-vs-peer video chat play there is typically no rule against consulting a strategy chart. The goal is to internalize the chart over time, but referencing it during play is a perfectly legitimate learning tool." }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the difference between a hard hand and a soft hand?",
+            "acceptedAnswer": { "@type": "Answer", "text": "A hard hand contains no ace, or contains an ace that must be counted as 1 to avoid busting. A soft hand contains an ace counted as 11 without busting. Soft hands are more flexible because you can't bust with a single hit — the ace simply reclassifies from 11 to 1." }
+          },
+          {
+            "@type": "Question",
+            "name": "Should I always split Aces and 8s?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes, in standard rules. Splitting Aces gives you two chances to hit 21 from the best possible starting point. Splitting 8s turns a terrible 16 into two hands starting at 8, each with favorable drawing potential. Both splits are correct against every dealer upcard." }
+          },
+          {
+            "@type": "Question",
+            "name": "How much should I wager per hand with tokens?",
+            "acceptedAnswer": { "@type": "Answer", "text": "A common guideline is to keep any single wager to 1–2% of your session bankroll. This gives you enough hands to ride through normal variance without running out of chips. Never chase losses by dramatically increasing bet sizes after a losing streak." }
+          },
+          {
+            "@type": "Question",
+            "name": "What rule variations hurt players most?",
+            "acceptedAnswer": { "@type": "Answer", "text": "The three biggest player-unfriendly rules are: blackjack paying 6:5 instead of 3:2 (adds roughly 1.4% to house edge), the dealer hitting soft 17 (adds about 0.2%), and not allowing doubling after splits. The 6:5 payout is by far the worst — avoid it whenever possible." }
+          }
+        ]
       }
     ]
   }
   </script>
 </head>
 <body>
-<nav class="nav">
-  <div class="nav-inner">
-    <a class="nav-logo" href="../index.html">Shitbox Shuffle</a>
-    <div class="nav-actions">
-      <a class="btn-nav" href="../shitboxshuffle.html">Play Now</a>
-    </div>
-  </div>
+
+<nav>
+  <a href="https://shitboxshuffle.com/" class="nav-logo">
+    <div class="logo-text">Shitbox <span class="amp">&</span> Shuffle</div>
+  </a>
+  <div class="nav-spacer"></div>
+  <a href="https://shitboxshuffle.com/blog/" class="nav-blog-link">Blog</a>
+  <a href="https://shitboxshuffle.com/" class="nav-enter">Enter the Room</a>
 </nav>
 
 <div class="page-wrap">
-  <article class="content-section article-body">
-    <header class="article-header">
-      <div class="article-meta"><span class="tag">Game Strategy</span> <time datetime="2026-03-19">March 19, 2026</time></div>
-      <h1>Blackjack Basic Strategy: The Complete Guide for Video Match Play</h1>
-      <p class="article-lede">Blackjack looks like a game of luck. Over hundreds of hands it becomes a game of decisions—and basic strategy is the map for every decision. Here's how it works, and how it applies when you're playing for tokens against a stranger on video.</p>
-    </header>
 
-    <div class="callout callout-warning">
-      <strong>Responsible play notice:</strong> This guide is for entertainment and strategic education. It is not gambling advice. Token wagering on Shitbox Shuffle is entertainment for US adults 18+. Always play within your means. See our <a href="../responsible-gaming.html">Responsible Gaming page</a> and <a href="../terms.html">Terms</a>.
+  <div class="breadcrumb">
+    <a href="https://shitboxshuffle.com/">Home</a><span>›</span>
+    <a href="https://shitboxshuffle.com/blog/">Blog</a><span>›</span>
+    Blackjack Basic Strategy
+  </div>
+
+  <h1>Blackjack Basic Strategy for Video Chat Matches: The Complete Guide</h1>
+
+  <div class="article-meta">
+    <span>Strategy Guide</span>
+    <span class="meta-sep">·</span>
+    <span>March 2026</span>
+    <span class="meta-sep">·</span>
+    <span>18+ Only · US Only</span>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Why Blackjack Is the Perfect Video Chat Game</h2>
+
+    <p>There is no cleaner head-to-head game on a screen than blackjack. The rules are universal, the rounds are short, the math is unambiguous, and the tension is immediate. Within ninety seconds of sitting down across from a stranger on camera, you know something real about them — how they handle pressure, whether they trust the math or their gut, whether they project confidence over a bad hand or let it show when things go sideways.</p>
+
+    <p>Most card games require either a shared physical table or elaborate trust mechanisms to work online. Blackjack solves this elegantly. The hand structure is self-contained: you make decisions based on your cards and one visible dealer card — or, in peer-vs-peer play, one visible card from your opponent's hand. The game doesn't require reading an entire hidden hand across a virtual table. It requires reading a number, applying logic, and executing your decision while someone watches you do it on camera.</p>
+
+    <p>That last piece is what makes video chat blackjack genuinely distinct from any other format. In a casino, the dealer is a function, not a person. On Shitbox Shuffle, your opponent is fully present — you can see their micro-expressions when your double-down lands a ten and locks in 21, their posture when they're sitting on a 12 against your visible strong card, their composure or lack of it when the cards are bad three hands running. The psychological layer doesn't replace basic strategy. It augments it.</p>
+
+    <p>The game also moves fast enough to sustain genuine attention but slow enough to reward careful deliberation. A round of blackjack with normal pace takes under two minutes. In a thirty-minute session you can play fifteen to twenty hands — enough to see real swings, apply real strategy, and have a meaningful narrative arc with whoever you're matched against. That rhythm of play is more engaging than most games can offer in the same window.</p>
+
+    <p>Blackjack also has the unusual property of rewarding study. Chess rewards study too, but the learning curve is steep enough that casual players often plateau quickly without sustained effort. Blackjack basic strategy can be learned in a weekend. Not perfected — learning to apply it calmly under live pressure takes practice — but the chart itself is graspable. That accessibility makes it an ideal skill game for a platform built around meeting strangers: low enough barrier that anyone can engage, deep enough that those who have done the work consistently outperform those who haven't.</p>
+
+    <p>This guide gives you the complete basic strategy — every possible hand decision explained — along with the specific dynamics that change when you're playing against a person instead of a house. By the end, you should be able to sit down at a blackjack match, apply the correct decision on every hand without hesitation, manage your tokens responsibly, and hold your composure on camera regardless of what the cards are doing.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>The Complete Basic Strategy: Every Decision Explained</h2>
+
+    <p>Basic strategy is not a heuristic or a rule of thumb. It is the mathematically optimal play for every possible two-card starting hand against every possible dealer upcard, calculated by running hundreds of millions of simulated hands through all possible deck continuations. Deviating from it is not "playing your read" or "going with your gut" — it is donating expected value, hand after hand, until the difference compounds into a meaningful loss.</p>
+
+    <p>The strategy divides into three categories — hard totals, soft totals, and pairs — each with different decision logic because the structure of the hands differs fundamentally. We will cover all three, explain the reasoning behind the less intuitive calls, and present the full chart visually so you can reference it during play.</p>
+
+    <div class="strategy-wrap">
+      <p style="font-size:13px; color:var(--ash); margin-bottom:4px; font-family:'JetBrains Mono',monospace; letter-spacing:0.08em;">Dealer upcard across top · Your hand down left · H = Hit · S = Stand · D = Double Down · SP = Split · DS = Double if allowed, otherwise Stand</p>
+
+      <div class="strategy-section-label">Hard Totals</div>
+      <div class="strategy-table-scroll">
+        <table class="strategy-table">
+          <thead>
+            <tr>
+              <th style="width:90px;">Your Hand</th>
+              <th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+              <th>7</th><th>8</th><th>9</th><th>10</th><th>A</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="row-label">8 or less</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">9</td><td class="cell-h">H</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">10</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">11</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">12</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">13</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">14</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">15</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">16</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">17+</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="strategy-section-label" style="margin-top:22px;">Soft Totals (Hand Contains an Ace Counting as 11)</div>
+      <div class="strategy-table-scroll">
+        <table class="strategy-table">
+          <thead>
+            <tr>
+              <th style="width:90px;">Your Hand</th>
+              <th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+              <th>7</th><th>8</th><th>9</th><th>10</th><th>A</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="row-label">A,2 (soft 13)</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">A,3 (soft 14)</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">A,4 (soft 15)</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">A,5 (soft 16)</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">A,6 (soft 17)</td><td class="cell-h">H</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">A,7 (soft 18)</td><td class="cell-ds">DS</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">A,8 (soft 19)</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td></tr>
+            <tr><td class="row-label">A,9 (soft 20)</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="strategy-section-label" style="margin-top:22px;">Pairs</div>
+      <div class="strategy-table-scroll">
+        <table class="strategy-table">
+          <thead>
+            <tr>
+              <th style="width:90px;">Your Pair</th>
+              <th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+              <th>7</th><th>8</th><th>9</th><th>10</th><th>A</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="row-label">A,A</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td></tr>
+            <tr><td class="row-label">2,2</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">3,3</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">4,4</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">5,5</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-d">D</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">6,6</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">7,7</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td><td class="cell-h">H</td></tr>
+            <tr><td class="row-label">8,8</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td></tr>
+            <tr><td class="row-label">9,9</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-s">S</td><td class="cell-sp">SP</td><td class="cell-sp">SP</td><td class="cell-s">S</td><td class="cell-s">S</td></tr>
+            <tr><td class="row-label">10,10</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td><td class="cell-s">S</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="strategy-legend">
+        <div class="legend-item"><div class="legend-swatch" style="background:rgba(201,162,39,0.15);"></div>H — Hit</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:rgba(14,13,11,0.95); border:1px solid rgba(232,224,208,0.1);"></div>S — Stand</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:rgba(201,162,39,0.52);"></div>D — Double Down</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:rgba(201,162,39,0.28);"></div>SP — Split</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:rgba(201,162,39,0.36);"></div>DS — Double or Stand</div>
+      </div>
     </div>
 
-    <nav class="toc" aria-label="Contents">
-      <strong>In this article</strong>
-      <ol>
-        <li><a href="#how-it-works">How blackjack works (quick rules)</a></li>
-        <li><a href="#strategy-chart">The basic strategy chart</a></li>
-        <li><a href="#hard-totals">Hard totals</a></li>
-        <li><a href="#soft-totals">Soft totals</a></li>
-        <li><a href="#splits">When to split pairs</a></li>
-        <li><a href="#doubles">When to double down</a></li>
-        <li><a href="#mistakes">Common beginner mistakes</a></li>
-        <li><a href="#shitbox">Playing with tokens on Shitbox</a></li>
-        <li><a href="#faq">FAQ</a></li>
-      </ol>
-    </nav>
+    <h3>Hard Totals: The Foundational Logic</h3>
+    <p>Hard hands are what most players think of as ordinary blackjack hands — totals where either no ace is present, or any ace present must be counted as 1 to avoid busting. The decision logic follows a clean underlying principle: when the dealer shows a weak upcard (2 through 6), you play conservatively and let them bust. When the dealer shows a strong card (7 through Ace), you play aggressively to build a competitive total.</p>
 
-    <section id="how-it-works">
-      <h2>How blackjack works (quick rules)</h2>
-      <p>You're dealt two cards. The goal is to get closer to 21 than the dealer without going over ("busting"). Face cards are worth 10. Aces are worth 1 or 11.</p>
-      <p>Your options each turn:</p>
-      <ul>
-        <li><strong>Hit:</strong> Take another card.</li>
-        <li><strong>Stand:</strong> Keep your current hand.</li>
-        <li><strong>Double down:</strong> Double your bet and receive exactly one more card.</li>
-        <li><strong>Split:</strong> If your two cards are a pair, split them into two separate hands (requires matching your original bet).</li>
-        <li><strong>Surrender (when available):</strong> Fold and recover half your bet.</li>
-      </ul>
-      <p>The dealer plays by fixed rules: hit on 16 or below, stand on 17 or above. You have choices the dealer doesn't—that's where strategy lives.</p>
-    </section>
+    <p>Hard 8 and below: always hit, without exception. You cannot bust with a single card, and your current total is too low to be competitive. Hard 9 is your first doubling opportunity — double against dealer 3 through 6, where their bust probability is elevated and a 10 landing on your 9 gives you a powerful 19. Against dealer 2 or 7 through Ace, just hit.</p>
 
-    <section id="strategy-chart">
-      <h2>The basic strategy chart</h2>
-      <p>Basic strategy was first developed in the 1950s by mathematicians using early computer simulations. It maps every combination of your hand total vs. the dealer's upcard to the statistically optimal action.</p>
-      <p>The chart is divided into three sections:</p>
-      <ol>
-        <li><strong>Hard totals</strong> (hands without an ace, or where the ace must count as 1)</li>
-        <li><strong>Soft totals</strong> (hands with an ace counting as 11)</li>
-        <li><strong>Pair splits</strong> (when both cards are the same value)</li>
-      </ol>
-      <p>You don't need to memorize the chart instantly. The key insight is that most decisions are obvious once you understand the underlying principle: <em>the dealer's upcard tells you how likely the dealer is to bust.</em> When the dealer shows a 4, 5, or 6, they're vulnerable—you play conservatively and let them bust. When the dealer shows a 9, 10, or Ace, they're strong—you need to take more risk.</p>
-    </section>
+    <p>Hard 10 is a premium doubling hand. You double against dealer 2 through 9 — every card where a 10 gives you a 20 that likely wins. Against dealer 10 or Ace, the risk of their strong hand outweighs the double, so you hit. Hard 11 goes one step further — double against everything except dealer Ace, where their potential blackjack risk shifts the calculation enough to make a simple hit correct.</p>
 
-    <section id="hard-totals">
-      <h2>Hard totals (memorise these first)</h2>
-      <ul>
-        <li><strong>8 or less:</strong> Always hit.</li>
-        <li><strong>9:</strong> Double if dealer shows 3–6. Otherwise hit.</li>
-        <li><strong>10:</strong> Double if dealer shows 2–9. Hit against 10 or Ace.</li>
-        <li><strong>11:</strong> Double if dealer shows 2–10. Hit against dealer Ace.</li>
-        <li><strong>12:</strong> Stand if dealer shows 4–6. Hit everything else.</li>
-        <li><strong>13–16:</strong> Stand if dealer shows 2–6. Hit if dealer shows 7 or higher.</li>
-        <li><strong>17 or more:</strong> Always stand.</li>
-      </ul>
-      <p>The 16-vs-10 situation (hit or stand on hard 16 when dealer shows a 10) is the most debated hand. Basic strategy says hit. It's a losing hand either way—hitting gives marginally better expected value than standing.</p>
-    </section>
+    <p>Hard 12 is the first genuinely counterintuitive decision point. You stand against dealer 4, 5, and 6 — the three weakest bust cards — but you hit against dealer 2 and 3. Why not stand against 2 and 3 as well, since they're also bust cards? Because the dealer's bust probability against a 2 (35%) and a 3 (37%) is meaningfully lower than against a 5 (42%) or 6 (42%). Your 12 isn't strong enough to survive the dealer making a competitive hand. The extra hit is worth the bust risk.</p>
 
-    <section id="soft-totals">
-      <h2>Soft totals (Ace + another card)</h2>
-      <p>Soft hands are flexible because the Ace can count as 1 or 11. This flexibility means you can often double or hit more aggressively without busting.</p>
-      <ul>
-        <li><strong>Soft 13–14 (A+2, A+3):</strong> Double if dealer shows 5–6. Otherwise hit.</li>
-        <li><strong>Soft 15–16 (A+4, A+5):</strong> Double if dealer shows 4–6. Otherwise hit.</li>
-        <li><strong>Soft 17 (A+6):</strong> Double if dealer shows 3–6. Otherwise hit.</li>
-        <li><strong>Soft 18 (A+7):</strong> Stand if dealer shows 2, 7, or 8. Double if dealer shows 3–6. Hit if dealer shows 9, 10, or Ace.</li>
-        <li><strong>Soft 19 or 20:</strong> Always stand.</li>
-      </ul>
-    </section>
+    <p>Hard 13 through 16 follow the same bifurcated logic: stand against dealer 2 through 6, hit against 7 through Ace. These are often called "stiff hands" because they're close enough to 21 that hitting carries real bust risk, but far enough away that standing is losing against strong dealer cards. Playing a 15 against a dealer 10 by hitting feels painful because you'll bust roughly 58% of the time. But standing is worse — you lose to every dealer total of 16 through 21, and the dealer makes 17 or higher from a 10 upcard about 77% of the time.</p>
 
-    <section id="splits">
-      <h2>When to split pairs</h2>
-      <ul>
-        <li><strong>Always split:</strong> Aces and 8s. Aces together are weak (combined 12); split gives two chances at blackjack. 8s together make 16—the worst hand in blackjack; split gives two fighting chances.</li>
-        <li><strong>Never split:</strong> 10s (combined 20 is excellent) and 5s (combined 10 is strong—double instead).</li>
-        <li><strong>Split 2s, 3s, 7s:</strong> Against dealer 2–7. Otherwise hit.</li>
-        <li><strong>Split 4s:</strong> Only against dealer 5 or 6. Otherwise hit.</li>
-        <li><strong>Split 6s:</strong> Against dealer 2–6. Otherwise hit.</li>
-        <li><strong>Split 9s:</strong> Against dealer 2–6 and 8–9. Stand against dealer 7, 10, or Ace.</li>
-      </ul>
-    </section>
+    <p>Hard 17 and above: always stand. Even a hard 17 against a dealer Ace. The math is settled — hitting a 17 produces enough busts to make the move a net loss even against the most threatening dealer cards. Stand, let the outcome play out, and move to the next hand.</p>
 
-    <section id="doubles">
-      <h2>When to double down</h2>
-      <p>Doubling down is powerful when you're likely to make a strong hand and the dealer is weak. The rules are baked into the hard and soft total guidelines above, but the pattern to remember:</p>
-      <ul>
-        <li>Hard 9, 10, and 11 are your best doubling hands—you're likely to land a 10-value card and end up with 19, 20, or 21.</li>
-        <li>Soft hands from 13–18 can be doubled against specific dealer upcards (4–6 mostly) because the dealer is vulnerable and you have downside protection from the flexible Ace.</li>
-        <li>Never double on hard 12 or higher—you risk busting, and the dealer hasn't given you a reason to escalate.</li>
-      </ul>
-    </section>
+    <h3>Soft Totals: The Ace Advantage</h3>
+    <p>Soft hands are fundamentally different because the ace functions as a buffer. A soft 13 (Ace-2) hit by a 10 becomes a hard 13 — you haven't busted, you've simply reclassified. This inability to bust on a single hit changes the optimal play on many hands, enabling more aggressive doubling against weak dealer cards and more hit decisions on totals that would be standing hands if hard.</p>
 
-    <section id="mistakes">
-      <h2>Common beginner mistakes</h2>
-      <ol>
-        <li><strong>Standing on 16 against a dealer 10.</strong> Feels safe (you might not bust), but the dealer is likely at 20. You need to take the risk.</li>
-        <li><strong>Splitting 10s.</strong> A combined 20 wins most of the time. Don't break it up chasing two good hands.</li>
-        <li><strong>Not doubling 11 against dealer 6.</strong> This is one of the highest expected-value plays in the game. Players who skip it are leaving value on the table consistently.</li>
-        <li><strong>Taking insurance.</strong> Insurance is a side bet on the dealer having a 10-value hole card. The math doesn't support it at standard odds. Skip it.</li>
-        <li><strong>Playing hunches over strategy.</strong> "I feel like I'll bust" or "I have a feeling" are not inputs in the strategy chart. The chart was built on tens of millions of simulated hands. Your feeling wasn't.</li>
-      </ol>
-    </section>
+    <p>Soft 13 and 14 (Ace-2 and Ace-3): both are weak combined totals that benefit most from improvement. Double only against dealer 5 or 6, where the bust probability is highest and a 10 gives you a competitive total. Otherwise, hit — never stand on these hands, which are worse than a hard 13 or 14 would be in terms of winning probability.</p>
 
-    <section id="shitbox">
-      <h2>Playing blackjack with tokens on Shitbox Shuffle</h2>
-      <p>Shitbox Shuffle's blackjack implementation uses standard rules. When you're playing with tokens against a stranger:</p>
-      <ul>
-        <li>Basic strategy applies exactly as described above—the math doesn't change because there's video attached.</li>
-        <li>Token stakes are decided before the session. Play at a level where losing a session doesn't sting disproportionately.</li>
-        <li>The video element adds psychological texture—you can see your opponent's reaction—but shouldn't change your strategy decisions. Your decisions should be based on your hand vs. the dealer's upcard, period.</li>
-        <li>Check the <a href="how-tokens-work-shitbox-shuffle.html">token system guide</a> and <a href="smart-wagering-habits-adults-only.html">smart wagering habits</a> before playing for real stakes.</li>
-      </ul>
+    <p>Soft 15 and 16 (Ace-4 and Ace-5): expand the doubling range slightly. Double against dealer 4, 5, or 6, hit against everything else. You're looking for the sweet spot where the dealer is likely to bust and your double lands a high card.</p>
 
-      <div class="callout callout-info">
-        <strong>18+ US adults only.</strong> Token play is for entertainment. <a href="../responsible-gaming.html">Play responsibly</a>.
+    <p>Soft 17 (Ace-6) is the hand beginners most commonly misplay. It looks like 17, and most people stand on 17. But soft 17 is a genuinely weak hand — it beats only dealer totals of 15 and 16, and the dealer is unlikely to land on either. Double against dealer 3 through 6 (the weakest cards), hit against 2 and 7 through Ace. Never stand on soft 17. The ace's safety net makes the aggressive play correct.</p>
+
+    <p>Soft 18 (Ace-7) is the most strategically complex soft hand. Against dealer 3 through 6, double down — your 18 is good enough to build from, and the dealer's weakness makes the extra money worthwhile. Against dealer 7 or 8, stand — your 18 beats dealer 17 and ties dealer 18. Against dealer 9, 10, or Ace, hit — your 18 loses to the dealer's likely 19, 20, or 21. The expected value of hitting soft 18 against a 9 or 10 is higher than standing despite the counterintuitive feeling of drawing on 18. Soft 19 and soft 20 are strong enough to stand against everything.</p>
+
+    <h3>Pairs: When to Split and Why</h3>
+    <p>Splitting creates two independent hands from one, doubling your bet but also doubling your opportunity. The logic is straightforward: replace a bad combined total with two better starting hands, and accept the additional risk because the expected value is higher across two hands than on one.</p>
+
+    <p><strong>Always split Aces.</strong> Two starting points of 11 each is always more valuable than a soft 12, against every dealer upcard. The potential of hitting 21 on either hand justifies the split unconditionally. <strong>Always split 8s.</strong> Hard 16 is the worst hand in blackjack — it busts on any draw of 6 or higher (31 of 52 remaining cards if you've seen nothing) and loses to almost every dealer total. Two 8s create two starting hands of 8 each, from which you can build to 18 or better with a 10-value card. Always split 8s, even against dealer 10 and Ace — the split reduces your expected loss even when both splits are likely losing hands.</p>
+
+    <p><strong>Never split 5s.</strong> A 10 is an excellent doubling hand. Two 5s starting at 5 each are far weaker. Treat 5-5 as a 10 and double appropriately. <strong>Never split 10s.</strong> A combined 20 wins roughly 85% of the time. Splitting surrenders that near-certain winner for two uncertain hands. No rational calculation justifies this split.</p>
+
+    <p>Split 2s and 3s against dealer 2 through 7 — the cards where the dealer is weak enough that two improving hands beat one average combined hand. Split 6s against dealer 2 through 6. Split 7s against dealer 2 through 7. Split 9s against dealer 2 through 6 and 8 through 9 — the twist here is standing on 9-9 against dealer 7, because your 18 beats a likely dealer 17; splitting would turn a winner into two uncertain hands. Stand against 7, stand against 10 and Ace.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Hard Hand vs Soft Hand: Understanding the Core Distinction</h2>
+
+    <p>The hard-vs-soft distinction is the single most important concept in blackjack beyond the basic rule set. Many beginners treat a soft 17 the same as a hard 17, or stand on soft 18 in all situations, losing significant expected value in the process. Understanding why soft hands play differently requires internalizing what the ace actually does.</p>
+
+    <h3>Visual: Hand Comparison — Hard vs Soft</h3>
+
+    <div class="hand-compare">
+      <div class="hand-group">
+        <div class="hand-label">Hard 16 — No Flexibility</div>
+        <div class="hand-cards">
+          <div class="playing-card card-black">
+            <span class="c-rank">9</span><span class="c-suit">♠</span>
+            <span class="c-center">♠</span>
+            <span class="c-rank-bot">9</span>
+          </div>
+          <div class="playing-card card-red">
+            <span class="c-rank">7</span><span class="c-suit">♥</span>
+            <span class="c-center">♥</span>
+            <span class="c-rank-bot">7</span>
+          </div>
+        </div>
+        <div class="hand-total">Total: 16 (hard)</div>
+        <div class="hand-verdict">Draw a 6 or higher: immediate bust. No safety net. The worst hand in blackjack.</div>
       </div>
-    </section>
-
-    <section id="faq">
-      <h2>FAQ</h2>
-      <div class="faq-item">
-        <h3>Does basic strategy guarantee you win at blackjack?</h3>
-        <p>No. Basic strategy minimises the house edge over the long run—to below 0.5% in standard rule sets. In any single session, luck plays a significant role. Basic strategy improves your expected outcome but doesn't eliminate variance.</p>
+      <div class="hand-group">
+        <div class="hand-label">Soft 16 — Built-In Safety</div>
+        <div class="hand-cards">
+          <div class="playing-card card-red">
+            <span class="c-rank">A</span><span class="c-suit">♦</span>
+            <span class="c-center">♦</span>
+            <span class="c-rank-bot">A</span>
+          </div>
+          <div class="playing-card card-black">
+            <span class="c-rank">5</span><span class="c-suit">♣</span>
+            <span class="c-center">♣</span>
+            <span class="c-rank-bot">5</span>
+          </div>
+        </div>
+        <div class="hand-total">Total: 16 soft (or 6)</div>
+        <div class="hand-verdict">Draw any card: reclassify ace to 1 if needed. Can never bust on one hit. Double or hit freely.</div>
       </div>
-      <div class="faq-item">
-        <h3>Is card counting useful in online or video blackjack?</h3>
-        <p>Card counting requires tracking the ratio of high to low cards across a large number of hands from a single deck or shoe. It's ineffective in most online implementations where decks are reshuffled frequently. Focus on basic strategy for session play.</p>
-      </div>
-      <div class="faq-item">
-        <h3>What's the best first card to be dealt?</h3>
-        <p>An Ace. It creates a soft hand with maximum flexibility. The second-best opening card depends on context, but any 10-value card + Ace (blackjack) is the best two-card combination in the game.</p>
-      </div>
-    </section>
-
-    <div class="article-cta">
-      <p>Put the strategy to use. <a href="../shitboxshuffle.html" class="btn-primary">Play blackjack on Shitbox Shuffle — 18+ US only</a></p>
     </div>
 
-    <nav class="article-nav-links" aria-label="Related articles">
-      <h3>Related reading</h3>
-      <ul>
-        <li><a href="poker-hand-rankings-texas-holdem-primer.html">Poker hand rankings &amp; Texas Hold'em primer</a></li>
-        <li><a href="skill-vs-luck-games-wagering-what-to-know.html">Skill vs luck in wagering games</a></li>
-        <li><a href="smart-wagering-habits-adults-only.html">Smart wagering habits for adults</a></li>
-        <li><a href="how-tokens-work-shitbox-shuffle.html">How tokens work on Shitbox Shuffle</a></li>
-      </ul>
-    </nav>
-  </article>
+    <div class="hand-compare">
+      <div class="hand-group">
+        <div class="hand-label">Hard 17 — Stand, Always</div>
+        <div class="hand-cards">
+          <div class="playing-card card-black">
+            <span class="c-rank">J</span><span class="c-suit">♠</span>
+            <span class="c-center">♠</span>
+            <span class="c-rank-bot">J</span>
+          </div>
+          <div class="playing-card card-red">
+            <span class="c-rank">7</span><span class="c-suit">♥</span>
+            <span class="c-center">♥</span>
+            <span class="c-rank-bot">7</span>
+          </div>
+        </div>
+        <div class="hand-total">Total: 17 (hard)</div>
+        <div class="hand-verdict">Stand against everything. Hitting risks bust; your 17 is competitive against dealer bust cards.</div>
+      </div>
+      <div class="hand-group">
+        <div class="hand-label">Soft 17 — Never Stand</div>
+        <div class="hand-cards">
+          <div class="playing-card card-red">
+            <span class="c-rank">A</span><span class="c-suit">♦</span>
+            <span class="c-center">♦</span>
+            <span class="c-rank-bot">A</span>
+          </div>
+          <div class="playing-card card-black">
+            <span class="c-rank">6</span><span class="c-suit">♣</span>
+            <span class="c-center">♣</span>
+            <span class="c-rank-bot">6</span>
+          </div>
+        </div>
+        <div class="hand-total">Total: 17 soft (or 7)</div>
+        <div class="hand-verdict">Double vs dealer 3–6. Hit vs all others. Never stand — soft 17 is a weaker hand than it looks.</div>
+      </div>
+    </div>
+
+    <p>The psychological component is worth noting explicitly. When you see "soft 17" and your instinct is to stand because 17 feels solid, you're mapping a hand classification onto a different type of hand. Hard 17 stands. Soft 17 does not. The rule is absolute once understood, but getting there requires accepting that the ace fundamentally changes what the number means.</p>
+
+    <div class="callout">
+      <strong>Quick Test:</strong> Can you take a card on this hand and still survive if it's a 10? If yes, you have a soft hand and should apply soft strategy. If no, apply hard strategy. The question takes two seconds and catches the most common misclassification errors.
+    </div>
+
+    <p>The soft 18 case is worth dwelling on because it's where strategy deviation costs the most in practice. Players standing on soft 18 against a dealer 9, 10, or Ace are statistically losing money on those decisions relative to hitting. Your 18 is a strong hand — it's just not strong enough against those dealer cards. The ace gives you a free card. Use it.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Why Basic Strategy Reduces the House Edge</h2>
+
+    <p>In a standard six-deck game with favorable rules — dealer stands on soft 17, doubling allowed on any two cards, re-splitting allowed — a player executing perfect basic strategy faces a house edge of approximately 0.46%. That is an extraordinary number. It means for every hundred dollars wagered over time, the expected loss is less than fifty cents. No other casino game comes anywhere close to that figure for a player without specialized advantage techniques.</p>
+
+    <p>The comparison point matters. A blackjack player making gut-feel decisions — standing on soft 17, never doubling soft hands, refusing to split 8s against a 10 — will typically face a house edge between 1.5% and 4%, depending on how many sub-optimal plays they make. The entire gap between that range and 0.46% is what basic strategy delivers.</p>
+
+    <p>The value comes from two main sources. First, doubling down correctly: when your starting hand has positive expected value against a weak dealer card, putting additional money in play multiplies that positive expected value. Failing to double is essentially choosing not to collect on an investment where the odds are in your favor. Second, splitting correctly: turning a weak combined total into two independent starting hands with better expected value — when the math supports it — is free money left on the table if you pass on it.</p>
+
+    <p>Hits and stands on stiff hands primarily serve a damage-limitation function. When you have a 15 against a dealer 10, no play is profitable. Basic strategy tells you to hit because your expected loss is smaller than it would be standing. The goal isn't to win the hand — it's to minimize the inevitable loss. Understanding this reframes why correct play feels bad sometimes: the "bad feeling" comes from the hand being genuinely bad, not from the play being wrong.</p>
+
+    <p>In peer-vs-peer play, the dynamic is different from a house game because there's no structural house edge embedded in the rules — it's you against another individual. This means basic strategy becomes competitive rather than merely defensive. If you're playing correctly and your opponent isn't, you gain an expected value advantage over each session. The magnitude of that advantage depends on how far off optimal your opponent's decisions are, but consistent basic strategy against a recreational player who plays by feel is a meaningful edge over any significant number of hands.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Playing Against a Person on Video: The Human Difference</h2>
+
+    <p>Everything covered so far applies to blackjack in any format. What changes in video chat play is the texture around the decisions — the information available from your opponent's visible behavior, the psychological dynamics of being observed, and the pacing effects that a live human opponent introduces into a game that's otherwise mechanical.</p>
+
+    <p>When you're playing against a person who is also playing (rather than a dealer executing rules mechanically), their visible reactions to the game's events create a constant stream of soft information. You don't need to exploit this information aggressively for it to affect the match. Simply being aware of it keeps you in a more active observational state, which affects your own composure as much as your reading of them.</p>
+
+    <h3>Pace and Hesitation as Information</h3>
+
+    <p>A player with a strong hand typically makes decisions quickly. They know they're in a favorable position; there's nothing to deliberate about. Stand on 20. Obvious. A player sitting on a difficult total — 12 against a dealer 3, or 15 against a 10 — will frequently pause in a way that's visible on video even before they articulate their decision. This hesitation is genuine uncertainty made physical.</p>
+
+    <p>If you see your opponent pause noticeably before making a decision, you now have soft information: their total is likely in the stiff-hand range (12–16) where strategy decisions are genuinely uncomfortable. That information doesn't change your own hand decisions — your strategy is the same regardless — but it tells you something about their game state and, over multiple hands, about their overall comfort level with the game's difficult spots.</p>
+
+    <p>More revealing still is how opponents handle situations where basic strategy calls for an uncomfortable play. Hitting a 16 against a dealer 10 is the right move, but it feels wrong. Players who make it cleanly, without visible hesitation, signal familiarity with the math. Players who flinch, ask for confirmation, or say "I know this is wrong but I'm standing" signal that they're playing by feel. Understanding which type of player you're against shapes your read on how they'll play the rest of the session.</p>
+
+    <h3>Reaction to Your Plays</h3>
+
+    <p>Your own strategy decisions are visible. When you double down on soft 15 against a dealer 5, there's a reaction on the other side of the screen. Someone who knows basic strategy will have a neutral or knowing expression — they recognize the play as correct. Someone unfamiliar with the math will often show surprise, a raised eyebrow, or an expression that reads as "why would you do that?" Both reactions give you information about their knowledge level.</p>
+
+    <p>There's also a secondary effect: confident, correct play creates a psychological posture of competence. When your opponent sees you consistently making plays that look bold but always have a rational basis — never flinching on the correct hard 16 hit, doubling soft hands against weak dealer cards without hesitation — they're watching someone who is applying a system. That consistency tends to have a mild but real effect on their confidence, particularly in players who are newer to the game.</p>
+
+    <h3>Camera Composure When You Bust</h3>
+
+    <p>You will bust frequently when playing correctly. Hitting 16 against a dealer 10 — the right play — produces a bust roughly 58% of the time. Doubling 11 against a dealer 10 and drawing a 2 to end up with 13 happens. The correct plays produce bad outcomes routinely. How you carry those outcomes on camera is a meaningful aspect of video chat blackjack.</p>
+
+    <p>Maintaining neutral composure after a bust doesn't mean suppressing all human reaction — a brief acknowledgment of a bad beat is normal and makes the game more enjoyable for both parties. What you want to avoid is the visible frustration spiral that signals tilt: the sigh, the slumped posture, the muttered commentary that tells your opponent you're no longer playing from a rational baseline. Tilt is readable on camera, and readable tilt is information your opponent can use.</p>
+
+    <div class="pull-quote">
+      <p>"The camera doesn't lie about how you handle variance. Keep the math in your head and the emotion off your face — not to deceive, but because composure is itself correct strategy."</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Common Beginner Mistakes and How to Correct Them</h2>
+
+    <p>Every systematic blackjack mistake has a cognitive pattern behind it. Understanding the pattern — not just the correct answer — makes the correction stick in real play under pressure.</p>
+
+    <h3>Standing on 12 Against Dealer 2 or 3</h3>
+    <p>The mistake: treating 2 and 3 the same as 4, 5, and 6 because they're all "bust cards." The correction: dealer 2 busts only about 35% of the time; dealer 3 about 37%. These are lower bust probabilities than 4 through 6 (which range from 40% to 42%). Your 12 doesn't win often enough against a dealer 2 or 3 to justify standing. Hit both, and accept that busting is part of the correct play.</p>
+
+    <h3>Skipping Doubles Out of Fear</h3>
+    <p>The mistake: treating doubling as aggressive gambling rather than mathematical obligation. The correction: when the chart says double, the expected value of that hand is positive enough that putting more money in play is mathematically required for correct play. Refusing to double doesn't reduce your risk — it reduces your reward while leaving the same risk on the table. On double opportunities, not doubling is the loss.</p>
+
+    <h3>Splitting Tens</h3>
+    <p>The mistake: "Two 20s would be amazing." The correction: you already have one 20, which wins approximately 85% of the time. Splitting creates two hands starting at 10, each of which will likely produce a good result — but not as good as the 20 you're giving up. The combined expected value of the split is lower than standing on 20. Don't split 10s. Ever.</p>
+
+    <h3>Taking Insurance</h3>
+    <p>The mistake: feeling like insurance is a way to "protect" a good hand when the dealer shows an Ace. The correction: insurance is a separate side bet that pays 2:1 when the dealer has blackjack. For the bet to break even, you need the dealer to have blackjack more than 33.3% of the time a 10-value hole card is in a standard deck, about 30% of the remaining cards qualify. The bet loses money on average every time you take it. Never take insurance, regardless of what you're holding.</p>
+
+    <h3>Standing on Soft 17</h3>
+    <p>The mistake: 17 looks like a standing hand. The correction: soft 17 is Ace-6. The ace makes it fundamentally different from hard 17. You can hit without busting risk. You should double against dealer 3 through 6 and hit against everything else. Standing on soft 17 is surrendering roughly 0.5% expected value per hand in those situations. Over a session of twenty hands, that compounds.</p>
+
+    <h3>Chasing Losses with Larger Bets</h3>
+    <p>The mistake: believing variance can be overcome by "evening out" with bigger bets after losses. The correction: each hand is statistically independent. A losing streak of five hands doesn't make the sixth hand more likely to win. Doubling your bet after losses doesn't improve your odds — it accelerates your exposure to the same probability distribution. Consistent bet sizing is part of correct play at the bankroll level.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Card Counting Basics — The Mindset More Than the Technique</h2>
+
+    <p>Card counting is the practice of tracking the ratio of high cards to low cards remaining in the undealt portion of the shoe. When many low cards have been dealt, the remaining deck is rich in 10s and Aces — a composition that favors the player because blackjacks become more frequent and dealers bust more often on stiff totals. When many high cards have been dealt, the reverse is true and the player's advantage decreases.</p>
+
+    <p>The most popular counting system, Hi-Lo, assigns values to each card: low cards 2 through 6 receive +1 (their removal benefits the player, so their presence in the deck is good for the house), neutral cards 7 through 9 receive 0, and high cards 10 through Ace receive -1 (their presence in the deck favors the player). The running count tracks the cumulative sum. A high positive count means more high cards remain — a player-favorable shoe. A high negative count means the opposite.</p>
+
+    <p>In live casino play, a skilled counter adjusts bet sizing based on the count: small bets when the count is neutral or negative, large bets when the count is strongly positive. The theoretical advantage of perfect counting in a six-deck game is roughly 0.5% to 1% over the house — sufficient to produce long-term profits but nowhere near the outsized returns popular culture attributes to it.</p>
+
+    <p>In video chat blackjack, card counting is generally impractical. The primary reasons: the deck is often virtual with frequent reshuffles or effective infinite-deck construction; the social dynamics of live peer play don't provide the quiet mental space that sustained counting requires; and in peer-vs-peer formats where neither party is the house, the strategic implications of count information are less well-defined than in casino play.</p>
+
+    <p>Where counting education is valuable in video play is in the mindset it creates. Card counters learn to think probabilistically — they internalize that individual hands are noise, session outcomes are meaningful, and session-over-session results are signal. They develop discipline around not reacting emotionally to individual outcomes. They practice maintaining decision-making quality under boredom, distraction, and social pressure. All of these skills transfer directly to video chat blackjack, regardless of whether you're running a formal count.</p>
+
+    <p>At a practical level, noticing that a lot of low cards have appeared in recent hands — without formal counting — provides a rough intuition that the deck is richer in 10-value cards than average. This might nudge you toward a double in a marginal situation where you're weighing the risk of drawing a small card. That's not rigorous counting; it's informed intuition, and it has value.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Bankroll Management for Token Wagering</h2>
+
+    <p>The strongest basic strategy in the world produces zero long-term benefit if you run out of tokens before the math has time to play out. Variance in blackjack — the normal, expected swings of wins and losses even when every play is correct — requires a bankroll deep enough to absorb the inevitable cold stretches.</p>
+
+    <p>The standard guideline for casino blackjack is to have at least 50 times your minimum bet as your session bankroll. Playing at 10-token minimums, that means entering a session with 500 tokens. This sizing ensures that a normal downswing — ten to fifteen consecutive losses is statistically unremarkable over thousands of hands — doesn't eliminate you from the session before you can recover.</p>
+
+    <p>For token wagering on Shitbox Shuffle, the same principle applies. Keep individual wagers to 1–2% of your available tokens per hand. At 500 tokens, that's 5–10 tokens per hand. At 200 tokens, that's 2–4 per hand. This sizing provides enough hands to let expected value express itself while surviving the worst realistic variance sequences.</p>
+
+    <h3>The Psychology of Loss Limits</h3>
+
+    <p>Set a session loss limit before you start playing. A practical limit is 20–25% of your session tokens. If you arrive with 500 tokens and reach 375 remaining, stop the session. This isn't defeatism — it's preserving chips for future sessions rather than allowing a cold run to compound under conditions where your decision-making may be compromised by frustration.</p>
+
+    <p>Setting a win target is equally useful, though psychologically harder to honor. If you're up 40% from your starting stack, consider locking in a portion of those gains rather than continuing to play until the variance regresses. Blackjack sessions end, mathematically, near the expected value point — which in a game with a small house edge means slightly negative overall. Playing a session until you've given back significant winnings happens routinely without a deliberate stopping rule.</p>
+
+    <p>The single most harmful bankroll behavior is bet escalation after losses. The logic feels intuitive: if I'm losing, a bigger win will make me whole faster. In practice, escalation means losing streaks become catastrophically expensive, while winning streaks after an escalation cycle don't fully recover the damage because you're betting large at a statistical edge that doesn't favor you. Flat betting or very modest bet scaling based on objective criteria (stack size relative to session start, not emotional state) is the bankroll-stable approach.</p>
+
+    <p>Never wager tokens you cannot afford to lose on the session. This is not moralizing — it's strategic. Players who are emotionally invested in any single bet make measurably worse decisions. The fear of loss influences hit/stand decisions, doubles, and splits in ways that systematically undercut expected value. The only way to execute basic strategy cleanly is to be genuinely indifferent to any individual hand outcome.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Rule Variants You May Encounter</h2>
+
+    <p>Blackjack is not a single game with a single rule set — it's a family of closely related games with different edge implications. Understanding the major variants lets you adapt your strategy and recognize player-friendly versus player-hostile environments.</p>
+
+    <h3>Standard (American) vs European Rules</h3>
+    <p>In standard American blackjack, the dealer receives a hole card at the start of the round and checks for blackjack immediately if showing an Ace or 10-value card. If the dealer has blackjack, the hand ends and all non-blackjack player hands lose — but importantly, you haven't lost any split or double bets you haven't made yet, because the hand ended before you made them.</p>
+
+    <p>In European blackjack, the dealer takes no hole card until all player decisions are complete. This means if the dealer subsequently reveals blackjack, you can lose your doubled and split bets as well as your original wager. This rule costs players approximately 0.11% in expected value and affects the correct strategy on doubling and splitting against dealer Ace and 10 — you should be somewhat more conservative on doubles and splits against those cards in European rules, because the additional loss risk of having doubled into a dealer blackjack is real.</p>
+
+    <h3>Vegas Strip Rules</h3>
+    <p>The Las Vegas Strip rule set is considered the gold standard for player-favorable blackjack: typically four or six decks, dealer stands on all soft 17s, doubling allowed on any two cards, doubling after splits allowed, re-splitting allowed (including Aces in many places), and blackjack pays 3:2. These rules produce the 0.46% house edge cited at the start of this section. Most peer-vs-peer play on platforms like Shitbox Shuffle aims to mirror these conditions as a fair neutral baseline.</p>
+
+    <h3>The 6:5 Trap</h3>
+    <p>The single most damaging rule variation in modern blackjack is the shift from 3:2 to 6:5 blackjack payouts. A natural blackjack (Ace + 10-value) in a standard game pays 1.5x your bet. In a 6:5 game, it pays only 1.2x. This seemingly minor change adds approximately 1.39% to the house edge — nearly tripling the base house edge of the entire game. If you are in a situation where the rules are being specified and 6:5 is offered, avoid it. The game is not worth playing under those terms.</p>
+
+    <h3>Surrender</h3>
+    <p>Late surrender allows you to fold your hand after the dealer checks for blackjack, returning half your bet. It's a rare but valuable option when available. The correct surrender hands in basic strategy are hard 15 against dealer 10, and hard 16 against dealer 9, 10, or Ace. If you have the option to surrender these hands, take it — your expected loss on these hands with surrender (50% of bet) is less than your expected loss playing them out (typically 54–70% of bet, depending on the specific hand and dealer card).</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>The Psychological Game: Keeping Composure on Camera</h2>
+
+    <p>Blackjack is a game of sequential decisions under partial information. The math is fixed. The optimal decisions are knowable. What varies between players — what separates the ones who extract expected value from the ones who give it back — is execution quality under psychological pressure.</p>
+
+    <p>Video chat blackjack imposes three layers of pressure that casino or software play doesn't: the presence of a live camera, a live opponent watching you, and the social dynamic of a match with a real stakes structure. Each layer can degrade decision-making quality if you don't have a deliberate approach to it.</p>
+
+    <h3>Tilt and Variance Management</h3>
+    <p>Tilt is the well-documented phenomenon where a series of losses degrades decision quality. The emotional pressure to "do something different" after busting four hands in a row is intense and real. Players who have internalized basic strategy are not immune to tilt — they are simply more practiced at catching it before it changes their play. The most important behavioral cue is recognizing when your internal monologue shifts from "this is what the chart says" to "I'm going to stand here because I can't afford to bust again." That shift is tilt. Notice it. Return to the chart.</p>
+
+    <h3>Performance Pressure and Visible Decisions</h3>
+    <p>Being on camera adds a social dimension to mechanical decisions. When you bust on a hit you chose to make, there's a witnessed quality to it — you made a decision, the decision produced a bad outcome, and another person saw it happen. For players who haven't internalized that correct plays produce bad outcomes frequently, this dynamic creates pressure to avoid decisions that might look bad. That pressure is the enemy of good strategy.</p>
+
+    <p>The reframe that helps: you are not accountable for the outcome of any individual hand; you are accountable for the correctness of the decision. A hit on hard 16 against dealer 10 that busts is not a mistake. It's a correct play with a common outcome. Own the decision, not the outcome. Over enough hands, the distinction is everything.</p>
+
+    <h3>Opponent-Pressure Adaptation</h3>
+    <p>When you're matched against a clearly stronger player — someone whose decisions are crisp, whose composure is solid, who doubles and splits without hesitation at all the right moments — there is a temptation to level up by trying plays outside your actual knowledge base. This is a mistake. An A-student who plays basic strategy perfectly outperforms a B-student who tries to improvise beyond it. Play your chart. Consistency beats performance.</p>
+
+    <p>The psychological edge in video chat blackjack is earned the same way the strategic edge is earned: through consistency. When your opponent watches you hit that hard 12 against a dealer 3, bust, and immediately deal the next hand with the same calm posture as if nothing happened, they learn something: you are not rattled, you have a system, and the system doesn't depend on outcomes to stay intact. That is composure. On camera, that is visible. And visible composure, in a game played against a human being, is genuine competitive advantage.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="cta-block">
+    <div class="cta-eyebrow">Ready to Play</div>
+    <div class="cta-headline">Put Your Strategy to Work</div>
+    <div class="cta-body">Match with real players, wager tokens, and test your blackjack game face-to-face on camera. Every hand matters. Every decision is yours.</div>
+    <a href="https://shitboxshuffle.com/" class="cta-btn">Enter the Room</a>
+    <div class="cta-fine">18+ Only &nbsp;·&nbsp; US Only &nbsp;·&nbsp; Play Responsibly &nbsp;·&nbsp; 1-800-522-4700</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section" style="margin-top:64px;">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">What is blackjack basic strategy?</div>
+      <div class="faq-a">Blackjack basic strategy is a mathematically derived set of decisions — hit, stand, double down, or split — for every possible combination of your hand total and the dealer's visible upcard. Playing perfect basic strategy reduces the house edge to roughly 0.5% in standard six-deck rules, making it the most player-favorable approach to the game without card counting or other advantage techniques.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Does basic strategy change when playing against a person instead of a dealer?</div>
+      <div class="faq-a">The mathematically correct plays are identical regardless of whether your opponent is a live dealer or a peer. However, peer-vs-peer video play adds a psychological layer — your opponent's visible reactions, hesitation, and betting behavior can supplement your reading of the match, even though the underlying strategy chart doesn't change. You're applying the same math while also reading a human in real time.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I use a strategy chart while playing on video?</div>
+      <div class="faq-a">In peer-vs-peer play on Shitbox Shuffle, there is typically no rule against consulting a printed or digital strategy chart during play — unlike a live casino floor. The long-term goal is to internalize the chart so decisions become fluid and confident, but referencing it during sessions is a completely legitimate learning tool. As you play more hands, you'll find the chart increasingly unnecessary.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What is the difference between a hard hand and a soft hand?</div>
+      <div class="faq-a">A hard hand either contains no ace, or contains an ace that counts as 1 to avoid busting. A soft hand contains an ace currently counting as 11 without busting the total. Soft hands are more flexible: you can take a card without any bust risk because the ace simply reclassifies from 11 to 1 if needed. This flexibility significantly changes the optimal strategy for hands between soft 13 and soft 18.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Should I always split Aces and 8s?</div>
+      <div class="faq-a">Yes, in standard rules — against every dealer upcard, including 10 and Ace. Splitting Aces creates two hands starting at 11, which is the best possible starting point for drawing to 21. Splitting 8s turns a hard 16 (the worst hand in blackjack) into two hands starting at 8, each with meaningful drawing potential. The splits are correct even when both resulting hands are likely to lose — the expected loss is still smaller than playing a single 16.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How much should I wager per hand with tokens?</div>
+      <div class="faq-a">Keep each wager to 1–2% of your available tokens. At 500 tokens, that means 5–10 tokens per hand. This sizing gives you enough hands to absorb normal variance without getting eliminated before the math has a chance to work in your favor. Never increase bet sizes dramatically after a losing streak — chasing losses with larger bets accelerates risk without improving your probability of recovery.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What rule variations hurt players most?</div>
+      <div class="faq-a">The three most harmful rules for players are: blackjack paying 6:5 instead of 3:2 (adds approximately 1.4% to the house edge — nearly tripling it), the dealer hitting soft 17 instead of standing (adds about 0.2%), and not allowing doubling after splits (adds about 0.14%). The 6:5 payout is by far the worst; avoid it whenever you have a choice in the rules applied to a match.</div>
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<div style="max-width:720px; margin:0 auto; padding:0 28px;">
+  <footer>
+    <div class="footer-wordmark">Shitbox &amp; Shuffle</div>
+    <div class="footer-links">
+      <a href="https://shitboxshuffle.com/blog/">All Guides</a>
+      <a href="https://shitboxshuffle.com/">Home</a>
+      <a href="https://shitboxshuffle.com/press.html">Press</a>
+      <a href="https://shitboxshuffle.com/terms.html">Terms</a>
+      <a href="https://shitboxshuffle.com/privacy.html">Privacy</a>
+      <a href="https://shitboxshuffle.com/support.html">Support</a>
+      <a href="https://shitboxshuffle.com/responsible-gaming.html">Responsible Gaming</a>
+    </div>
+    <div class="footer-copy">© 2026 Shitbox Shuffle. 18+ only. US only. Play responsibly. If you or someone you know has a gambling problem, call 1-800-522-4700.</div>
+  </footer>
 </div>
 
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-links footer-links-row">
-      <a href="../terms.html">Terms</a>
-      <a href="../privacy.html">Privacy</a>
-      <a href="../responsible-gaming.html">Responsible Gaming</a>
-      <a href="../support.html">Support</a>
-      <a href="index.html">Blog</a>
-    </div>
-    <p class="footer-copy">© 2025 Shitbox Shuffle. For entertainment. US adults 18+ only.</p>
-  </div>
-</footer>
 </body>
 </html>

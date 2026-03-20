@@ -1,242 +1,441 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guides — Shitbox Shuffle | Video Chat, Games &amp; Omegle Alternatives</title>
-<meta name="description" content="Guides to random video chat after Omegle, safer alternatives, and how Shitbox Shuffle combines live video with games and token play for US adults 18+.">
-<link rel="canonical" href="https://shitboxshuffle.com/blog/">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://shitboxshuffle.com/blog/">
-<meta property="og:title" content="Guides — Shitbox Shuffle">
-<meta property="og:description" content="Deep dives on random video chat, Omegle’s shutdown, and what’s next for social gaming.">
-<meta property="og:image" content="https://shitboxshuffle.com/assets/og-default.svg">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Guides — Shitbox Shuffle">
-<meta name="twitter:image" content="https://shitboxshuffle.com/assets/og-default.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400;1,900&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --void: #030303; --abyss: #080706; --ember: #c9a227; --bone: #e8e0d0;
-  --dust: rgba(232,224,208,0.7); --ash: rgba(232,224,208,0.4);
-  --phantom: rgba(232,224,208,0.06);
-}
-html { background: var(--void); }
-body { font-family: 'Libre Baskerville', Georgia, serif; background: var(--void); color: var(--bone); min-height: 100vh; }
-nav { display: flex; align-items: center; height: 70px; border-bottom: 1px solid var(--phantom); background: rgba(3,3,3,0.92); position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
-.nav-logo { padding: 0 40px; text-decoration: none; }
-.logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.2em; color: var(--bone); }
-.logo-text .amp { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ember); }
-.nav-spacer { flex: 1; }
-.nav-enter { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.18em; color: var(--ember); text-decoration: none; padding: 0 40px; border-left: 1px solid var(--phantom); height: 70px; display: flex; align-items: center; }
-.nav-enter:hover { color: var(--bone); }
-.page-wrap { max-width: 720px; margin: 0 auto; padding: 120px 28px 100px; }
-.page-overline { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ember); margin-bottom: 14px; }
-h1 { font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 44px); font-weight: 700; margin-bottom: 16px; line-height: 1.15; }
-.lead { font-size: 17px; line-height: 1.75; color: var(--dust); margin-bottom: 48px; }
-.article-list { list-style: none; }
-.article-list li { border-top: 1px solid var(--phantom); padding: 28px 0; }
-.article-list a { text-decoration: none; color: inherit; display: block; }
-.article-list h2 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.08em; color: var(--bone); margin-bottom: 8px; transition: color 0.2s; }
-.article-list a:hover h2 { color: var(--ember); }
-.article-list p { font-size: 15px; color: var(--dust); line-height: 1.7; }
-.tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--ember); text-transform: uppercase; margin-bottom: 6px; display: block; }
-.cta-box { margin-top: 48px; padding: 28px; border: 1px solid var(--phantom); border-radius: 8px; background: rgba(201,162,39,0.04); }
-.cta-box p { font-size: 15px; color: var(--dust); margin-bottom: 16px; line-height: 1.7; }
-.cta-box a { font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 0.14em; color: var(--void); background: var(--ember); padding: 12px 24px; text-decoration: none; display: inline-block; border-radius: 4px; }
-.cta-box a:hover { filter: brightness(1.08); }
-footer { margin-top: 80px; padding: 40px 0; border-top: 1px solid var(--phantom); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
-.footer-wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 0.2em; color: var(--ash); }
-.footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
-.footer-links a { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ash); text-decoration: none; }
-.footer-links a:hover { color: var(--ember); }
-.footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(232,224,208,0.25); width: 100%; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog &amp; Guides | Shitbox Shuffle</title>
+  <meta name="description" content="Articles, guides, and game strategy for Shitbox Shuffle—random video chat, online wagering, game tactics, responsible play, and more. US adults 18+ only." />
+  <link rel="canonical" href="https://shitboxshuffle.com/blog/" />
+  <meta property="og:title" content="Blog &amp; Guides | Shitbox Shuffle" />
+  <meta property="og:description" content="Articles, guides, and game strategy for random video chat gaming. US adults 18+ only." />
+  <meta property="og:url" content="https://shitboxshuffle.com/blog/" />
+  <meta property="og:image" content="https://shitboxshuffle.com/assets/og-default.svg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Shitbox Shuffle" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Blog &amp; Guides | Shitbox Shuffle" />
+  <meta name="twitter:description" content="Articles and guides: random video chat, game strategy, safety, responsible play." />
+  <meta name="twitter:image" content="https://shitboxshuffle.com/assets/og-default.svg" />
+  <link rel="stylesheet" href="article.css" />
+  <style>
+    .blog-hero { padding: 3rem 1rem 2rem; text-align: center; }
+    .blog-hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin-bottom: .5rem; }
+    .blog-hero p { color: var(--text-muted, #888); max-width: 560px; margin: 0 auto 2rem; }
+    .category-section { margin-bottom: 3rem; }
+    .category-section h2 { font-size: 1.25rem; font-weight: 700; border-bottom: 2px solid var(--accent, #e04); padding-bottom: .4rem; margin-bottom: 1.2rem; }
+    .article-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .75rem; }
+    .article-list li { display: flex; flex-direction: column; }
+    .article-list a { font-weight: 600; color: var(--text, #fff); text-decoration: none; }
+    .article-list a:hover { text-decoration: underline; }
+    .article-list .desc { font-size: .875rem; color: var(--text-muted, #888); margin-top: .1rem; }
+    .tag-sm { display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: rgba(255,255,255,.08); border-radius: 3px; padding: 1px 6px; margin-right: 6px; color: var(--text-muted, #aaa); vertical-align: middle; }
+    @media(min-width:700px) { .article-list { grid-template-columns: 1fr 1fr; } }
+  </style>
 </head>
 <body>
-
-<nav>
-  <a href="../index.html" class="nav-logo" aria-label="Shitbox Shuffle home"><span class="logo-text">SHITBOX <span class="amp">&amp;</span> SHUFFLE</span></a>
-  <div class="nav-spacer"></div>
-  <a href="../shitboxshuffle.html" class="nav-enter">ENTER THE ROOM</a>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="../index.html">Shitbox Shuffle</a>
+    <div class="nav-actions">
+      <a class="btn-nav" href="../shitboxshuffle.html">Play Now</a>
+    </div>
+  </div>
 </nav>
 
 <div class="page-wrap">
-  <div class="page-overline">Blog · Guides</div>
-  <h1>Shuffle Journal</h1>
-  <p class="lead">Editorial guides on random video chat, the post-Omegle landscape, safety, and how in-session games change the vibe. Written for adults in the US (18+). Nothing here is legal advice.</p>
-
-  <ul class="article-list">
-    <li>
-      <a href="random-video-chat-complete-guide.html">
-        <span class="tag">Pillar · Start here</span>
-        <h2>Random Video Chat: The Complete Guide</h2>
-        <p>What it is, risks, etiquette, tech, post-Omegle context, and links to every deep dive below.</p>
-      </a>
-    </li>
-    <li>
-      <a href="first-time-random-video-chat-checklist.html">
-        <span class="tag">Starter · Checklist</span>
-        <h2>First-Time Random Video Chat Checklist</h2>
-        <p>Camera setup, safety basics, the first 30 seconds, and how to not freeze before you start.</p>
-      </a>
-    </li>
-    <li>
-      <a href="random-video-chat-safety-privacy-guide.html">
-        <span class="tag">Safety · Privacy</span>
-        <h2>Random Video Chat Safety &amp; Privacy Guide (2026)</h2>
-        <p>Recording risk, age verification, reporting tools, and what platforms should be doing.</p>
-      </a>
-    </li>
-    <li>
-      <a href="what-happened-to-omegle.html">
-        <span class="tag">History · Policy</span>
-        <h2>What Happened to Omegle? The Shutdown Explained</h2>
-        <p>Why Omegle closed in 2023, where demand went next, and what “alternatives” actually optimize for today.</p>
-      </a>
-    </li>
-    <li>
-      <a href="where-omegle-users-went-after-shutdown.html">
-        <span class="tag">History · Migration</span>
-        <h2>Where Did Omegle Users Go After the Shutdown?</h2>
-        <p>What filled the void after tens of millions of monthly users needed a new home.</p>
-      </a>
-    </li>
-    <li>
-      <a href="best-omegle-alternatives-2026.html">
-        <span class="tag">Listicle · Discovery</span>
-        <h2>Best Omegle Alternatives in 2026 (Ranked)</h2>
-        <p>Random roulette picks, community options, and where games + stakes fit for US adults—with clear disclosure.</p>
-      </a>
-    </li>
-    <li>
-      <a href="shitbox-shuffle-vs-chatroulette-vs-ometv.html">
-        <span class="tag">Compare · Platforms</span>
-        <h2>Shitbox Shuffle vs Chatroulette vs OmeTV</h2>
-        <p>Games, age requirements, moderation, stakes, and US availability—feature by feature.</p>
-      </a>
-    </li>
-    <li>
-      <a href="top-sites-like-omegle-safer-2026.html">
-        <span class="tag">Safety · List</span>
-        <h2>Top 10 Sites Like Omegle — “Safer” Reality Check</h2>
-        <p>Ten commonly compared options and honest limits on the word <em>safe</em>.</p>
-      </a>
-    </li>
-    <li>
-      <a href="omegle-alternatives-adults-18.html">
-        <span class="tag">Intent · 18+</span>
-        <h2>Omegle Alternatives for Adults (18+ Only)</h2>
-        <p>Why adult-marketed video chat exists post-shutdown and how Shitbox fits US eligibility.</p>
-      </a>
-    </li>
-    <li>
-      <a href="conversation-starters-strangers-video-chat.html">
-        <span class="tag">Tier 2 · Social</span>
-        <h2>Conversation Starters for Stranger Video Chat</h2>
-        <p>Openers that land, topics to skip, and recovery lines when the vibe dies.</p>
-      </a>
-    </li>
-    <li>
-      <a href="video-chat-games-break-the-ice.html">
-        <span class="tag">Tier 2 · Psychology</span>
-        <h2>Video Chat Games: Break the Ice With Strangers</h2>
-        <p>Why games beat awkward silence in the first 60 seconds.</p>
-      </a>
-    </li>
-    <li>
-      <a href="play-games-while-video-chatting.html">
-        <span class="tag">Tier 2 · Category</span>
-        <h2>Play Games While Video Chatting</h2>
-        <p>The emerging “video + games” lane after Omegle—and our positioning line.</p>
-      </a>
-    </li>
-    <li>
-      <a href="psychology-games-video-chat-less-awkward.html">
-        <span class="tag">Tier 2 · Deep dive</span>
-        <h2>Why Games Make Video Chat Less Awkward</h2>
-        <p>Joint attention, cognitive load, and micro-scripts—popular psychology for stranger video.</p>
-      </a>
-    </li>
-    <li>
-      <a href="chess-trivia-cards-best-icebreaker-video-chat.html">
-        <span class="tag">Tier 2 · Compare</span>
-        <h2>Chess vs Trivia vs Card Games — Best Icebreaker?</h2>
-        <p>Pacing and banter: which format fits your match energy.</p>
-      </a>
-    </li>
-    <li>
-      <a href="blackjack-basic-strategy-video-matches.html">
-        <span class="tag">Games · Blackjack</span>
-        <h2>Blackjack Basic Strategy for Video Matches</h2>
-        <p>Hit, stand, split, double—mapped for playing a stranger on video.</p>
-      </a>
-    </li>
-    <li>
-      <a href="poker-hand-rankings-texas-holdem-primer.html">
-        <span class="tag">Games · Poker</span>
-        <h2>Poker Hand Rankings &amp; Texas Hold'em Primer</h2>
-        <p>The ten hands, starting tiers, pot odds, and bluffing on camera.</p>
-      </a>
-    </li>
-    <li>
-      <a href="trivia-speed-strategy-random-opponents.html">
-        <span class="tag">Games · Trivia</span>
-        <h2>Trivia Strategy Against Random Opponents</h2>
-        <p>Speed vs accuracy, category reads, elimination, and smart guessing.</p>
-      </a>
-    </li>
-    <li>
-      <a href="geoguesser-tips-strangers-video-chat.html">
-        <span class="tag">Tier 2 · Strategy</span>
-        <h2>GeoGuessr-Style Tips vs Strangers</h2>
-        <p>Map-guessing heuristics for live rounds on video.</p>
-      </a>
-    </li>
-    <li>
-      <a href="how-tokens-work-shitbox-shuffle.html">
-        <span class="tag">Product · Wallet</span>
-        <h2>How Tokens Work on Shitbox Shuffle</h2>
-        <p>Friendly overview; Terms always govern balances and wagers.</p>
-      </a>
-    </li>
-    <li>
-      <a href="real-rewards-video-chat-games.html">
-        <span class="tag">Tier 3 · FAQ</span>
-        <h2>Can You Win Real Rewards on Video Chat Games?</h2>
-        <p>What “rewards” means, guardrails, and why it’s not income advice.</p>
-      </a>
-    </li>
-    <li>
-      <a href="rise-social-gaming-video-chat-wagering.html">
-        <span class="tag">Tier 3 · Thesis</span>
-        <h2>Rise of Social Gaming: Video + Wagering</h2>
-        <p>Post-Omegle category story—good for press and backlinks.</p>
-      </a>
-    </li>
-  </ul>
-
-  <div class="cta-box">
-    <p><strong>Ready to play?</strong> Shitbox Shuffle pairs random 1:1 video with real games and optional token play — US only, verified adults.</p>
-    <a href="../shitboxshuffle.html">Start matching</a>
+  <div class="blog-hero">
+    <h1>Guides &amp; Articles</h1>
+    <p>Strategy, safety, culture, and commentary on random video chat gaming. US adults 18+ only.</p>
   </div>
+
+  <div class="content-section">
+
+    <!-- CAT 1: Omegle & Platform History -->
+    <div class="category-section">
+      <h2>Omegle &amp; Platform History</h2>
+      <ul class="article-list">
+        <li>
+          <a href="what-happened-to-omegle.html">What Happened to Omegle?</a>
+          <span class="desc">The full story of Omegle's rise, controversies, and November 2023 shutdown.</span>
+        </li>
+        <li>
+          <a href="where-omegle-users-went-after-shutdown.html">Where Did Omegle Users Go After the Shutdown?</a>
+          <span class="desc">70 million monthly users had to go somewhere. Here's where they landed.</span>
+        </li>
+        <li>
+          <a href="viral-omegle-era-moments-history.html">Viral Omegle-Era Moments: A Brief History</a>
+          <span class="desc">The cultural moments, memes, and milestones that defined the Omegle era.</span>
+        </li>
+        <li>
+          <a href="random-video-chat-statistics-2026.html">Random Video Chat Statistics 2026</a>
+          <span class="desc">Usage data, platform traffic, and demographic trends for the random video chat industry.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 2: Comparisons & Alternatives -->
+    <div class="category-section">
+      <h2>Comparisons &amp; Alternatives</h2>
+      <ul class="article-list">
+        <li>
+          <a href="best-omegle-alternatives-2026.html">Best Omegle Alternatives 2026</a>
+          <span class="desc">The ranked list of Omegle replacements—moderated, structured, and chaotic.</span>
+        </li>
+        <li>
+          <a href="shitbox-shuffle-vs-chatroulette-vs-ometv.html">Shitbox Shuffle vs Chatroulette vs OmeTV</a>
+          <span class="desc">Feature-by-feature comparison of the three biggest random video chat platforms.</span>
+        </li>
+        <li>
+          <a href="top-sites-like-omegle-safer-2026.html">Top Sites Like Omegle (Safer Options)</a>
+          <span class="desc">Alternatives with better moderation, age verification, and safety features.</span>
+        </li>
+        <li>
+          <a href="omegle-alternatives-adults-18.html">Omegle Alternatives for Adults 18+</a>
+          <span class="desc">Platforms specifically designed for adult users with age-appropriate content policies.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 3: Safety & Privacy -->
+    <div class="category-section">
+      <h2>Safety &amp; Privacy</h2>
+      <ul class="article-list">
+        <li>
+          <a href="random-video-chat-safety-privacy-guide.html">Random Video Chat Safety &amp; Privacy Guide</a>
+          <span class="desc">The complete reference for protecting yourself on random video platforms.</span>
+        </li>
+        <li>
+          <a href="how-to-stay-safe-random-video-chat.html">How to Stay Safe on Random Video Chat</a>
+          <span class="desc">Practical steps before, during, and after a session.</span>
+        </li>
+        <li>
+          <a href="vpn-and-random-video-chat-what-to-know.html">VPN and Random Video Chat: What You Need to Know</a>
+          <span class="desc">What a VPN actually does for privacy, latency impact, and geo-restriction caveats.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 4: First-Timer Guides -->
+    <div class="category-section">
+      <h2>First-Timer Guides</h2>
+      <ul class="article-list">
+        <li>
+          <a href="first-time-random-video-chat-checklist.html">First-Time Random Video Chat Checklist</a>
+          <span class="desc">Everything to set up and know before your first session.</span>
+        </li>
+        <li>
+          <a href="conversation-starters-strangers-video-chat.html">Conversation Starters for Strangers on Video Chat</a>
+          <span class="desc">100+ openers that actually work when you're matched with a stranger.</span>
+        </li>
+        <li>
+          <a href="random-video-chat-complete-guide.html">Random Video Chat: The Complete Guide</a>
+          <span class="desc">Everything from platform selection to session etiquette.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 5: Game Strategy -->
+    <div class="category-section">
+      <h2>Game Strategy</h2>
+      <ul class="article-list">
+        <li>
+          <a href="blackjack-basic-strategy-video-matches.html">Blackjack Basic Strategy for Video Matches</a>
+          <span class="desc">The mathematically optimal decisions for every hand situation.</span>
+        </li>
+        <li>
+          <a href="poker-hand-rankings-texas-holdem-primer.html">Poker Hand Rankings &amp; Texas Hold'em Primer</a>
+          <span class="desc">Hand rankings, position basics, and reading opponents in video poker.</span>
+        </li>
+        <li>
+          <a href="trivia-speed-strategy-random-opponents.html">Trivia Speed Strategy Against Random Opponents</a>
+          <span class="desc">How to win trivia against strangers who have widely varying knowledge gaps.</span>
+        </li>
+        <li>
+          <a href="geoguesser-tips-strangers-video-chat.html">GeoGuesser Tips for Video Chat</a>
+          <span class="desc">Geographic recognition strategy for competitive GeoGuesser matches.</span>
+        </li>
+        <li>
+          <a href="chess-trivia-cards-best-icebreaker-video-chat.html">Chess, Trivia, and Cards: Best Icebreaker Games on Video Chat</a>
+          <span class="desc">Which games work best as icebreakers with total strangers.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 6: Platform Features & Best Games -->
+    <div class="category-section">
+      <h2>Platform Features &amp; Best Games</h2>
+      <ul class="article-list">
+        <li>
+          <a href="best-games-to-play-with-strangers-on-video.html">Best Games to Play with Strangers on Video</a>
+          <span class="desc">Ranked list of games that work for random video chat—structured and free-form.</span>
+        </li>
+        <li>
+          <a href="video-chat-games-break-the-ice.html">Video Chat Games That Break the Ice</a>
+          <span class="desc">Games specifically designed to reduce awkwardness in the first few minutes.</span>
+        </li>
+        <li>
+          <a href="play-games-while-video-chatting.html">How to Play Games While Video Chatting</a>
+          <span class="desc">Technical and social guide to running game sessions over video.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 7: Tokens, Wagering & Real Rewards -->
+    <div class="category-section">
+      <h2>Tokens, Wagering &amp; Real Rewards</h2>
+      <ul class="article-list">
+        <li>
+          <a href="how-to-earn-tokens-shitbox-shuffle.html">How to Earn Tokens on Shitbox Shuffle</a>
+          <span class="desc">Every way to accumulate tokens—daily play, streaks, wins, and promotions.</span>
+        </li>
+        <li>
+          <a href="how-tokens-work-shitbox-shuffle.html">How the Token System Works on Shitbox Shuffle</a>
+          <span class="desc">Full explainer of token mechanics, match wagering, and redemption.</span>
+        </li>
+        <li>
+          <a href="skill-vs-luck-games-wagering-what-to-know.html">Skill vs Luck Games: What to Know Before Wagering</a>
+          <span class="desc">Understanding the difference before putting tokens on a match.</span>
+        </li>
+        <li>
+          <a href="smart-wagering-habits-adults-only.html">Smart Wagering Habits (Adults Only)</a>
+          <span class="desc">Practical principles for keeping wagering fun and controlled.</span>
+        </li>
+        <li>
+          <a href="real-rewards-video-chat-games.html">Real Rewards from Video Chat Games</a>
+          <span class="desc">How structured gaming platforms are changing what "winning" means online.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 8: Social Skills & Connection -->
+    <div class="category-section">
+      <h2>Social Skills &amp; Connection</h2>
+      <ul class="article-list">
+        <li>
+          <a href="how-to-make-friends-online-adults-2026.html">How to Make Friends Online as an Adult in 2026</a>
+          <span class="desc">Research-backed strategies for building real connections after college.</span>
+        </li>
+        <li>
+          <a href="social-anxiety-video-chat-practical-tips.html">Social Anxiety and Video Chat: Practical Tips</a>
+          <span class="desc">How structured interactions and low-stakes games reduce social anxiety.</span>
+        </li>
+        <li>
+          <a href="online-social-life-after-covid.html">Online Social Life After COVID</a>
+          <span class="desc">How the pandemic permanently changed how adults maintain friendships online.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 9: Social Gaming Culture -->
+    <div class="category-section">
+      <h2>Social Gaming Culture</h2>
+      <ul class="article-list">
+        <li>
+          <a href="gaming-with-strangers-vs-friends-psychology.html">Gaming with Strangers vs Friends: The Psychology</a>
+          <span class="desc">Why playing with strangers creates a different kind of engagement than gaming with friends.</span>
+        </li>
+        <li>
+          <a href="casual-vs-competitive-social-gaming-online.html">Casual vs Competitive Social Gaming Online</a>
+          <span class="desc">The mindset difference and which approach leads to better experiences.</span>
+        </li>
+        <li>
+          <a href="rise-social-gaming-video-chat-wagering.html">The Rise of Social Gaming with Video Chat and Wagering</a>
+          <span class="desc">How the intersection of video chat, social gaming, and real stakes became a category.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 10: Responsible Gaming -->
+    <div class="category-section">
+      <h2>Responsible Gaming</h2>
+      <ul class="article-list">
+        <li>
+          <a href="setting-limits-online-wagering.html">Setting Limits for Online Wagering</a>
+          <span class="desc">Practical limit-setting methods: time, spend, and session frequency.</span>
+        </li>
+        <li>
+          <a href="warning-signs-problem-gambling-resources.html">Warning Signs of Problem Gambling and Where to Get Help</a>
+          <span class="desc">The behavioral signs to watch for and US-based resources available now.</span>
+        </li>
+        <li>
+          <a href="how-shitbox-approaches-responsible-play.html">How Shitbox Shuffle Approaches Responsible Play</a>
+          <span class="desc">Our built-in tools, policies, and commitments to player protection.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 11: Platform Tech Explained -->
+    <div class="category-section">
+      <h2>Platform Tech Explained</h2>
+      <ul class="article-list">
+        <li>
+          <a href="how-random-video-matching-works-high-level.html">How Random Video Matching Works (High Level)</a>
+          <span class="desc">The technology behind matching two random people for a live video session.</span>
+        </li>
+        <li>
+          <a href="why-video-quality-matters-webrtc-basics.html">Why Video Quality Matters: WebRTC Basics</a>
+          <span class="desc">What WebRTC is, how it affects your connection quality, and what to optimize.</span>
+        </li>
+        <li>
+          <a href="how-platforms-fight-bots-and-bad-actors.html">How Platforms Fight Bots and Bad Actors</a>
+          <span class="desc">The technical and policy methods modern video chat platforms use to maintain quality.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 12: Industry News & Trends -->
+    <div class="category-section">
+      <h2>Industry News &amp; Trends</h2>
+      <ul class="article-list">
+        <li>
+          <a href="omegle-alternatives-landscape-2026-q1.html">Omegle Alternatives Landscape: 2026 Q1 Roundup</a>
+          <span class="desc">State of the industry: who's growing, who's declining, and what's changed.</span>
+        </li>
+        <li>
+          <a href="random-video-chat-statistics-2026.html">Random Video Chat Statistics 2026</a>
+          <span class="desc">Usage data and industry metrics for the current state of random video chat.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 13: Psychology & Behavior -->
+    <div class="category-section">
+      <h2>Psychology &amp; Behavior</h2>
+      <ul class="article-list">
+        <li>
+          <a href="psychology-of-talking-to-strangers-online.html">The Psychology of Talking to Strangers Online</a>
+          <span class="desc">Research on why stranger interactions online feel different—and why that matters.</span>
+        </li>
+        <li>
+          <a href="why-anonymity-changes-behavior-video-chat.html">Why Anonymity Changes Behavior on Video Chat</a>
+          <span class="desc">Disinhibition, authenticity, and the surprising upsides of talking to someone you'll never see again.</span>
+        </li>
+        <li>
+          <a href="making-friends-as-an-adult-science.html">Making Friends as an Adult: What the Science Says</a>
+          <span class="desc">The social science of adult friendship formation and how platforms can facilitate it.</span>
+        </li>
+        <li>
+          <a href="psychology-games-video-chat-less-awkward.html">The Psychology of Why Games Make Video Chat Less Awkward</a>
+          <span class="desc">Why adding a game to a video call immediately reduces social friction.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 14: Platform Reviews -->
+    <div class="category-section">
+      <h2>Platform Reviews</h2>
+      <ul class="article-list">
+        <li>
+          <a href="chatroulette-review-2026.html">Chatroulette Review 2026</a>
+          <span class="desc">Current state, features, moderation, and who Chatroulette is right for today.</span>
+        </li>
+        <li>
+          <a href="ometv-review-2026.html">OmeTV Review 2026</a>
+          <span class="desc">Features, safety, user experience, and how OmeTV compares to alternatives.</span>
+        </li>
+        <li>
+          <a href="emerald-chat-review-2026.html">Emerald Chat Review 2026</a>
+          <span class="desc">The interest-matching platform: what works and what doesn't.</span>
+        </li>
+        <li>
+          <a href="monkey-app-review-2026.html">Monkey App Review 2026</a>
+          <span class="desc">Monkey's current platform, audience, and how it compares to adult alternatives.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 15: Dating & Connection -->
+    <div class="category-section">
+      <h2>Dating &amp; Connection</h2>
+      <ul class="article-list">
+        <li>
+          <a href="random-video-chat-for-dating-realistic-expectations.html">Random Video Chat for Dating: Realistic Expectations</a>
+          <span class="desc">What random video chat can and can't do for dating—and the platforms designed for it vs those that aren't.</span>
+        </li>
+        <li>
+          <a href="online-social-life-after-covid.html">Online Social Life After COVID</a>
+          <span class="desc">How the pandemic changed dating, friendship, and online social interaction long-term.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 16: Pop Culture & Viral Moments -->
+    <div class="category-section">
+      <h2>Pop Culture &amp; Viral Moments</h2>
+      <ul class="article-list">
+        <li>
+          <a href="viral-omegle-era-moments-history.html">Viral Omegle-Era Moments: A Brief History</a>
+          <span class="desc">The cultural moments—music sessions, celebrity encounters, comedic stunts—that defined the Omegle era.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 17: Adult Platform Regulation & Verification -->
+    <div class="category-section">
+      <h2>Adult Platform Regulation &amp; Verification</h2>
+      <ul class="article-list">
+        <li>
+          <a href="how-age-verification-works-adult-video-platforms.html">How Age Verification Works on Adult Video Platforms</a>
+          <span class="desc">The methods platforms use, what they actually verify, and why it matters.</span>
+        </li>
+        <li>
+          <a href="responsible-adult-social-platforms-us-legal-overview.html">Responsible Adult Social Platforms: US Legal Overview</a>
+          <span class="desc">The regulatory landscape for adult platforms—what laws apply and what platforms must do. Not legal advice.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 18: International & Cultural -->
+    <div class="category-section">
+      <h2>International &amp; Cultural</h2>
+      <ul class="article-list">
+        <li>
+          <a href="video-chat-across-borders-cultural-tips.html">Video Chat Across Borders: Cultural Tips</a>
+          <span class="desc">What to know when you're matched with someone from a different cultural context.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 19: Affiliate & Gear -->
+    <div class="category-section">
+      <h2>Gear &amp; Setup</h2>
+      <ul class="article-list">
+        <li>
+          <a href="best-webcam-microphone-video-chat-2026.html">Best Webcam and Microphone for Video Chat (2026)</a>
+          <span class="desc">Honest hardware picks—budget, mid-range, and enthusiast—for video chat quality.</span>
+        </li>
+        <li>
+          <a href="vpn-and-random-video-chat-what-to-know.html">VPN and Random Video Chat: What You Need to Know</a>
+          <span class="desc">What VPNs do and don't do, latency impact, and the important geo-restriction note.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CAT 20: Community -->
+    <div class="category-section">
+      <h2>Community</h2>
+      <ul class="article-list">
+        <li>
+          <a href="community-stories-how-to-submit.html">Community Stories: Share Your Shitbox Shuffle Moment</a>
+          <span class="desc">Submit your unforgettable match story. Here's what we look for and how it works.</span>
+        </li>
+      </ul>
+    </div>
+
+  </div><!-- .content-section -->
 </div>
 
-<footer>
-  <div class="footer-wordmark">SHITBOX SHUFFLE</div>
-  <div class="footer-links">
-    <a href="../index.html">Home</a>
-    <a href="../press.html">Press</a>
-    <a href="../terms.html">Terms</a>
-    <a href="../privacy.html">Privacy</a>
-    <a href="../support.html">Support</a>
-    <a href="../responsible-gaming.html">Responsible Gaming</a>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-links footer-links-row">
+      <a href="../terms.html">Terms</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="../responsible-gaming.html">Responsible Gaming</a>
+      <a href="../support.html">Support</a>
+      <a href="../press.html">Press</a>
+    </div>
+    <p class="footer-copy">© 2025 Shitbox Shuffle. For entertainment. US adults 18+ only.</p>
   </div>
-  <span class="footer-copy">© 2026 Shitbox Shuffle · US Only · 18+</span>
 </footer>
-
 </body>
 </html>

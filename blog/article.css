@@ -8,12 +8,21 @@
 html { background: var(--void); scroll-behavior: smooth; }
 body { font-family: 'Libre Baskerville', Georgia, serif; background: var(--void); color: var(--bone); min-height: 100vh; line-height: 1.75; }
 nav { display: flex; align-items: center; height: 70px; border-bottom: 1px solid var(--phantom); background: rgba(3,3,3,0.92); position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
+/* Old-style nav (flat children) */
 .nav-logo { padding: 0 40px; text-decoration: none; }
 .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.2em; color: var(--bone); }
 .logo-text .amp { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ember); }
 .nav-spacer { flex: 1; }
 .nav-enter { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.18em; color: var(--ember); text-decoration: none; padding: 0 40px; border-left: 1px solid var(--phantom); height: 70px; display: flex; align-items: center; }
 .nav-enter:hover { color: var(--bone); }
+/* New-style nav (nav-inner wrapper) */
+.nav-inner { display: flex; align-items: center; width: 100%; height: 100%; }
+nav.nav .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.2em; color: var(--bone); text-decoration: none; padding: 0 40px; text-transform: uppercase; white-space: nowrap; }
+.nav-actions { margin-left: auto; display: flex; align-items: center; height: 100%; }
+.btn-nav { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.18em; color: var(--ember); text-decoration: none; padding: 0 40px; border-left: 1px solid var(--phantom); height: 100%; display: flex; align-items: center; white-space: nowrap; }
+.btn-nav:hover { color: var(--bone); }
+.nav-blog-link { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.15em; color: var(--ash); text-decoration: none; padding: 0 24px; }
+.nav-blog-link:hover { color: var(--bone); }
 .page-wrap { max-width: 680px; margin: 0 auto; padding: 120px 28px 100px; }
 .page-overline { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ember); margin-bottom: 14px; }
 h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4.5vw, 40px); font-weight: 700; margin-bottom: 12px; line-height: 1.2; }
@@ -52,6 +61,8 @@ footer { margin-top: 60px; padding: 40px 0; border-top: 1px solid var(--phantom)
 .footer-links a:hover { color: var(--ember); }
 .footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(232,224,208,0.25); flex-basis: 100%; }
 @media (max-width: 640px) {
-  .nav-logo { padding: 0 20px; }
-  .nav-enter { padding: 0 20px; font-size: 11px; }
+  .nav-logo { padding: 0 16px; }
+  nav.nav .nav-logo { padding: 0 16px; font-size: 13px; }
+  .nav-enter { padding: 0 16px; font-size: 11px; }
+  .btn-nav { padding: 0 16px; font-size: 11px; }
 }

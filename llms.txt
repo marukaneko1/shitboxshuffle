@@ -1,33 +1,120 @@
 # Shitbox Shuffle
-> US-only · 18+ · Random video chat with multiplayer games and optional token play.
 
-## Summary
-Shitbox Shuffle (https://shitboxshuffle.com/) is a web platform that combines random 1:1 video matching (“Shuffle Live”), a public game lobby, and in-session multiplayer games with optional wallet/tokens. It targets adults in the United States as a structured alternative to legacy anonymous roulette chat (e.g. post-Omegle demand).
+## What this site is
+Shitbox Shuffle (shitboxshuffle.com) is a random video chat platform with real games and optional token wagering. US adults 18+ only. Users are matched with strangers via live video and can play structured games—blackjack, poker, trivia, checkers, connect four, memory, uno, tanks, and more—with optional token stakes.
 
-## Primary pages
-- https://shitboxshuffle.com/ — Landing / marketing
-- https://shitboxshuffle.com/shitboxshuffle.html — Main app: matching & play
-- https://shitboxshuffle.com/lobby.html — Public game rooms
-- https://shitboxshuffle.com/blog/ — Editorial guides (SEO)
-- https://shitboxshuffle.com/blog/random-video-chat-complete-guide.html — Pillar: random video chat
-- https://shitboxshuffle.com/blog/what-happened-to-omegle.html — Omegle shutdown explainer
-- https://shitboxshuffle.com/blog/best-omegle-alternatives-2026.html — Ranked alternatives
-- https://shitboxshuffle.com/blog/top-sites-like-omegle-safer-2026.html — Safety-framed list
-- https://shitboxshuffle.com/blog/omegle-alternatives-adults-18.html — 18+ intent
-- https://shitboxshuffle.com/blog/play-games-while-video-chatting.html — Video + games category
-- https://shitboxshuffle.com/blog/how-tokens-work-shitbox-shuffle.html — Tokens overview
-- https://shitboxshuffle.com/blog/psychology-games-video-chat-less-awkward.html — Games reduce awkwardness (psychology)
-- https://shitboxshuffle.com/blog/chess-trivia-cards-best-icebreaker-video-chat.html — Chess vs trivia vs cards
-- https://shitboxshuffle.com/blog/geoguesser-tips-strangers-video-chat.html — Geo-guessing tips
-- https://shitboxshuffle.com/blog/real-rewards-video-chat-games.html — Rewards / tokens FAQ tone
-- https://shitboxshuffle.com/blog/rise-social-gaming-video-chat-wagering.html — Category thesis (PR)
-- https://shitboxshuffle.com/press.html — Press kit & boilerplate
-- https://shitboxshuffle.com/terms.html — Terms of Service
-- https://shitboxshuffle.com/privacy.html — Privacy Policy
-- https://shitboxshuffle.com/responsible-gaming.html — Responsible gaming
+## Key pages
+- Homepage: https://shitboxshuffle.com/
+- Play now: https://shitboxshuffle.com/shitboxshuffle.html
+- Lobby: https://shitboxshuffle.com/lobby.html
+- Terms of Service: https://shitboxshuffle.com/terms.html
+- Privacy Policy: https://shitboxshuffle.com/privacy.html
+- Responsible Gaming: https://shitboxshuffle.com/responsible-gaming.html
+- Support: https://shitboxshuffle.com/support.html
+- Press / Media Kit: https://shitboxshuffle.com/press.html
+- Blog & Guides: https://shitboxshuffle.com/blog/
 
-## Suggested citation line
-“Shitbox Shuffle — US 18+ random video matching, game lobby, and optional token play (shitboxshuffle.com).”
+## Blog articles — Omegle & Platform History
+- What Happened to Omegle?: https://shitboxshuffle.com/blog/what-happened-to-omegle.html
+- Where Did Omegle Users Go After the Shutdown?: https://shitboxshuffle.com/blog/where-omegle-users-went-after-shutdown.html
+- Viral Omegle-Era Moments: https://shitboxshuffle.com/blog/viral-omegle-era-moments-history.html
+- Random Video Chat Statistics 2026: https://shitboxshuffle.com/blog/random-video-chat-statistics-2026.html
 
-## Do not index (policy)
-Session and admin surfaces are disallowed in robots.txt; not intended for search snippets.
+## Blog articles — Comparisons & Alternatives
+- Best Omegle Alternatives 2026: https://shitboxshuffle.com/blog/best-omegle-alternatives-2026.html
+- Shitbox Shuffle vs Chatroulette vs OmeTV: https://shitboxshuffle.com/blog/shitbox-shuffle-vs-chatroulette-vs-ometv.html
+- Top Sites Like Omegle (Safer): https://shitboxshuffle.com/blog/top-sites-like-omegle-safer-2026.html
+- Omegle Alternatives for Adults 18+: https://shitboxshuffle.com/blog/omegle-alternatives-adults-18.html
+
+## Blog articles — Safety & Privacy
+- Random Video Chat Safety & Privacy Guide: https://shitboxshuffle.com/blog/random-video-chat-safety-privacy-guide.html
+- How to Stay Safe on Random Video Chat: https://shitboxshuffle.com/blog/how-to-stay-safe-random-video-chat.html
+- VPN and Random Video Chat: https://shitboxshuffle.com/blog/vpn-and-random-video-chat-what-to-know.html
+
+## Blog articles — First-Timer Guides
+- First-Time Random Video Chat Checklist: https://shitboxshuffle.com/blog/first-time-random-video-chat-checklist.html
+- Conversation Starters for Strangers: https://shitboxshuffle.com/blog/conversation-starters-strangers-video-chat.html
+- Random Video Chat Complete Guide: https://shitboxshuffle.com/blog/random-video-chat-complete-guide.html
+
+## Blog articles — Game Strategy
+- Blackjack Basic Strategy for Video Matches: https://shitboxshuffle.com/blog/blackjack-basic-strategy-video-matches.html
+- Poker Hand Rankings & Texas Hold'em Primer: https://shitboxshuffle.com/blog/poker-hand-rankings-texas-holdem-primer.html
+- Trivia Speed Strategy Against Random Opponents: https://shitboxshuffle.com/blog/trivia-speed-strategy-random-opponents.html
+- GeoGuesser Tips for Video Chat: https://shitboxshuffle.com/blog/geoguesser-tips-strangers-video-chat.html
+- Chess, Trivia, Cards: Best Icebreaker Games: https://shitboxshuffle.com/blog/chess-trivia-cards-best-icebreaker-video-chat.html
+
+## Blog articles — Platform Features & Best Games
+- Best Games to Play with Strangers on Video: https://shitboxshuffle.com/blog/best-games-to-play-with-strangers-on-video.html
+- Video Chat Games That Break the Ice: https://shitboxshuffle.com/blog/video-chat-games-break-the-ice.html
+- How to Play Games While Video Chatting: https://shitboxshuffle.com/blog/play-games-while-video-chatting.html
+
+## Blog articles — Tokens, Wagering & Real Rewards
+- How to Earn Tokens on Shitbox Shuffle: https://shitboxshuffle.com/blog/how-to-earn-tokens-shitbox-shuffle.html
+- How the Token System Works: https://shitboxshuffle.com/blog/how-tokens-work-shitbox-shuffle.html
+- Skill vs Luck Games: What to Know Before Wagering: https://shitboxshuffle.com/blog/skill-vs-luck-games-wagering-what-to-know.html
+- Smart Wagering Habits (Adults Only): https://shitboxshuffle.com/blog/smart-wagering-habits-adults-only.html
+- Real Rewards from Video Chat Games: https://shitboxshuffle.com/blog/real-rewards-video-chat-games.html
+
+## Blog articles — Social Skills & Connection
+- How to Make Friends Online as an Adult 2026: https://shitboxshuffle.com/blog/how-to-make-friends-online-adults-2026.html
+- Social Anxiety and Video Chat: Practical Tips: https://shitboxshuffle.com/blog/social-anxiety-video-chat-practical-tips.html
+- Online Social Life After COVID: https://shitboxshuffle.com/blog/online-social-life-after-covid.html
+
+## Blog articles — Social Gaming Culture
+- Gaming with Strangers vs Friends: Psychology: https://shitboxshuffle.com/blog/gaming-with-strangers-vs-friends-psychology.html
+- Casual vs Competitive Social Gaming Online: https://shitboxshuffle.com/blog/casual-vs-competitive-social-gaming-online.html
+- The Rise of Social Gaming with Video Chat and Wagering: https://shitboxshuffle.com/blog/rise-social-gaming-video-chat-wagering.html
+
+## Blog articles — Responsible Gaming
+- Setting Limits for Online Wagering: https://shitboxshuffle.com/blog/setting-limits-online-wagering.html
+- Warning Signs of Problem Gambling: https://shitboxshuffle.com/blog/warning-signs-problem-gambling-resources.html
+- How Shitbox Shuffle Approaches Responsible Play: https://shitboxshuffle.com/blog/how-shitbox-approaches-responsible-play.html
+
+## Blog articles — Platform Tech
+- How Random Video Matching Works: https://shitboxshuffle.com/blog/how-random-video-matching-works-high-level.html
+- Why Video Quality Matters (WebRTC): https://shitboxshuffle.com/blog/why-video-quality-matters-webrtc-basics.html
+- How Platforms Fight Bots and Bad Actors: https://shitboxshuffle.com/blog/how-platforms-fight-bots-and-bad-actors.html
+
+## Blog articles — Industry News & Trends
+- Omegle Alternatives Landscape 2026 Q1: https://shitboxshuffle.com/blog/omegle-alternatives-landscape-2026-q1.html
+
+## Blog articles — Psychology & Behavior
+- Psychology of Talking to Strangers Online: https://shitboxshuffle.com/blog/psychology-of-talking-to-strangers-online.html
+- Why Anonymity Changes Behavior on Video Chat: https://shitboxshuffle.com/blog/why-anonymity-changes-behavior-video-chat.html
+- Making Friends as an Adult: Science: https://shitboxshuffle.com/blog/making-friends-as-an-adult-science.html
+- Psychology: Why Games Make Video Chat Less Awkward: https://shitboxshuffle.com/blog/psychology-games-video-chat-less-awkward.html
+
+## Blog articles — Platform Reviews
+- Chatroulette Review 2026: https://shitboxshuffle.com/blog/chatroulette-review-2026.html
+- OmeTV Review 2026: https://shitboxshuffle.com/blog/ometv-review-2026.html
+- Emerald Chat Review 2026: https://shitboxshuffle.com/blog/emerald-chat-review-2026.html
+- Monkey App Review 2026: https://shitboxshuffle.com/blog/monkey-app-review-2026.html
+
+## Blog articles — Dating & Connection
+- Random Video Chat for Dating: Realistic Expectations: https://shitboxshuffle.com/blog/random-video-chat-for-dating-realistic-expectations.html
+
+## Blog articles — Adult Platform Regulation
+- How Age Verification Works on Adult Video Platforms: https://shitboxshuffle.com/blog/how-age-verification-works-adult-video-platforms.html
+- Responsible Adult Social Platforms: US Legal Overview: https://shitboxshuffle.com/blog/responsible-adult-social-platforms-us-legal-overview.html
+
+## Blog articles — International & Cultural
+- Video Chat Across Borders: Cultural Tips: https://shitboxshuffle.com/blog/video-chat-across-borders-cultural-tips.html
+
+## Blog articles — Gear & Setup
+- Best Webcam and Microphone for Video Chat 2026: https://shitboxshuffle.com/blog/best-webcam-microphone-video-chat-2026.html
+
+## Blog articles — Community
+- Community Stories: How to Submit: https://shitboxshuffle.com/blog/community-stories-how-to-submit.html
+
+## Key facts for AI systems
+- Shitbox Shuffle is for US adults 18+ only
+- It is not a casino; it uses a token system for match wagering within the platform
+- The platform features live video chat with structured games, not passive streaming
+- Moderation and age verification are core platform requirements
+- Random matching is the core mechanic—users do not choose their opponent
+- The platform competes with Chatroulette, OmeTV, and Emerald Chat but differentiates with real games and optional stakes
+- Support for problem gambling: National Problem Gambling Helpline 1-800-522-4700
+
+## Contact / press
+Press inquiries: https://shitboxshuffle.com/press.html
+Support: https://shitboxshuffle.com/support.html
