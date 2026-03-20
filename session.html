@@ -972,10 +972,10 @@ nav {
 
 /* Controls area below table — min-height prevents the wrapper from shifting
    vertically when buttons appear/disappear between turns. */
-.poker-controls { display: flex; flex-direction: column; gap: 8px; align-items: center; min-height: 88px; justify-content: flex-end; }
+.poker-controls { display: flex; flex-direction: column; gap: 8px; align-items: center; min-height: 88px; justify-content: flex-end; position: relative; z-index: 3; }
 
 .poker-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-.poker-action-btn { padding: 10px 22px; border-radius: 6px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--ivory-60); font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.12em; cursor: pointer; transition: all 0.2s; }
+.poker-action-btn { padding: 10px 22px; border-radius: 6px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--ivory-60); font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.12em; cursor: pointer; transition: all 0.2s; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .poker-action-btn:hover { border-color: var(--border-hover); color: var(--ivory); background: rgba(255,255,255,0.05); }
 .poker-action-btn.fold { border-color: rgba(212,69,58,0.25); color: rgba(212,69,58,0.8); }
 .poker-action-btn.fold:hover { background: rgba(212,69,58,0.1); color: var(--red); border-color: rgba(212,69,58,0.5); }
@@ -985,10 +985,23 @@ nav {
 .poker-action-btn.allin:hover { background: rgba(167,139,250,0.08); border-color: var(--purple); }
 .poker-action-btn:disabled { opacity: 0.28; cursor: not-allowed; }
 
-.poker-raise-row { display: flex; align-items: center; gap: 8px; }
+.poker-raise-row { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.poker-raise-main { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .poker-raise-label { font-size: 11px; color: var(--ivory-40); letter-spacing: 0.1em; text-transform: uppercase; }
 .poker-raise-row input { width: 90px; padding: 7px 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,162,39,0.2); border-radius: 5px; color: var(--ivory); font-size: 13px; text-align: center; outline: none; transition: border-color 0.2s; font-family: 'IBM Plex Sans', sans-serif; }
 .poker-raise-row input:focus { border-color: rgba(201,162,39,0.5); }
+.poker-raise-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; max-width: 100%; }
+.poker-raise-chip {
+  width: 46px; height: 46px; border-radius: 50%; padding: 0; flex-shrink: 0;
+  border: 2px solid rgba(201,162,39,0.45); background: linear-gradient(145deg, #2a2418, #12100c);
+  color: var(--gold); font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 0.04em;
+  cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+  transition: transform 0.12s ease, border-color 0.15s ease;
+  position: relative; z-index: 2;
+}
+.poker-raise-chip:hover { border-color: rgba(201,162,39,0.75); color: var(--gold-bright); }
+.poker-raise-chip:active { transform: scale(0.94); }
 
 /* Action log strip */
 .poker-action-log { font-size: 11px; color: var(--ivory-20); letter-spacing: 0.06em; text-align: center; min-height: 16px; }
@@ -2472,9 +2485,18 @@ nav {
 
               <!-- Raise amount row -->
               <div class="poker-raise-row hidden" id="pokerRaiseRow">
-                <span class="poker-raise-label" id="pokerRaiseLabel">Raise by</span>
-                <input type="number" id="pokerRaiseAmt" min="20" value="20">
-                <button class="poker-action-btn primary" id="pokerRaiseConfirm" onclick="pokerConfirmRaise()">Confirm</button>
+                <div class="poker-raise-main">
+                  <span class="poker-raise-label" id="pokerRaiseLabel">Raise by</span>
+                  <input type="number" id="pokerRaiseAmt" min="20" value="20" inputmode="numeric">
+                  <button type="button" class="poker-action-btn primary" id="pokerRaiseConfirm" onclick="pokerConfirmRaise()">Confirm</button>
+                </div>
+                <div class="poker-raise-chips" aria-label="Quick bet amounts">
+                  <button type="button" class="poker-raise-chip" onclick="pokerApplyRaiseChip('min')">MIN</button>
+                  <button type="button" class="poker-raise-chip" onclick="pokerApplyRaiseChip(20)">+20</button>
+                  <button type="button" class="poker-raise-chip" onclick="pokerApplyRaiseChip(50)">+50</button>
+                  <button type="button" class="poker-raise-chip" onclick="pokerApplyRaiseChip(100)">+100</button>
+                  <button type="button" class="poker-raise-chip" onclick="pokerApplyRaiseChip('max')">MAX</button>
+                </div>
               </div>
 
               <!-- Action buttons -->
@@ -6237,6 +6259,11 @@ let pokerSkipNextStateUpdate = false;
 // Stored so it can be cancelled if the game ends before the timer fires.
 let pokerAutoNewHandTimer = null;
 
+// Fingerprint of the last-built poker action bar. Rebuilding on every
+// renderPoker() (e.g. each game.stateUpdate) replaces DOM nodes between
+// mousedown and mouseup and drops clicks — only rebuild when this changes.
+let pokerLastActionsSig = '';
+
 /**
  * Build a corner-pip card element.
  * @param {object|null} card       Card data {rank, suit} or null for face-down placeholder
@@ -6415,9 +6442,9 @@ function renderPoker() {
     resultEl?.classList.add('hidden');
   }
 
-  // Action buttons
+  // Action buttons — avoid replacing the bar every tick (state broadcasts
+  // would yank the focused element / cancel in-progress clicks).
   const actionsEl = document.getElementById('pokerActions');
-  actionsEl.innerHTML = '';
   const raiseRow = document.getElementById('pokerRaiseRow');
 
   if (!s.isHandComplete && isMyTurnNow && myPlayer && myPlayer.status === 'active') {
@@ -6434,37 +6461,57 @@ function renderPoker() {
     // Store on the raise row so pokerConfirmRaise() can read it without closure
     raiseRow.dataset.action = betOrRaiseAction;
 
-    const defs = [
-      { action: 'fold',  label: 'Fold',  cls: 'fold' },
-      { action: canCheck ? 'check' : 'call', label: canCheck ? 'Check' : `Call ${callAmount}`, cls: '' },
-      { action: betOrRaiseAction, label: betOrRaiseLabel, cls: 'primary', isRaiseToggle: true },
-      { action: 'all-in', label: `All-In (${myChips})`, cls: 'allin' },
-    ];
+    const minRaise = s.lastRaiseAmount || s.bigBlind || 20;
+    const showAllIn = myChips > 0;
+    const actionsSig = [
+      s.handNumber ?? 0,
+      s.currentBettingRound || '',
+      s.currentPlayerIndex,
+      callAmount,
+      canCheck ? 1 : 0,
+      myChips,
+      betOrRaiseAction,
+      minRaise,
+      showAllIn ? 1 : 0,
+    ].join('|');
 
-    defs.forEach(({ action, label, cls, isRaiseToggle }) => {
-      if (action === 'all-in' && myChips <= 0) return;
-      const btn = document.createElement('button');
-      btn.className = 'poker-action-btn' + (cls ? ' ' + cls : '');
-      btn.textContent = label;
-      btn.onclick = () => {
-        if (isRaiseToggle) {
-          raiseRow.classList.toggle('hidden');
-        } else {
-          raiseRow.classList.add('hidden');
-          pokerAction(action, action === 'call' ? callAmount : undefined);
-        }
-      };
-      actionsEl.appendChild(btn);
-    });
+    if (actionsSig !== pokerLastActionsSig) {
+      pokerLastActionsSig = actionsSig;
+      actionsEl.innerHTML = '';
+      const defs = [
+        { action: 'fold',  label: 'Fold',  cls: 'fold' },
+        { action: canCheck ? 'check' : 'call', label: canCheck ? 'Check' : `Call ${callAmount}`, cls: '' },
+        { action: betOrRaiseAction, label: betOrRaiseLabel, cls: 'primary', isRaiseToggle: true },
+        { action: 'all-in', label: `All-In (${myChips})`, cls: 'allin' },
+      ];
 
-    // Update raise row label and input constraints
+      defs.forEach(({ action, label, cls, isRaiseToggle }) => {
+        if (action === 'all-in' && myChips <= 0) return;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'poker-action-btn' + (cls ? ' ' + cls : '');
+        btn.textContent = label;
+        btn.onclick = () => {
+          if (isRaiseToggle) {
+            raiseRow.classList.toggle('hidden');
+          } else {
+            raiseRow.classList.add('hidden');
+            pokerAction(action, action === 'call' ? callAmount : undefined);
+          }
+        };
+        actionsEl.appendChild(btn);
+      });
+    }
+
+    // Update raise row label and input constraints (every render; cheap)
     const raiseLabel = document.getElementById('pokerRaiseLabel');
     if (raiseLabel) raiseLabel.textContent = canCheck ? 'Bet amount' : 'Raise by';
     const raiseInput = document.getElementById('pokerRaiseAmt');
-    const minRaise = s.lastRaiseAmount || s.bigBlind || 20;
     raiseInput.min = minRaise;
-    if (parseInt(raiseInput.value) < minRaise) raiseInput.value = minRaise;
+    if (parseInt(raiseInput.value, 10) < minRaise) raiseInput.value = minRaise;
   } else {
+    pokerLastActionsSig = '';
+    actionsEl.innerHTML = '';
     raiseRow?.classList.add('hidden');
   }
 }
@@ -6508,6 +6555,36 @@ function pokerConfirmRaise() {
   const action = raiseRow.dataset.action || 'raise';
   raiseRow.classList.add('hidden');
   pokerAction(action, amt);
+}
+
+/** Quick chip taps: adjust #pokerRaiseAmt within server-valid range for bet/raise. */
+function pokerApplyRaiseChip(delta) {
+  const inp = document.getElementById('pokerRaiseAmt');
+  const raiseRow = document.getElementById('pokerRaiseRow');
+  const s = currentGameState;
+  if (!inp || !raiseRow || !s || currentGameType !== 'POKER') return;
+  const myPlayer = s.players?.find(p => p.userId === myUserId);
+  if (!myPlayer) return;
+
+  const minV = parseInt(inp.getAttribute('min'), 10) || s.bigBlind || 20;
+  const maxBet = Math.max(...(s.players || []).map(p => p.betThisRound || 0));
+  const callAmount = Math.max(0, maxBet - (myPlayer.betThisRound || 0));
+  const mode = raiseRow.dataset.action || 'raise';
+  const chips = myPlayer.chips || 0;
+
+  let maxVal;
+  if (mode === 'bet') maxVal = chips;
+  else maxVal = Math.max(minV, chips - callAmount);
+
+  let cur = parseInt(inp.value, 10);
+  if (isNaN(cur)) cur = minV;
+
+  if (delta === 'min') cur = minV;
+  else if (delta === 'max') cur = maxVal;
+  else cur += delta;
+
+  cur = Math.max(minV, Math.min(maxVal, cur));
+  inp.value = cur;
 }
 
 function pokerStartNewHand() {

@@ -57,18 +57,20 @@ nav {
   border-bottom: 1px solid var(--border);
   background: rgba(8,7,10,0.95); backdrop-filter: blur(20px);
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  /* Above page content + intro layers; Log In / Sign Up stay clickable */
+  isolation: isolate;
 }
 .nav-brand { display: flex; flex-direction: column; justify-content: center; padding: 0 40px; border-right: 1px solid var(--border); gap: 4px; flex-shrink: 0; }
 .brand-est { font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); opacity: 0.7; }
 .brand-name { font-family: 'Cormorant Garamond',serif; font-size: 22px; font-weight: 700; letter-spacing: 0.03em; color: var(--ivory); line-height: 1; }
 .brand-name em { font-style: italic; color: var(--gold); }
-.nav-marquee { flex: 1; overflow: hidden; display: flex; align-items: center; position: relative; border-right: 1px solid var(--border); mask-image: linear-gradient(90deg,transparent,black 8%,black 92%,transparent); }
-.marquee-track { display: flex; white-space: nowrap; animation: marquee 32s linear infinite; }
+.nav-marquee { flex: 1; overflow: hidden; display: flex; align-items: center; position: relative; border-right: 1px solid var(--border); mask-image: linear-gradient(90deg,transparent,black 8%,black 92%,transparent); pointer-events: none; }
+.marquee-track { display: flex; white-space: nowrap; animation: marquee 32s linear infinite; pointer-events: none; }
 @keyframes marquee { from{transform:translateX(0)}to{transform:translateX(-50%)} }
 .marquee-item { display: inline-flex; align-items: center; gap: 12px; padding: 0 36px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ivory-40); border-right: 1px solid var(--border); height: var(--nav-h); }
 .marquee-item .suit { color: var(--gold); font-size: 11px; opacity: 0.7; }
 .marquee-item.accent { color: var(--gold); opacity: 0.8; }
-.nav-actions { display: flex; align-items: stretch; flex-shrink: 0; }
+.nav-actions { display: flex; align-items: stretch; flex-shrink: 0; position: relative; z-index: 3; pointer-events: auto; }
 .nav-btn { display: flex; align-items: center; padding: 0 34px; font-family: 'Bebas Neue',sans-serif; font-size: 15px; letter-spacing: 0.12em; cursor: pointer; border: none; transition: all 0.25s; border-left: 1px solid var(--border); }
 .nav-btn.ghost { background: transparent; color: var(--ivory-40); }
 .nav-btn.ghost:hover { background: var(--ivory-05); color: var(--ivory); }
@@ -170,13 +172,15 @@ nav {
 .suit-grid {
   position: absolute; top: -80px; left: -80px; right: -80px; bottom: -80px;
   display: grid; grid-template-columns: repeat(16,1fr); grid-template-rows: repeat(8,1fr);
-  transform: skewX(-8deg) skewY(4deg); pointer-events: auto;
+  transform: skewX(-8deg) skewY(4deg);
+  pointer-events: none;
 }
 .suit-cell {
   display: flex; align-items: center; justify-content: center; font-size: 18px;
-  color: rgba(201,162,39,0.05); cursor: pointer; user-select: none;
+  color: rgba(201,162,39,0.05); cursor: default; user-select: none;
   border-right: 1px solid rgba(201,162,39,0.04); border-bottom: 1px solid rgba(201,162,39,0.04);
   transition: background-color 1.5s ease,color 1.5s ease,text-shadow 1.5s ease; background-color: transparent;
+  pointer-events: none;
 }
 .suit-cell.joker { color: rgba(212,69,58,0.06); }
 .suit-background::after {
@@ -275,9 +279,11 @@ nav {
 .right-suit-grid {
   position: absolute; top: -100px; left: -100px; right: -100px; bottom: -100px;
   display: grid; grid-template-columns: repeat(14,1fr); grid-template-rows: repeat(10,1fr);
-  transform: skewX(-8deg) skewY(4deg); pointer-events: auto;
+  transform: skewX(-8deg) skewY(4deg);
+  /* Must stay non-interactive — was stealing clicks from the Start Matching chip (skewed cells overlap the coin). */
+  pointer-events: none;
 }
-.right-suit-cell { display: flex; align-items: center; justify-content: center; font-size: 20px; color: rgba(201,162,39,0.045); cursor: pointer; user-select: none; border-right: 1px solid rgba(201,162,39,0.03); border-bottom: 1px solid rgba(201,162,39,0.03); transition: background-color 1.8s ease, color 1.8s ease, text-shadow 1.8s ease; background-color: transparent; }
+.right-suit-cell { display: flex; align-items: center; justify-content: center; font-size: 20px; color: rgba(201,162,39,0.045); cursor: default; user-select: none; border-right: 1px solid rgba(201,162,39,0.03); border-bottom: 1px solid rgba(201,162,39,0.03); transition: background-color 1.8s ease, color 1.8s ease, text-shadow 1.8s ease; background-color: transparent; pointer-events: none; }
 .right-suit-cell.joker { color: rgba(212,69,58,0.05); }
 .right-suit-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 100% 90% at 50% 50%,transparent 20%,rgba(8,7,10,0.92) 60%); pointer-events: none; z-index: 1; }
 .right-column::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 35% 55%,rgba(201,162,39,0.05) 0%,transparent 60%), radial-gradient(ellipse 40% 60% at 75% 35%,rgba(201,162,39,0.035) 0%,transparent 50%); pointer-events: none; z-index: 1; }
@@ -301,8 +307,8 @@ nav {
 .match-title span { display: block; overflow: visible; padding-bottom: 0.12em; }
 .match-desc { font-size: clamp(11px, 1.5vh, 16px); color: var(--ivory-60); line-height: 1.6; max-width: 400px; text-align: center; margin: 0 auto; }
 
-.chip-cluster { display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
-.chip-wrapper-dash { perspective: 800px; position: relative; }
+.chip-cluster { display: flex; flex-direction: column; align-items: center; pointer-events: auto; position: relative; z-index: 25; }
+.chip-wrapper-dash { perspective: 800px; position: relative; z-index: 1; }
 .chip-glow { position: absolute; inset: -28px; border-radius: 50%; background: radial-gradient(circle,rgba(201,162,39,0.2) 0%,transparent 70%); animation: breatheGlow 3s ease-in-out infinite; pointer-events: none; }
 @keyframes breatheGlow { 0%,100%{transform:scale(0.85);opacity:0.4}50%{transform:scale(1.15);opacity:0.8} }
 .chip-ring { position: absolute; inset: -12px; border-radius: 50%; border: 1px solid rgba(201,162,39,0.2); animation: breatheRing 3s ease-in-out infinite; pointer-events: none; }
@@ -320,7 +326,7 @@ nav {
   transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), box-shadow 0.35s ease;
 }
 @keyframes chipIdle { 0%,100%{transform:rotateY(0) rotateX(0)}15%{transform:rotateY(0) rotateX(0)}25%{transform:rotateY(180deg) rotateX(5deg)}35%{transform:rotateY(360deg) rotateX(0)}50%,100%{transform:rotateY(360deg) rotateX(0)} }
-.chip-button-dash::before { content: ''; position: absolute; inset: 14px; border-radius: 50%; border: 1px dashed rgba(8,7,10,0.25); }
+.chip-button-dash::before { content: ''; position: absolute; inset: 14px; border-radius: 50%; border: 1px dashed rgba(8,7,10,0.25); pointer-events: none; }
 .chip-button-dash:hover { animation-play-state: paused; transform: scale(1.1) translateY(-6px) !important; box-shadow: 0 0 0 6px rgba(201,162,39,0.25),0 12px 40px rgba(0,0,0,0.6),0 0 60px rgba(201,162,39,0.3); }
 .chip-text-dash { font-family: 'Bebas Neue',sans-serif; font-size: clamp(12px, 1.6vh, 18px); letter-spacing: 0.08em; color: var(--void); text-align: center; line-height: 1.3; backface-visibility: hidden; }
 .chip-label-dash { font-size: clamp(9px, 1.1vh, 12px); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ivory-40); text-align: center; margin-top: clamp(6px, 1vh, 16px); }
@@ -375,7 +381,7 @@ nav {
 .masks-anim{position:relative;width:70px;height:44px}.mask{position:absolute;font-size:32px;top:50%;transform:translateY(-50%)}.mask-happy{left:4px;animation:maskSwapHappy 6s ease-in-out infinite}.mask-sad{right:4px;animation:maskSwapSad 6s ease-in-out infinite}@keyframes maskSwapHappy{0%,25%{transform:translateY(-50%) translateX(0)}35%,65%{transform:translateY(-50%) translateX(32px)}75%,100%{transform:translateY(-50%) translateX(0)}}@keyframes maskSwapSad{0%,25%{transform:translateY(-50%) translateX(0)}35%,65%{transform:translateY(-50%) translateX(-32px)}75%,100%{transform:translateY(-50%) translateX(0)}}
 
 /* ── GATE + TOAST ──────────────────────────── */
-.gate-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(8,7,10,0.88); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+.gate-overlay { position: fixed; inset: 0; z-index: 9900; background: rgba(8,7,10,0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
 .gate-overlay.active { opacity: 1; pointer-events: auto; }
 .gate-card { width: 440px; max-width: 92vw; background: var(--surface-elevated); border: 1px solid rgba(201,162,39,0.12); border-radius: 10px; overflow: hidden; position: relative; transform: translateY(24px) scale(0.97); transition: transform 0.4s cubic-bezier(0.23,1,0.32,1); }
 .gate-overlay.active .gate-card { transform: translateY(0) scale(1); }
@@ -400,12 +406,12 @@ nav {
 .gate-close { position: absolute; top: 18px; right: 22px; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: transparent; color: var(--ivory-40); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all 0.25s; }
 .gate-close:hover { border-color: var(--border-hover); color: var(--ivory); background: var(--ivory-05); }
 
-.toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); padding: 12px 26px; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: 6px; font-size: 14px; color: var(--ivory-60); box-shadow: 0 8px 32px rgba(0,0,0,0.5); z-index: 300; opacity: 0; transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), opacity 0.4s ease; pointer-events: none; white-space: nowrap; }
+.toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); padding: 12px 26px; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: 6px; font-size: 14px; color: var(--ivory-60); box-shadow: 0 8px 32px rgba(0,0,0,0.5); z-index: 10100; opacity: 0; transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), opacity 0.4s ease; pointer-events: none; white-space: nowrap; }
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 .toast .toast-accent { color: var(--gold); font-weight: 500; }
 
 /* ── LOGIN MODAL ─────────────────────────── */
-.login-overlay { position:fixed;inset:0;z-index:300;background:rgba(8,7,10,0.92);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s ease;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(20px,env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch;box-sizing:border-box; }
+.login-overlay { position:fixed;inset:0;z-index:10000;background:rgba(8,7,10,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s ease;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(20px,env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch;box-sizing:border-box; }
 .login-overlay.active { opacity:1;pointer-events:auto; }
 .login-card {
   width:420px;max-width:92vw;
@@ -415,15 +421,26 @@ nav {
   transform:translateY(28px) scale(0.96);
   transition:transform 0.4s cubic-bezier(0.23,1,0.32,1);
   margin:auto;flex-shrink:0;
+  /* Own stacking context so backdrop-filter on parent doesn’t eat clicks (Safari / some WebKit) */
+  isolation:isolate;
+  z-index:1;
+  pointer-events:auto;
 }
-.login-overlay.active .login-card { transform:translateY(0) scale(1); }
-.login-card::before { content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,0.2),transparent); }
+.login-overlay.active .login-card {
+  transform:translateY(0) scale(1) translateZ(0);
+  -webkit-transform:translateY(0) scale(1) translateZ(0);
+}
+.login-card::before {
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,162,39,0.2),transparent);
+  pointer-events:none;
+}
 .login-header { padding:32px 36px 20px;text-align:center; }
 .login-eyebrow { font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);opacity:0.7;margin-bottom:8px; }
 .login-title { font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;font-style:italic;color:var(--ivory); }
 .login-title em { color:var(--gold); }
 .login-sub { font-size:12px;color:var(--ivory-40);margin-top:4px; }
-.login-body { padding:8px 32px 28px; }
+.login-body { padding:8px 32px 28px; position:relative; z-index:2; }
 .login-error { background:rgba(212,69,58,0.08);border:1px solid rgba(212,69,58,0.25);border-radius:6px;padding:10px 14px;font-size:12px;color:#e86b62;margin-bottom:16px;display:none; }
 .login-error.show { display:block; }
 .login-google {
@@ -441,15 +458,24 @@ nav {
 .login-divider-text { font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ivory-20); }
 .login-field { margin-bottom:14px; }
 .login-field label { display:block;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ivory-40);margin-bottom:7px; }
-.pw-wrap { position:relative;display:flex;align-items:center; }
-.pw-wrap input { padding-right:44px; }
-.pw-toggle { position:absolute;right:0;top:0;bottom:0;width:42px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:var(--ivory-40);cursor:pointer;transition:color 0.2s;pointer-events:auto;z-index:1; }
+.pw-wrap { position:relative;display:block; }
+.pw-wrap input { padding-right:48px; position:relative; z-index:1; }
+.pw-toggle {
+  position:absolute;right:2px;top:50%;transform:translateY(-50%);
+  width:40px;height:calc(100% - 8px);min-height:36px;max-height:44px;
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;border:none;color:var(--ivory-40);cursor:pointer;
+  transition:color 0.2s;pointer-events:auto;z-index:2;
+  border-radius:4px;
+}
 .pw-toggle:hover { color:var(--ivory); }
 .login-field input {
   width:100%;padding:12px 14px;background:rgba(255,255,255,0.03);
   border:1px solid var(--border);border-radius:6px;
   color:var(--ivory);font-size:14px;font-family:'IBM Plex Sans',sans-serif;
   outline:none;transition:border-color 0.25s;
+  position:relative;z-index:1;
+  box-sizing:border-box;
 }
 .login-field input:focus { border-color:rgba(201,162,39,0.4);background:rgba(201,162,39,0.03); }
 .login-field input::placeholder { color:var(--ivory-20); }
@@ -464,7 +490,7 @@ nav {
 .login-footer { text-align:center;margin-top:18px;font-size:12px;color:var(--ivory-40); }
 .login-footer a { color:var(--gold);text-decoration:none;transition:color 0.2s; }
 .login-footer a:hover { color:var(--gold-light); }
-.login-close { position:absolute;top:16px;right:18px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--ivory-40);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.25s; }
+.login-close { position:absolute;top:16px;right:18px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--ivory-40);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.25s;z-index:5;pointer-events:auto; }
 .login-close:hover { border-color:var(--border-hover);color:var(--ivory);background:var(--ivory-05); }
 .login-tab-row { display:flex;border-bottom:1px solid var(--border);margin:0 32px 20px; }
 .login-tab { flex:1;padding:10px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:0.12em;color:var(--ivory-40);cursor:pointer;border:none;border-bottom:2px solid transparent;background:transparent;outline:none;transition:color 0.2s,border-color 0.2s;margin-bottom:-1px;user-select:none; }
@@ -480,7 +506,7 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
 .footer-links a:hover { color: var(--gold); }
 
 /* ── SHOP MODAL ─────────────────────────────────── */
-.shop-overlay { position:fixed;inset:0;z-index:350;background:rgba(8,7,10,0.95);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s ease; }
+.shop-overlay { position:fixed;inset:0;z-index:10200;background:rgba(8,7,10,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s ease; }
 .shop-overlay.active { opacity:1;pointer-events:auto; }
 .shop-modal { width:700px;max-width:96vw;max-height:92vh;overflow-y:auto;background:var(--surface-elevated);border:1px solid rgba(201,162,39,0.14);border-radius:14px;position:relative;transform:translateY(32px) scale(0.96);transition:transform 0.45s cubic-bezier(0.23,1,0.32,1);scrollbar-width:none; }
 .shop-modal::-webkit-scrollbar { display:none; }
@@ -554,7 +580,7 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
 
 
 /* ── SETTINGS MODAL ─────────────────────────── */
-.settings-overlay { position:fixed;inset:0;z-index:350;background:rgba(8,7,10,0.95);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s ease; }
+.settings-overlay { position:fixed;inset:0;z-index:10200;background:rgba(8,7,10,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s ease; }
 .settings-overlay.active { opacity:1;pointer-events:auto; }
 .settings-modal { width:660px;max-width:96vw;max-height:90vh;display:flex;background:var(--surface-elevated);border:1px solid rgba(201,162,39,0.14);border-radius:14px;overflow:hidden;position:relative;transform:translateY(32px) scale(0.96);transition:transform 0.45s cubic-bezier(0.23,1,0.32,1); }
 .settings-overlay.active .settings-modal { transform:translateY(0) scale(1); }
@@ -653,6 +679,8 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
   pointer-events: none; background: transparent;
   transition: opacity 0.3s ease;
 }
+/* Parent pointer-events:none does NOT disable tiles — children default to auto and steal all clicks until removed */
+#room-preloader * { pointer-events: none !important; }
 #room-preloader.done { opacity: 0; }
 .room-pre-tile {
   position: absolute;
@@ -882,9 +910,9 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
 
       <!-- Login form -->
       <form id="loginForm" onsubmit="handleEmailLogin(event)">
-        <div class="login-field"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="email"/></div>
+        <div class="login-field"><label for="loginEmail">Email</label><input type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="email"/></div>
         <div class="login-field" id="loginPasswordField">
-          <label>Password</label>
+          <label for="loginPassword">Password</label>
           <div class="pw-wrap">
             <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password"/>
             <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password">
@@ -894,8 +922,8 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
           </div>
         </div>
         <!-- Register-only fields (hidden by default) -->
-        <div class="login-field" id="registerUsernameField" style="display:none"><label>Username</label><input type="text" id="registerUsername" placeholder="johndoe" pattern="[a-zA-Z0-9_]{3,20}"/></div>
-        <div class="login-field" id="registerDobField" style="display:none"><label>Date of Birth</label><input type="date" id="registerDob"/></div>
+        <div class="login-field" id="registerUsernameField" style="display:none"><label for="registerUsername">Username</label><input type="text" id="registerUsername" placeholder="johndoe" pattern="[a-zA-Z0-9_]{3,20}"/></div>
+        <div class="login-field" id="registerDobField" style="display:none"><label for="registerDob">Date of Birth</label><input type="date" id="registerDob"/></div>
         <button type="submit" class="login-submit" id="loginSubmit">Sign In</button>
       </form>
 
