@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -98,7 +98,9 @@ nav {
   border-right: 1px solid transparent; background: rgba(14,13,18,0.98);
   will-change: width; z-index: 10;
 }
-.member-panel.is-open { border-right-color: var(--border); }
+/* Inner stays 420px wide while panel width is 0 — overflow can sit over the hero and steal all clicks */
+.member-panel:not(.is-open) { pointer-events: none; }
+.member-panel.is-open { pointer-events: auto; border-right-color: var(--border); }
 .member-panel-inner {
   width: var(--sidebar-w); min-width: var(--sidebar-w);
   display: flex; flex-direction: column; height: 100%;
@@ -715,9 +717,9 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
 }
 
 /* ── PRELOADER ── */
-/* Must stay BELOW modals (.login-overlay 10000+, shop/settings 10200+). Old value 99999 sat on top and blocked clicks in WebKit. */
+/* Below nav (z-index 100) so Log In / hero stay clickable even if a browser mishandles pointer-events on the preloader layer */
 #room-preloader {
-  position: fixed; inset: 0; z-index: 9998;
+  position: fixed; inset: 0; z-index: 90;
   pointer-events: none; background: transparent;
   transition: opacity 0.3s ease;
 }
@@ -739,6 +741,10 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
   box-shadow: inset -1px 0 0 rgba(255,215,120,0.06), inset 0 -1px 0 rgba(255,215,120,0.06);
 }
 </style>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z643C52PL7"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-Z643C52PL7');</script>
 </head>
 <body>
 
