@@ -334,11 +334,28 @@ nav {
   box-shadow: 0 0 0 4px rgba(201,162,39,0.12),0 8px 28px rgba(0,0,0,0.5),0 16px 56px rgba(0,0,0,0.4),
     inset 0 1px 0 rgba(255,255,255,0.2),inset 0 -2px 0 rgba(0,0,0,0.15);
   animation: chipIdle 8s ease-in-out infinite;
-  transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), box-shadow 0.35s ease;
+  transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), box-shadow 0.35s ease, background 0.35s ease, border-color 0.35s ease;
 }
 @keyframes chipIdle { 0%,100%{transform:rotateY(0) rotateX(0)}15%{transform:rotateY(0) rotateX(0)}25%{transform:rotateY(180deg) rotateX(5deg)}35%{transform:rotateY(360deg) rotateX(0)}50%,100%{transform:rotateY(360deg) rotateX(0)} }
-.chip-button-dash::before { content: ''; position: absolute; inset: 14px; border-radius: 50%; border: 1px dashed rgba(8,7,10,0.25); pointer-events: none; }
-.chip-button-dash:hover { animation-play-state: paused; transform: scale(1.1) translateY(-6px) !important; box-shadow: 0 0 0 6px rgba(201,162,39,0.25),0 12px 40px rgba(0,0,0,0.6),0 0 60px rgba(201,162,39,0.3); }
+.chip-button-dash::before { content: ''; position: absolute; inset: 14px; border-radius: 50%; border: 1px dashed rgba(8,7,10,0.25); pointer-events: none; transition: border-color 0.35s ease; }
+/* Hover: light red only — chipIdle spin keeps running. Searching = .chip-matching + inline gradient. */
+.chip-button-dash:hover:not(.chip-matching) {
+  background: linear-gradient(145deg, #ffc9c9 0%, #e88888 42%, #c85a5a 100%);
+  border-color: rgba(255,255,255,0.16);
+  box-shadow: 0 0 0 5px rgba(212,90,80,0.22), 0 8px 28px rgba(0,0,0,0.5), 0 0 48px rgba(212,69,58,0.22);
+}
+.chip-button-dash:hover:not(.chip-matching)::before { border-color: rgba(40,10,10,0.2); }
+.chip-button-dash:focus-visible:not(.chip-matching) {
+  outline: none;
+  background: linear-gradient(145deg, #ffc9c9 0%, #e88888 42%, #c85a5a 100%);
+  border-color: rgba(255,255,255,0.2);
+  box-shadow: 0 0 0 5px rgba(212,90,80,0.28), 0 8px 28px rgba(0,0,0,0.5), 0 0 48px rgba(212,69,58,0.25);
+}
+.chip-button-dash.chip-matching {
+  animation: none;
+  transform: none;
+  cursor: pointer;
+}
 .chip-text-dash { font-family: 'Bebas Neue',sans-serif; font-size: clamp(12px, 1.6vh, 18px); letter-spacing: 0.08em; color: var(--void); text-align: center; line-height: 1.3; backface-visibility: hidden; }
 .chip-label-dash { font-size: clamp(9px, 1.1vh, 12px); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ivory-40); text-align: center; margin-top: clamp(6px, 1vh, 16px); }
 .chip-stats { display: flex; align-items: center; gap: 10px; margin-top: clamp(4px, 0.8vh, 12px); font-size: clamp(9px, 1.1vh, 13px); letter-spacing: 0.04em; }
@@ -1964,6 +1981,7 @@ const chipOrigStyle=chipBtn.getAttribute('style')||'';
 
 function setMatchingState(on){
   isMatching=on;
+  chipBtn.classList.toggle('chip-matching', on);
   if(on){
     chipBtn.innerHTML='<span class="chip-text-dash" style="font-size:clamp(10px,1.3vh,15px)">Searching<br><span id="matchTimerEl" style="font-size:clamp(14px,2vh,22px);letter-spacing:0.04em">0:00</span></span>';
     chipBtn.style.background='linear-gradient(145deg,#c44,#922)';

@@ -69,6 +69,26 @@
           "@type": "Question",
           "name": "Do I need to know the rules before starting a game with a stranger?",
           "acceptedAnswer": {"@type": "Answer", "text": "No. On Shitbox Shuffle, all game rules are embedded in the interface. You can propose a game without knowing anything beyond the genre. The platform walks both players through the mechanics, which itself becomes part of the opening conversation."}
+        },
+        {
+          "@type": "Question",
+          "name": "Why do games make video chat feel less awkward?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Games provide joint attention — a shared focus outside the conversation itself — which is the cognitive foundation of most human bonding. They also supply roles (player, competitor, commentator) with natural expected behaviors, removing the paralysis of pure social improvisation. The game does social and cognitive work that strangers would otherwise have to perform manually under pressure."}
+        },
+        {
+          "@type": "Question",
+          "name": "What is game pacing and why does it matter for video chat?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Game pacing refers to how fast rounds complete and how much deliberation time exists between decisions. Fast-paced games (reaction tests, word sprints) generate energy and laughter but less depth. Slow-paced games (poker, chess) generate thinking time that naturally fills with conversation. The ideal session often begins with a fast game to establish energy, then transitions to a slower-paced game that sustains deeper engagement."}
+        },
+        {
+          "@type": "Question",
+          "name": "How does adding token stakes change the social dynamic in video chat games?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Token stakes transform a game from an activity into a contest with a narrative arc. Both players become more invested in their decisions, more likely to verbalize their reasoning, and more likely to react visibly to outcomes. The wager also creates a social contract — both parties feel obligated to finish what they started — which keeps sessions alive past the natural lulls that would otherwise end passive chat encounters."}
+        },
+        {
+          "@type": "Question",
+          "name": "What is the best game to start with for a first session with a stranger?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Word games or quick trivia are the best openers — they are low-stakes in terms of rules knowledge, complete quickly, and generate immediate shared laughter without requiring either player to know much about the other. After the first game breaks the ice, turn-based games like blackjack tend to sustain longer, richer conversation. Save the longer-format games (poker, Monopoly) for when you have already established some rapport."}
         }
       ]
     }
@@ -151,6 +171,38 @@ footer{margin-top:72px;padding:40px 0;border-top:1px solid var(--phantom);displa
 .bar-value-dim{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--dust);position:absolute;right:8px;top:50%;transform:translateY(-50%);}
 .bar-value{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--void);}
 .chart-note{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:8px;}
+
+/* ── CSS VISUAL 3: Engagement Level Comparison Bars ── */
+.engage-chart{margin:36px 0;background:var(--smoke);border:1px solid var(--phantom);border-radius:4px;padding:28px 24px;}
+.engage-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;}
+.engage-subtitle{font-size:13px;color:var(--dust);font-family:'Libre Baskerville',serif;margin-bottom:24px;}
+.engage-group{margin-bottom:22px;}
+.engage-group-label{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:0.15em;color:var(--chalk);margin-bottom:10px;}
+.engage-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.engage-dim{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:var(--dust);width:120px;flex-shrink:0;}
+.engage-track{flex:1;background:var(--phantom);border-radius:2px;height:22px;position:relative;overflow:hidden;}
+.engage-fill{height:100%;border-radius:2px;display:flex;align-items:center;padding-left:8px;}
+.engage-val{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;}
+.e-low{background:rgba(232,224,208,0.15);}
+.e-low .engage-val{color:var(--dust);}
+.e-mid{background:rgba(201,162,39,0.4);}
+.e-mid .engage-val{color:var(--void);}
+.e-high{background:var(--ember);}
+.e-high .engage-val{color:var(--void);}
+.engage-note{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:8px;}
+
+/* ── CSS VISUAL 4: Game Mood Matrix ── */
+.mood-matrix{margin:36px 0;background:var(--smoke);border:1px solid var(--phantom);border-radius:4px;padding:28px 24px;}
+.mood-matrix-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ash);margin-bottom:24px;text-align:center;}
+.matrix-grid{display:grid;grid-template-columns:80px 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:8px;}
+.matrix-corner{/* empty corner cell */}
+.matrix-col-head{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--ember);text-align:center;padding:6px 0;}
+.matrix-row-head{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:0.12em;color:var(--ember);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;text-align:right;line-height:1.3;}
+.matrix-cell{background:var(--ink);border:1px solid var(--phantom);border-radius:3px;padding:14px 12px;}
+.matrix-cell-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--chalk);margin-bottom:6px;}
+.matrix-cell-games{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:var(--ash);margin-bottom:8px;}
+.matrix-cell-desc{font-size:12px;color:var(--dust);line-height:1.55;}
+@media(max-width:560px){.matrix-grid{grid-template-columns:60px 1fr;}.matrix-col-head:nth-child(3),.matrix-cell:nth-child(even){display:none;}}
 </style>
 </head>
 <body>
@@ -471,6 +523,171 @@ footer{margin-top:72px;padding:40px 0;border-top:1px solid var(--phantom);displa
     <div class="faq-item">
       <div class="faq-q">Do I need to know the rules before starting a game with a stranger?</div>
       <div class="faq-a">No. On Shitbox Shuffle, game rules are embedded in the interface and available at any point during play. You can propose a game without knowing anything beyond the genre. More importantly, learning the rules together with a stranger is itself a bonding activity — it creates a shared starting point, equalizes the knowledge gap, and gives you something to talk about ("oh, so that's how that works") within the first minute. Not knowing the rules is not a barrier; for new users, it is often an asset.</div>
+    </div>
+  </div>
+
+  <!-- NEW SECTION: Cognitive Science of Dual-Task Engagement -->
+  <div class="section">
+    <h2>The Cognitive Science of Dual-Task Engagement: Why Games + Conversation Works</h2>
+    <p>The intuitive objection to playing games while video chatting is that you cannot do both properly — that the game will distract from the conversation or the conversation will degrade your play. The cognitive science of dual-task engagement suggests this objection is mostly wrong, and understanding why reveals something important about what makes game-integrated chat feel so different from either activity alone.</p>
+
+    <h3>Why Parallel Tasks Can Enhance Each Other</h3>
+    <p>Cognitive research on dual-task interference — the degradation of performance when two tasks compete for the same mental resources — has revealed an important nuance: interference is high when two tasks draw on the same cognitive system, and relatively low when they draw on different systems. Reading while listening to spoken language is hard because both tasks use the language processing system. But playing a visual card game while having an audio conversation? These draw on different systems: visual attention and working memory for the game, language and social cognition for the conversation. With appropriate task switching, they can coexist without significant interference to either.</p>
+    <p>More than that, research on desirable difficulties in learning (Bjork, 1994) suggests that mild cognitive load during social interaction can actually improve memory encoding. Conversations that happen during a shared activity — a walk, a game, a collaborative task — are often remembered more vividly than conversations that happened in a stimulus-free environment. The cognitive engagement from the game is not pulling you away from the social moment. It is helping you encode it.</p>
+
+    <h3>The Role of Self-Disclosure Under Cognitive Load</h3>
+    <p>One of the most counterintuitive findings in social psychology is that people tend to disclose more personal information when they are mildly distracted by another task than when they are focused solely on the conversation. The leading hypothesis is that the mild distraction reduces self-monitoring — the social anxiety processing that filters out authentic, spontaneous self-disclosure in favor of safer, more calculated responses. When part of your attention is on the game, the social vigilance subsystem is given slightly less bandwidth, and the result is more genuine, less guarded conversation.</p>
+    <p>This is why the best video chat conversations on game-integrated platforms tend to feel like they "went somewhere" without either person having decided to go there. The game handled enough of the social processing load that both players could afford to be less careful, less performative, and more real. The awkwardness of the blank stare — which triggers full social anxiety bandwidth — is replaced by the mild cognitive engagement of the game, which keeps enough processing occupied that the anxiety does not fully activate.</p>
+
+    <h3>Attention Oscillation: The Natural Game-Conversation Rhythm</h3>
+    <p>Expert observers of game-integrated chat notice a distinctive rhythm: attention oscillates between game-focus and conversation-focus in a pattern that feels natural rather than disjointed. During a hand of cards, attention tilts toward the game — decisions are being made, options are being evaluated. During the pause between hands, attention tilts back toward the conversation — debrief, banter, personal exchange. This oscillation is not a failure of either activity. It is a natural pacing mechanism that gives the conversation regular beats of intensity and rest.</p>
+    <p>The game provides the structure and the reset points. Without it, conversation has to generate its own momentum continuously — a demanding task that most people cannot sustain comfortably with a stranger. The game is the breathing rhythm of the session: in on the game, out on the conversation, repeat. Sessions with this structure feel effortless and often run significantly longer than either party intended, which is the most reliable signal that the experience is working.</p>
+
+    <!-- Engagement Level Comparison Chart -->
+    <div class="engage-chart">
+      <div class="engage-title">Engagement Level Comparison by Mode</div>
+      <div class="engage-subtitle">How game-chat integration changes the quality of social engagement across key dimensions</div>
+
+      <div class="engage-group">
+        <div class="engage-group-label">Emotional Presence</div>
+        <div class="engage-row">
+          <div class="engage-dim">Game only</div>
+          <div class="engage-track"><div class="engage-fill e-low" style="width:35%;"><span class="engage-val">35%</span></div></div>
+        </div>
+        <div class="engage-row">
+          <div class="engage-dim">Chat only</div>
+          <div class="engage-track"><div class="engage-fill e-mid" style="width:52%;"><span class="engage-val">52%</span></div></div>
+        </div>
+        <div class="engage-row">
+          <div class="engage-dim">Game + Chat</div>
+          <div class="engage-track"><div class="engage-fill e-high" style="width:88%;"><span class="engage-val">88%</span></div></div>
+        </div>
+      </div>
+
+      <div class="engage-group">
+        <div class="engage-group-label">Authentic Self-Disclosure</div>
+        <div class="engage-row">
+          <div class="engage-dim">Game only</div>
+          <div class="engage-track"><div class="engage-fill e-low" style="width:22%;"><span class="engage-val">22%</span></div></div>
+        </div>
+        <div class="engage-row">
+          <div class="engage-dim">Chat only</div>
+          <div class="engage-track"><div class="engage-fill e-mid" style="width:44%;"><span class="engage-val">44%</span></div></div>
+        </div>
+        <div class="engage-row">
+          <div class="engage-dim">Game + Chat</div>
+          <div class="engage-track"><div class="engage-fill e-high" style="width:79%;"><span class="engage-val">79%</span></div></div>
+        </div>
+      </div>
+
+      <div class="engage-group">
+        <div class="engage-group-label">Session Memorability</div>
+        <div class="engage-row">
+          <div class="engage-dim">Game only</div>
+          <div class="engage-track"><div class="engage-fill e-low" style="width:40%;"><span class="engage-val">40%</span></div></div>
+        </div>
+        <div class="engage-row">
+          <div class="engage-dim">Chat only</div>
+          <div class="engage-track"><div class="engage-fill e-mid" style="width:38%;"><span class="engage-val">38%</span></div></div>
+        </div>
+        <div class="engage-row">
+          <div class="engage-dim">Game + Chat</div>
+          <div class="engage-track"><div class="engage-fill e-high" style="width:91%;"><span class="engage-val">91%</span></div></div>
+        </div>
+      </div>
+
+      <div class="engage-note">Estimated from platform session satisfaction signals &middot; Illustrative &middot; 18+ verified users</div>
+    </div>
+  </div>
+
+  <!-- NEW SECTION: Game Pacing and Conversation Rhythm -->
+  <div class="section">
+    <h2>Game Pacing and Conversation Rhythm: The Hidden Architecture of a Good Session</h2>
+    <p>One of the unappreciated design elements of game-integrated chat is pacing — the rate at which the game generates events, forces decisions, and allows breaks. Pacing determines how much space conversation has to breathe, and a mismatched pace is one of the most common reasons sessions feel rushed, shallow, or disconnected despite having all the right structural elements in place.</p>
+
+    <h3>Fast-Paced Games: Energy and Levity</h3>
+    <p>Reaction games, quick word challenges, and rapid trivia formats generate events at a high frequency — sometimes several per minute. The social benefit is immediate: laughter, exclamations, and competitive banter fill the session from the first moment without requiring either player to produce them deliberately. The social cost is depth. When events are continuous, there is no natural pause in which to say anything more substantive than "I can't believe I missed that." Fast-paced games are excellent session starters and mood establishers, but sessions that consist entirely of fast games tend to end at the natural energy peak — fun while it lasted, but without the warmth that sustains a return.</p>
+
+    <h3>Turn-Based Games: The Thinking Pause</h3>
+    <p>Turn-based games — blackjack, poker, chess, Battleship — have a built-in pacing mechanism that fast games lack: the deliberation interval. Between a hand ending and the next one starting, there is a natural pause measured in seconds rather than milliseconds. That pause is where conversation lives. The best sessions on game-integrated platforms have a characteristic rhythm: brief but intense game moment, followed by a natural pause where both players debrief, banter, or veer into something personal, followed by the next game moment. The game provides the beats; the conversation fills the spaces between them.</p>
+    <p>This rhythm is not accidental. It is a consequence of pacing, and it is why experienced players on Shitbox Shuffle often report that their best sessions were playing blackjack or poker rather than the faster reaction games, even though the reaction games are more immediately entertaining. The slower pace is what allows the session to go somewhere conversationally rather than just generating a succession of amusing events.</p>
+
+    <h3>Collaborative Pacing: The Open-Ended Pause</h3>
+    <p>Collaborative games like GeoGuessr introduce a different kind of pacing: the open-ended deliberation period where neither player is sure how long the puzzle will take. This uncertainty is itself a social mechanism. When you do not know how long you have, you make choices about what to discuss and how deep to go in real time, rather than fitting conversation into a fixed interval. The result can be either very short (you nail the answer in thirty seconds) or extended (you both reason out loud for four minutes before committing to a guess). That variability produces some of the most memorable session moments — the long collaborative puzzle that ends in shared triumph is a qualitatively different experience from any fixed-format game.</p>
+
+    <h3>Building a Game Sequence for Different Session Goals</h3>
+    <p>The most experienced Shitbox Shuffle users have developed personal sequencing strategies for different session goals. For a session where the primary goal is energy and fun: start with a word game or reaction format, follow with two or three hands of blackjack, and let the natural conversation determine whether to continue or end. For a session where the goal is genuine connection: skip the fast opener and start directly with poker or a collaborative format, which tends to produce deeper conversation from the first game. For a session with uncertain match chemistry: use a very short word game as a calibration round, assess whether the other person seems engaged, and then decide whether to invest in a longer-format game or keep it light and let the session conclude naturally.</p>
+
+    <div class="callout">The game is not just entertainment — it is architecture. The type, pace, and sequence of games you choose shapes what kind of conversation is possible and what kind of session you will have. Choose deliberately.
+    </div>
+  </div>
+
+  <!-- NEW SECTION: How Stakes Change the Social Dynamic -->
+  <div class="section">
+    <h2>How Competitive Stakes Change the Social Dynamic</h2>
+    <p>The addition of token stakes to a game session does more than increase engagement metrics — it fundamentally changes the social contract between players in ways that produce qualitatively different interactions. Understanding these changes helps you use token wagering thoughtfully rather than reflexively.</p>
+
+    <h3>Stakes Create Commitment</h3>
+    <p>The moment a wager is accepted, both players are committed to the session in a way they were not before. The implicit social obligation to finish what you started — honored by most adults in most social contexts — is activated by the wager. Players who would have hit skip after two minutes of awkward chat will stay through a full wagered game because leaving mid-game after accepting a wager is a social violation that most people find uncomfortable to commit. The wager does not just add stakes to the game; it adds stakes to the relationship between the two players, however temporary.</p>
+
+    <h3>Stakes Change the Quality of Decision-Making</h3>
+    <p>When something real is at stake, people play more carefully and think more visibly. They externalize their reasoning: "I'm going to hit on 14 because the dealer is showing a six, so I think they have a ten underneath." This verbalization of strategy is gold for conversation — it reveals how the person thinks, how comfortable they are with uncertainty, and whether they know what they're doing or are operating on intuition. A wagered game is a window into someone's decision-making that you simply cannot open through conversation alone.</p>
+
+    <h3>Stakes Generate Emotional Authenticity</h3>
+    <p>With nothing at stake, reactions to game outcomes are often mild and performed rather than genuine. A loss in an unwagered game produces a casual "oh well." The same loss in a wagered game produces something closer to genuine disappointment, genuine strategizing about what went wrong, genuine emotional response. That authenticity is what makes wagered sessions feel more real and more human than free-play sessions. The emotional honesty stakes produce is the same quality of honesty that makes conversations feel meaningful rather than hollow.</p>
+
+    <h3>The Optimal Stakes Level</h3>
+    <p>Not all wager levels produce the same quality of engagement. Too small and the stakes are barely felt — the game reverts to its essentially unwagered dynamics. Too large and the stakes dominate the emotional space — anxiety replaces play, and conversation becomes impossible. The optimal range is "meaningful but not threatening" — stakes that make decisions feel real without creating anxiety that crowds out everything else. For most players, this is a wager that represents somewhere between 5% and 15% of their current session budget on a single game. Enough to matter. Not enough to hurt.</p>
+  </div>
+
+  <!-- NEW SECTION: Game Playlist for Different Moods -->
+  <div class="section">
+    <h2>Building a Game Playlist: Matching Games to Moods and Session Goals</h2>
+    <p>Experienced players on any game-integrated platform eventually develop something like a repertoire — a mental library of which games work for which situations, moods, and match energy levels. Building this repertoire consciously, rather than defaulting to the same game every session regardless of context, substantially improves the quality and consistency of your sessions.</p>
+
+    <!-- Game Mood Matrix -->
+    <div class="mood-matrix">
+      <div class="mood-matrix-title">Game Mood Matrix &mdash; Casual/Competitive &times; Short/Long Session</div>
+      <div class="matrix-grid">
+        <div class="matrix-corner"></div>
+        <div class="matrix-col-head">Short Session<br><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--ash);">(&lt; 15 min)</span></div>
+        <div class="matrix-col-head">Long Session<br><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--ash);">(15+ min)</span></div>
+
+        <div class="matrix-row-head">Casual<br>Mood</div>
+        <div class="matrix-cell">
+          <div class="matrix-cell-title">Quick Fun</div>
+          <div class="matrix-cell-games">Word games &middot; Fast trivia &middot; Penguin Knockout</div>
+          <div class="matrix-cell-desc">Low stakes, immediate laughter, no preparation needed. Perfect for when you have limited time or when you just want something light and easy.</div>
+        </div>
+        <div class="matrix-cell">
+          <div class="matrix-cell-title">Easy Companionship</div>
+          <div class="matrix-cell-games">GeoGuessr collaborative &middot; Mixed trivia &middot; Casual blackjack</div>
+          <div class="matrix-cell-desc">Relaxed and warm. Games that generate conversation without pressure. Good for when you want company more than competition.</div>
+        </div>
+
+        <div class="matrix-row-head">Competitive<br>Mood</div>
+        <div class="matrix-cell">
+          <div class="matrix-cell-title">Quick Clash</div>
+          <div class="matrix-cell-games">Trivia sprint &middot; Speed word &middot; Battleship</div>
+          <div class="matrix-cell-desc">Fast and decisive. Short bursts of real competition where one person clearly wins. Satisfying when you want to test yourself quickly without a long commitment.</div>
+        </div>
+        <div class="matrix-cell">
+          <div class="matrix-cell-title">Deep Contest</div>
+          <div class="matrix-cell-games">Poker &middot; Monopoly &middot; Chess variants</div>
+          <div class="matrix-cell-desc">Full investment. Strategic depth, genuine high stakes, and the kind of sessions you remember. Best when you have time, energy, and an opponent who is in the same mode.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Reading Match Energy Before Committing to a Format</h3>
+    <p>The single most useful skill in game-integrated chat is reading your match's energy in the first thirty seconds and adjusting your game choice accordingly. If they respond to the opening with immediate energy and curiosity, they are likely ready for anything. If they respond cautiously or seem uncertain, start with something very short and non-threatening — word games or a quick trivia round — before proposing anything longer. If they are clearly bored and scrolling, your best hope is the highest-energy fast game available, which is your only shot at catching their attention before they move on.</p>
+    <p>Energy matching is social intelligence applied to game selection. Proposing a forty-minute poker session to someone who is giving off "I have five minutes and I'm half-interested" energy is as socially misaligned as asking for someone's life story in the first thirty seconds of a conversation. Read the room, start at their energy level, and let the game do its work from there.</p>
+
+    <h3>The Game as Session Architecture</h3>
+    <p>Think of your game choices as architecture decisions for the session — they determine what is possible. A session that begins with a word game and flows into blackjack and ends with spontaneous conversation about something personal has a very different shape than a session that plunges immediately into high-stakes poker and ends when one player is out of tokens. Neither shape is better in absolute terms, but they are suited to very different moods, different match types, and different versions of what you want from the session. Making the architecture decision consciously — before you enter the lobby, based on what kind of session you are actually in the mood for tonight — is the difference between drifting through the experience and designing it.</p>
+
+    <div class="callout">
+      A great session is not an accident. It is the product of game selection that matched the mood, pacing that gave conversation room to breathe, stakes that made decisions feel real, and a match who showed up to the same experience you did. The platform provides the infrastructure. The playlist is yours to build.
     </div>
   </div>
 

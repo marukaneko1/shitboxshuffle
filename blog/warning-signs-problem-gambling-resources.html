@@ -54,6 +54,31 @@
         "@type": "Question",
         "name": "Can online gambling be more addictive than casino gambling?",
         "acceptedAnswer": { "@type": "Answer", "text": "Research suggests online platforms present certain risk factors not present in land-based casinos — including 24/7 access, solo play, rapid bet cycling, and the ability to play anonymously. These factors can accelerate problematic patterns in vulnerable individuals." }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the four stages of problem gambling progression?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The four stages are: (1) Winning Phase — initial excitement, rising stakes, growing preoccupation; (2) Losing Phase — chasing losses, borrowing money, secrecy and lying; (3) Desperation Phase — financial crisis, relationship collapse, possible illegal behavior, suicidal ideation; (4) Hopelessness Phase — severe depression, complete isolation, active crisis risk. Intervention is most effective in Stages 1 and 2. Even in Stage 4, recovery is possible with appropriate professional support." }
+      },
+      {
+        "@type": "Question",
+        "name": "How does self-exclusion work and when should I use it?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Self-exclusion is a voluntary, platform-administered ban on wagering access for a chosen duration. Once activated, it cannot be reversed early — this irreversibility is the feature that gives it protective value. It is most effective when used in combination with professional treatment rather than as a standalone measure. You should consider self-exclusion if you recognize a loss of control over your wagering, have repeatedly exceeded your intended limits, or are in a period of elevated emotional stress that increases your gambling risk." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can video chat platforms mask problem gambling patterns?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. When wagering is embedded in a social experience, the positive social dimension of a session can obscure problematic wagering patterns from self-assessment. Players may remember a session primarily for its conversation quality and underestimate cumulative losses. Social time distortion also makes session durations harder to track accurately. Using platform tools like session time notifications and wagering summaries helps maintain accurate self-assessment independent of social enjoyment." }
+      },
+      {
+        "@type": "Question",
+        "name": "How can I help a family member who has a gambling problem?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Key evidence-based steps: stop enabling behaviors (paying gambling debts, covering for the person), use specific observations rather than diagnoses in conversations, call the NCPG helpline yourself for guidance on your specific situation (1-800-522-4700), attend Gam-Anon meetings for your own support and practical skills, and consider learning the CRAFT approach (Community Reinforcement and Family Training), which research shows is significantly more effective than traditional intervention methods at motivating treatment-resistant individuals to seek help." }
+      },
+      {
+        "@type": "Question",
+        "name": "What treatment approaches work best for gambling disorder?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Cognitive Behavioral Therapy (CBT) is the most extensively researched and validated treatment, typically delivered in 8–15 sessions and producing durable results. Motivational Interviewing is effective for people in early stages of ambivalence. Gamblers Anonymous provides peer accountability and community. Medication (particularly opioid antagonists like naltrexone) shows meaningful promise for reducing cravings. Combined approaches — professional therapy plus peer support — consistently outperform single-modality treatment in research studies." }
       }
     ]
   }
@@ -474,6 +499,308 @@
     </div>
   </div>
 
+  <!-- SECTION: FOUR STAGES OF PROGRESSION -->
+  <div class="section">
+    <h2>The Four Stages of Problem Gambling Progression</h2>
+    <p>Problem gambling rarely arrives fully formed. It follows a recognizable developmental arc — one that researchers have documented across thousands of clinical cases. Understanding the stages matters because intervention at Stage One or Two is dramatically more effective than at Stage Three or Four, and because people inside the progression often cannot clearly perceive which stage they're in. The architecture of the disorder obscures self-knowledge precisely as the need for self-knowledge becomes most acute.</p>
+
+    <!-- CSS VISUAL: 4-Stage Progression Timeline -->
+    <style>
+      .stage-timeline { margin: 40px 0; display: flex; flex-direction: column; gap: 0; }
+      .stage-item { display: flex; align-items: stretch; gap: 0; margin-bottom: 4px; }
+      .stage-number {
+        width: 52px; min-width: 52px;
+        display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+        padding-top: 22px;
+      }
+      .stage-dot {
+        width: 32px; height: 32px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 0.1em;
+        color: #030303; font-weight: 700; position: relative; z-index: 2;
+        flex-shrink: 0;
+      }
+      .stage-connector {
+        width: 2px; flex: 1; margin: 4px auto 0; min-height: 20px;
+      }
+      .stage-body {
+        flex: 1; padding: 18px 22px 22px; border-radius: 3px; border-left: 3px solid;
+        margin-bottom: 4px;
+      }
+      .stage-label {
+        font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em;
+        text-transform: uppercase; margin-bottom: 6px; display: block;
+      }
+      .stage-title {
+        font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 900;
+        color: var(--chalk); margin-bottom: 8px;
+      }
+      .stage-desc { font-size: 14px; color: var(--dust); line-height: 1.7; margin-bottom: 0; }
+      .stage-markers {
+        margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px;
+      }
+      .stage-marker {
+        font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.1em;
+        text-transform: uppercase; padding: 3px 8px; border-radius: 2px;
+        background: rgba(232,224,208,0.05); color: var(--ash);
+      }
+      /* Stage color themes */
+      .s1 .stage-dot { background: #4caf50; }
+      .s1 .stage-body { border-left-color: #4caf50; background: rgba(76,175,80,0.05); }
+      .s1 .stage-label { color: #4caf50; }
+      .s1 .stage-connector { background: linear-gradient(to bottom, #4caf50, #e8c547); }
+      .s2 .stage-dot { background: #e8c547; }
+      .s2 .stage-body { border-left-color: #e8c547; background: rgba(232,197,71,0.05); }
+      .s2 .stage-label { color: #e8c547; }
+      .s2 .stage-connector { background: linear-gradient(to bottom, #e8c547, #e8882a); }
+      .s3 .stage-dot { background: #e8882a; }
+      .s3 .stage-body { border-left-color: #e8882a; background: rgba(232,136,42,0.06); }
+      .s3 .stage-label { color: #e8882a; }
+      .s3 .stage-connector { background: linear-gradient(to bottom, #e8882a, #e84040); }
+      .s4 .stage-dot { background: #e84040; }
+      .s4 .stage-body { border-left-color: #e84040; background: rgba(232,64,64,0.06); }
+      .s4 .stage-label { color: #e84040; }
+      .s4 .stage-connector { background: transparent; }
+    </style>
+
+    <div class="stage-timeline">
+
+      <div class="stage-item s1">
+        <div class="stage-number">
+          <div class="stage-dot">1</div>
+          <div class="stage-connector"></div>
+        </div>
+        <div class="stage-body">
+          <span class="stage-label">Stage 1 — Winning Phase</span>
+          <div class="stage-title">Initial wins, growing excitement, rising stakes</div>
+          <div class="stage-desc">The experience of gambling is mostly positive. Early wins — especially a significant early win — create a reference point that the brain begins working to replicate. The player feels optimistic about their skill or luck, begins spending more time thinking about gambling, increases bet sizes gradually, and starts viewing gambling as a reliable source of income or excitement rather than pure entertainment. The warning signs at this stage are subtle: slightly longer sessions than planned, slightly more thought devoted to gambling between sessions. No harm is yet visible to outsiders.</div>
+          <div class="stage-markers">
+            <span class="stage-marker">Early excitement</span>
+            <span class="stage-marker">Rising bet sizes</span>
+            <span class="stage-marker">Preoccupation starting</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-item s2">
+        <div class="stage-number">
+          <div class="stage-dot">2</div>
+          <div class="stage-connector"></div>
+        </div>
+        <div class="stage-body">
+          <span class="stage-label">Stage 2 — Losing Phase</span>
+          <div class="stage-title">Chasing losses, borrowing, secrecy begins</div>
+          <div class="stage-desc">Losses start accumulating. The player begins chasing — returning specifically to recover what was lost rather than for entertainment. Bet sizes escalate in the chase, accelerating losses. Secrecy becomes a necessity: spending habits need concealing, lies about whereabouts and money become routine. Borrowing begins — from friends, family, credit cards — typically with the genuine intention to repay once the next win comes. Irritability, restlessness, and defensiveness increase. The player may make serious attempts to cut back or stop, but the attempts don't hold. Others are starting to notice something is wrong, even if they can't name it.</div>
+          <div class="stage-markers">
+            <span class="stage-marker">Active chasing</span>
+            <span class="stage-marker">Deception begins</span>
+            <span class="stage-marker">Borrowing money</span>
+            <span class="stage-marker">Failed quit attempts</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-item s3">
+        <div class="stage-number">
+          <div class="stage-dot">3</div>
+          <div class="stage-connector"></div>
+        </div>
+        <div class="stage-body">
+          <span class="stage-label">Stage 3 — Desperation Phase</span>
+          <div class="stage-title">Criminal risk, relationship collapse, panic</div>
+          <div class="stage-desc">The financial situation has become desperate. The player may engage in behaviors they would previously have found unthinkable: illegal acts to fund gambling (theft, fraud, embezzlement), borrowing from loan sharks, selling household items, draining retirement accounts. Relationships are deteriorating rapidly — partners, family members, and employers can no longer ignore what is happening. Panic is constant. There may be suicidal ideation or gestures. The player simultaneously cannot stop and cannot see a path forward. This is the stage at which many people finally seek help — not because they choose to, but because the consequences become unavoidable.</div>
+          <div class="stage-markers">
+            <span class="stage-marker">Financial collapse</span>
+            <span class="stage-marker">Relationship crisis</span>
+            <span class="stage-marker">Possible illegal activity</span>
+            <span class="stage-marker">Suicidal ideation risk</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-item s4">
+        <div class="stage-number">
+          <div class="stage-dot">4</div>
+          <div class="stage-connector"></div>
+        </div>
+        <div class="stage-body">
+          <span class="stage-label">Stage 4 — Hopelessness Phase</span>
+          <div class="stage-title">Hopelessness, total isolation, crisis</div>
+          <div class="stage-desc">The player has abandoned hope of recovery or normal life. Gambling continues not for excitement or winning but as a form of escape from a reality that feels permanently destroyed. Social isolation is nearly complete. Depression is severe. Alcohol or other substance use frequently co-occurs at this stage. Physical health deteriorates. The person may have made or seriously considered a suicide attempt. Without intervention — typically requiring both crisis support and professional treatment — Stage Four is genuinely life-threatening. With intervention, recovery is possible even from this point. The helpline (1-800-522-4700) exists specifically for people in or approaching this stage.</div>
+          <div class="stage-markers">
+            <span class="stage-marker">Severe depression</span>
+            <span class="stage-marker">Complete isolation</span>
+            <span class="stage-marker">Active crisis risk</span>
+            <span class="stage-marker">Intervention urgent</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout">
+      <strong>The critical takeaway:</strong> intervention at Stage 1 or 2 requires brief support. Intervention at Stage 3 or 4 requires intensive treatment. The earlier a problem is recognized, the less it costs — in money, in relationships, in health, and in recovery time.
+    </div>
+  </div>
+
+  <!-- SECTION: VIDEO CHAT PLATFORMS AND MASKING -->
+  <div class="section">
+    <h2>How Video Chat Platforms Can Mask Problem Patterns</h2>
+    <p>The combination of video chat and wagering in a single platform — the specific format that Shitbox Shuffle offers — creates a social environment that doesn't exist in traditional gambling settings. This has genuine benefits for responsible players: the human presence of another person on screen introduces social friction that casino gambling entirely lacks. But it also creates specific dynamics that can mask problem gambling patterns in ways that traditional casino environments do not.</p>
+
+    <h3>The Social Frame Disguises the Gambling Frame</h3>
+    <p>When wagering is embedded in a social interaction, it can be harder to isolate the wagering behavior and assess it clearly. A player who would immediately recognize five consecutive hours of solo online slot play as a problem may not apply the same scrutiny to five hours of video chat sessions where wagering is a feature of the social experience rather than the explicit purpose. The social engagement provides a justification — "I'm not just gambling, I'm talking to people" — that obscures the actual pattern of wagering activity from self-assessment.</p>
+
+    <h3>Social Enjoyment Can Override Loss Signals</h3>
+    <p>Research on the psychology of loss tracking shows that losses are more quickly rationalized and forgotten when they occur in a positive emotional context. If you've had a genuinely enjoyable conversation with another person during a session, the financial outcome of that session may feel secondary in your memory of it — even if the financial reality is significant. This can lead to a systematic underestimation of cumulative losses over time, as each session is remembered primarily for its social dimension rather than its wagering outcome.</p>
+
+    <h3>Session Duration Is Harder to Track in Social Contexts</h3>
+    <p>Time passes differently in social engagement than in solitary activity. This is a well-documented cognitive phenomenon: social contexts produce stronger time distortion than non-social ones. A player who has a firm sense that they've been playing for "about an hour" may have actually been in session for three hours if the social engagement has been high. Without explicit session-time notifications — which Shitbox Shuffle provides — this miscalibration can lead to session durations that far exceed what the player intended.</p>
+
+    <h3>Accountability Without Intervention</h3>
+    <p>The person on the other side of a video chat session can see that you're playing, which creates a form of social witnessing. But unlike a friend who knows your financial situation and your history, that stranger has no context for what they're witnessing. They cannot assess whether your wagering behavior is normal for you or alarming. This creates the surface appearance of social accountability — you're seen — without the substance of genuine accountability, which requires someone who knows enough to intervene.</p>
+
+    <h3>What This Means for Self-Monitoring</h3>
+    <p>If you wager on video chat platforms, it is worth separating your social assessment of a session ("that was a great conversation") from your financial assessment ("what did I actually wager tonight, and how does that compare to my limit?"). The platform's reality check notifications and session summaries are specifically designed to help with this separation. Make a habit of looking at the session summary before you close the app — not to feel bad about a session that was socially positive, but to maintain an accurate picture of your actual wagering behavior over time.</p>
+  </div>
+
+  <!-- SECTION: SELF-EXCLUSION AND COOLING OFF -->
+  <div class="section">
+    <h2>Self-Exclusion and Cooling-Off: How They Work and When to Use Them</h2>
+    <p>Self-exclusion programs are one of the most effective harm-reduction tools in gambling, when used at the right moment and understood correctly. They are not a last resort — they can be deployed at any stage of concern, including early concern, and their value is greatest when used proactively before a problem has reached a crisis level.</p>
+
+    <!-- CSS VISUAL: Resource Comparison Table -->
+    <style>
+      .resource-compare-table { width: 100%; border-collapse: collapse; margin: 32px 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+      .resource-compare-table th {
+        padding: 10px 14px; text-align: left; font-size: 9px; letter-spacing: 0.15em;
+        text-transform: uppercase; color: var(--ash); border-bottom: 1px solid var(--phantom);
+        background: rgba(232,224,208,0.03); white-space: nowrap;
+      }
+      .resource-compare-table td {
+        padding: 12px 14px; border-bottom: 1px solid var(--phantom);
+        font-size: 10px; color: var(--dust); vertical-align: top; line-height: 1.5;
+      }
+      .resource-compare-table tr:last-child td { border-bottom: none; }
+      .resource-compare-table .rct-name { font-weight: 700; color: var(--chalk); font-size: 11px; }
+      .rct-green { color: #6fcf97; }
+      .rct-amber { color: var(--ember); }
+      .rct-tag {
+        display: inline-block; padding: 2px 7px; border-radius: 2px;
+        font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;
+      }
+      .rct-tag-green { background: rgba(111,207,151,0.15); color: #6fcf97; }
+      .rct-tag-amber { background: rgba(201,162,39,0.15); color: var(--ember); }
+      .rct-tag-blue { background: rgba(74,158,218,0.15); color: #4a9eda; }
+    </style>
+
+    <div style="overflow-x:auto;">
+      <table class="resource-compare-table">
+        <thead>
+          <tr>
+            <th>Resource / Tool</th>
+            <th>Type</th>
+            <th>Cost</th>
+            <th>Availability</th>
+            <th>Best For</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rct-name">NCPG Helpline<br><span style="font-size:9px;color:var(--ash);">1-800-522-4700</span></td>
+            <td><span class="rct-tag rct-tag-green">Crisis + Referral</span></td>
+            <td class="rct-green">Free</td>
+            <td>24/7/365</td>
+            <td>Immediate support, finding local treatment</td>
+          </tr>
+          <tr>
+            <td class="rct-name">Gamblers Anonymous</td>
+            <td><span class="rct-tag rct-tag-blue">Peer Support</span></td>
+            <td class="rct-green">Free</td>
+            <td>Weekly meetings, online daily</td>
+            <td>Long-term recovery community, accountability</td>
+          </tr>
+          <tr>
+            <td class="rct-name">Gam-Anon</td>
+            <td><span class="rct-tag rct-tag-blue">Family Support</span></td>
+            <td class="rct-green">Free</td>
+            <td>Weekly meetings, online</td>
+            <td>Family members of problem gamblers</td>
+          </tr>
+          <tr>
+            <td class="rct-name">Cognitive Behavioral Therapy</td>
+            <td><span class="rct-tag rct-tag-amber">Professional Tx</span></td>
+            <td class="rct-amber">Varies (insurance)</td>
+            <td>By appointment (8–15 sessions typical)</td>
+            <td>Core treatment, distortion correction</td>
+          </tr>
+          <tr>
+            <td class="rct-name">State Problem Gambling Programs</td>
+            <td><span class="rct-tag rct-tag-green">State-Funded Tx</span></td>
+            <td class="rct-green">Free / subsidized</td>
+            <td>Varies by state</td>
+            <td>No-cost outpatient or residential treatment</td>
+          </tr>
+          <tr>
+            <td class="rct-name">Platform Self-Exclusion</td>
+            <td><span class="rct-tag rct-tag-amber">Platform Tool</span></td>
+            <td class="rct-green">Free</td>
+            <td>Immediate, platform settings</td>
+            <td>Blocking access during vulnerable periods</td>
+          </tr>
+          <tr>
+            <td class="rct-name">Platform Cool-Down Period</td>
+            <td><span class="rct-tag rct-tag-amber">Platform Tool</span></td>
+            <td class="rct-green">Free</td>
+            <td>Immediate, 24h / 7d / 30d options</td>
+            <td>Structured break without full exclusion</td>
+          </tr>
+          <tr>
+            <td class="rct-name">SAMHSA Treatment Locator</td>
+            <td><span class="rct-tag rct-tag-blue">Referral</span></td>
+            <td class="rct-green">Free</td>
+            <td>findtreatment.gov</td>
+            <td>Finding licensed behavioral health providers</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>The Cooling-Off Period: Structured Breathing Room</h3>
+    <p>A cooling-off period is a temporary, voluntary suspension of wagering access — typically 24 hours, 7 days, or 30 days — that you can activate from account settings at any time. The key characteristics that make it useful: it takes effect immediately, cannot be reversed early, and applies to wagering specifically without removing access to social features. It is designed for the specific situation where you recognize that your relationship with wagering needs some distance but you are not yet certain whether self-exclusion is the right step.</p>
+    <p>Cooling-off periods are most useful in the following situations: after an emotionally difficult session that you feel the urge to immediately continue; after a significant loss that is generating chasing impulses; during a period of elevated stress or emotional difficulty that you recognize as a trigger for problematic gambling; or at any point when a clear internal signal tells you to step back. The built-in irreversibility is the feature that gives it actual protective value — a pause that can be immediately cancelled is not a meaningful barrier to impulsive behavior.</p>
+
+    <h3>Self-Exclusion: The Stronger Commitment</h3>
+    <p>Self-exclusion is a longer-duration commitment to suspending wagering access — available in periods ranging from several months to permanent. Unlike cooling-off periods, self-exclusion is permanent for its elected duration: it cannot be reversed through any means before the exclusion period ends. This irreversibility is specifically designed to protect against the pattern of resolving to stop, then reversing that resolution in a moment of craving or poor judgment.</p>
+    <p>Research on self-exclusion effectiveness shows that longer exclusion periods produce better outcomes than shorter ones, and that people who use self-exclusion in combination with professional treatment show significantly better long-term results than those who use either alone. Self-exclusion is not a substitute for treatment — it removes access, but it does not address the underlying cognitive and emotional patterns that drive problem gambling. It is most effective as one component of a broader recovery approach.</p>
+
+    <h3>Statewide Self-Exclusion Programs</h3>
+    <p>Beyond platform-specific self-exclusion, most US states with legal gambling offer statewide self-exclusion programs that ban enrolled individuals from all licensed gambling establishments in the state. These programs are administered through state gaming commissions and vary in scope and enforcement, but they provide an additional layer of protection that extends beyond any single platform. If you are concerned enough about your gambling behavior to consider platform self-exclusion, enrolling in your state's program simultaneously is a meaningful additional step. The NCPG website maintains current information on state programs.</p>
+  </div>
+
+  <!-- SECTION: HELPING A FRIEND OR FAMILY MEMBER -->
+  <div class="section">
+    <h2>How to Help a Friend or Family Member with a Gambling Problem</h2>
+    <p>Being in a close relationship with someone who has a gambling problem is its own form of difficulty. The financial harm often extends to the whole household. The secrecy and deception damage trust in lasting ways. The emotional volatility of the affected person can make the relationship feel like it's walking a permanent minefield. And the normal forms of help — giving money, offering advice, trying to control the behavior — frequently make things worse rather than better.</p>
+    <p>The research on effective support for a loved one with gambling disorder is more developed than most people realize. It points toward specific behaviors and away from others with enough consistency to constitute practical guidance.</p>
+
+    <h3>Understand What You Are and Are Not Dealing With</h3>
+    <p>Problem gambling is a recognized behavioral disorder with well-documented neurological mechanisms. It is not a choice your loved one is making to hurt you, a sign that they don't love you enough to stop, or evidence of a character flaw that better people don't have. Understanding this at a genuine level — not as a courtesy but as an accurate description of what's happening — changes how you engage with the situation. It allows you to be compassionate without being naive, and firm without being cruel.</p>
+
+    <h3>Stop Enabling, Which Is Different from Helping</h3>
+    <p>Enabling behavior is anything that reduces the natural consequences of the problem in ways that allow it to continue. Common enabling behaviors include: paying debts created by gambling, providing money without conditions, covering for the person with employers or family, making excuses for behavior that affects others, and pretending not to notice signs that are clearly visible. Enabling is almost always motivated by genuine love and the desire to protect the person from harm. The paradox is that it typically extends and deepens the problem by removing the experiential feedback that motivates change.</p>
+    <p>Stopping enabling does not mean abandoning the person. It means being honest about what you will and won't do, and maintaining those boundaries consistently. "I will not pay this debt" is a boundary. "I will drive you to a GA meeting" is support. The combination of firm limits and genuine support is what the research describes as the most effective posture for family members.</p>
+
+    <h3>Use the Community Reinforcement and Family Training (CRAFT) Approach</h3>
+    <p>CRAFT is an evidence-based approach developed specifically for concerned significant others of people with addiction disorders. Unlike Al-Anon's traditional focus on detachment, CRAFT teaches family members active skills for increasing the likelihood that their loved one enters treatment, while simultaneously reducing their own distress. Multiple randomized controlled trials have shown that CRAFT is significantly more effective at getting treatment-resistant individuals into treatment than Al-Anon or intervention techniques. A trained CRAFT therapist can be found through the NCPG referral network or SAMHSA's treatment locator.</p>
+
+    <h3>Attend Gam-Anon for Your Own Support</h3>
+    <p>Gam-Anon is the companion program to Gamblers Anonymous, designed specifically for people whose lives are affected by someone else's gambling disorder. The program provides practical guidance on navigating the specific challenges of this situation, peer support from others who understand from direct experience, and a structured approach to protecting your own wellbeing regardless of what the person with the gambling problem chooses to do. Gam-Anon is valuable whether your loved one is actively gambling, in denial, in early recovery, or in sustained recovery. Your need for support doesn't depend on what stage they're in.</p>
+
+    <h3>Know When the Conversation Cannot Wait</h3>
+    <p>If the person you are concerned about expresses suicidal thoughts, has made a suicide attempt, or is in a crisis that poses immediate risk of harm, this is a medical emergency that supersedes all other considerations. Call 988 (the Suicide and Crisis Lifeline) or 911. The National Problem Gambling Helpline (1-800-522-4700) also has protocols for active crisis situations and can coordinate appropriate response. Stage Three and Four gambling disorder carry genuine suicide risk, and that risk should be treated with the same seriousness as any other mental health crisis.</p>
+  </div>
+
   <!-- FAQ -->
   <div class="section">
     <h2>Frequently Asked Questions</h2>
@@ -512,6 +839,39 @@
       <div class="faq-q">Is Shitbox Shuffle appropriate for someone in early recovery from gambling disorder?</div>
       <div class="faq-a">Anyone in early recovery should discuss all gambling-adjacent activities with their counselor or GA sponsor before engaging on any wagering platform. Early recovery is typically when cravings are strongest and newly-developed coping skills are most fragile. Our self-exclusion and cool-down tools exist precisely for situations like this, and we strongly encourage anyone who feels uncertain to err toward caution. When in doubt, call 1-800-522-4700 and ask a counselor for guidance specific to your situation.</div>
     </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What are the four stages of problem gambling, and which stage requires immediate help?</div>
+      <div class="faq-a">The four stages are: (1) Winning Phase — excitement, rising stakes, growing preoccupation with few visible consequences; (2) Losing Phase — chasing losses, lies, borrowing money, failed quit attempts; (3) Desperation Phase — financial crisis, relationship collapse, possible illegal behavior, suicidal ideation; (4) Hopelessness Phase — severe depression, complete isolation, active crisis. Every stage benefits from help, but Stage 3 and 4 require immediate intervention. If someone you know is expressing hopelessness or suicidal thoughts related to gambling, call 988 or 1-800-522-4700 immediately.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How can video chat wagering platforms mask problem gambling?</div>
+      <div class="faq-a">The social dimension of a wagering session can make it harder to accurately assess your actual gambling behavior. You may remember a session primarily as a good conversation and underestimate losses. Social engagement creates time distortion, making it harder to track session duration accurately. And the presence of another person creates a surface feeling of accountability without the genuine accountability that comes from someone who knows your history and finances. Using platform session summaries and wagering history tools helps maintain accurate self-assessment independently of how much you enjoyed the social side of a session.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What should I do if someone I care about is in a gambling crisis right now?</div>
+      <div class="faq-a">If they are in immediate danger of harming themselves, call 911 or 988 (Suicide and Crisis Lifeline) first. For gambling-specific crisis support, 1-800-522-4700 has trained counselors available 24/7 who handle active crisis situations and can help coordinate appropriate response. If the situation is serious but not an immediate emergency, calling the helpline yourself — before or instead of confronting the person — gives you access to professional guidance on how to approach the conversation effectively and what local resources are available for immediate support.</div>
+    </div>
+  </div>
+
+  <!-- SECTION: Recovery Success and What It Looks Like -->
+  <div class="section">
+    <h2>What Gambling Disorder Recovery Actually Looks Like</h2>
+    <p>Recovery from gambling disorder is common, documented, and achievable. The stigma that surrounds it keeps this fact from being widely known, but the research is consistent: the majority of people who engage with appropriate treatment experience meaningful, sustained improvement. Understanding what recovery looks like in practice helps demystify the process and reduces the barrier to beginning it.</p>
+
+    <h3>Recovery Is Not Binary</h3>
+    <p>One of the most important reframes in contemporary addiction research is the move away from binary "recovered/not recovered" thinking toward understanding recovery as a spectrum and a process. Abstinence from gambling is one valid endpoint, but it is not the only marker of meaningful recovery. Many people in treatment achieve a healthy relationship with controlled gambling — setting firm limits, maintaining them consistently, and no longer experiencing the loss of control, preoccupation, and harm that defined their disordered pattern. Others choose abstinence as their personal standard and maintain it successfully for years. Both pathways are real and legitimate.</p>
+    <p>The definition of recovery that most clinical researchers now use is functional: recovery means that gambling behavior (whether abstinent or limited) no longer interferes with work, relationships, finances, or wellbeing, and that the person has developed reliable coping strategies for the triggers and emotional states that previously drove disordered gambling. By this definition, recovery is about restored function and genuine control, not about a rigid behavioral rule.</p>
+
+    <h3>The Timeline of Recovery</h3>
+    <p>Research on gambling disorder recovery timelines shows significant variation, but consistent patterns emerge. Early recovery — the first three to six months after beginning treatment — typically involves the hardest work: confronting the financial damage, rebuilding damaged relationships, developing new coping strategies, and managing cravings that are often strongest in this period. This is when the combination of professional treatment and peer support (through GA or similar programs) is most critical.</p>
+    <p>By six to twelve months, most people in active treatment report significant reduction in gambling-related problems and meaningful improvement in mood, relationships, and financial stability. The research shows that by the one-year mark, a substantial majority of people who completed a treatment program are experiencing measurable improvement across all outcome domains. Recovery is not instantaneous — but it is also not a decades-long process. The timeline is measured in months for early improvement, not years.</p>
+
+    <h3>The Role of Community in Sustained Recovery</h3>
+    <p>The research on relapse prevention in gambling disorder consistently identifies social support as the strongest predictor of sustained recovery. People who maintain active connection with a recovery community — through Gamblers Anonymous, through continued therapy, through trusted relationships that provide accountability — show substantially better long-term outcomes than those who achieve initial recovery in isolation and then disengage from support. The social dimension of recovery mirrors the social dimension of the disorder: both thrive or collapse in the context of the relationships around them.</p>
+    <p>This insight has practical implications for how recovery should be structured. The goal is not just to stop the problematic behavior — it is to build a social environment in which healthy behavior is supported and the triggers for disordered behavior are managed. For many people, this means replacing the social role that gambling played (the excitement, the community, even the online social interaction) with alternatives that provide some of the same needs without the harm. Platforms that provide genuine social connection — including video chat platforms like Shitbox Shuffle, used responsibly — can play a legitimate role in that replacement for people who are not in early, high-risk recovery stages.</p>
   </div>
 
   <div class="cta-block">

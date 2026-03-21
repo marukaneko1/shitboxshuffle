@@ -633,6 +633,279 @@
     </div>
   </div>
 
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- NEW SECTION: The Math Behind Basic Strategy               -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>The Math Behind Basic Strategy: How the House Edge Actually Works</h2>
+    <p>Without any strategy, a typical blackjack player surrenders roughly 4–5% of every bet to the house over the long run — meaning for every 100 tokens wagered, they lose 4–5 tokens on average. With perfect basic strategy, that number drops to approximately 0.5% in favorable rule conditions. This sounds like a small difference, but it represents a tenfold reduction in the house's advantage, transforming a game that slowly bleeds uninformed players into a near-break-even proposition for disciplined ones.</p>
+
+    <p>Where does the baseline 4–5% house edge come from? Primarily from the dealer's structural advantage: the player acts first. If both the player and dealer bust on the same hand, the dealer wins. This built-in asymmetry — busting loses before the dealer even acts — is the foundational mechanism that gives the house its edge. Basic strategy is the mathematically derived response to this asymmetry: it tells you exactly when taking the risk of hitting or doubling is justified by probability, and when the safest available option produces the best expected value.</p>
+
+    <h3>House edge reduction: strategy level comparison</h3>
+
+    <style>
+      .edge-chart { margin:36px 0; }
+      .edge-chart-title { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ember); margin-bottom:20px; }
+      .edge-row { display:flex; align-items:center; gap:16px; margin-bottom:16px; }
+      .edge-label { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ash); min-width:170px; text-align:right; flex-shrink:0; letter-spacing:0.05em; line-height:1.4; }
+      .edge-track { flex:1; height:22px; background:var(--phantom); border-radius:2px; overflow:hidden; }
+      .edge-fill { height:100%; border-radius:2px; display:flex; align-items:center; padding-left:8px; }
+      .edge-fill span { font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; color:var(--void); letter-spacing:0.08em; }
+      .edge-pct { font-family:'JetBrains Mono',monospace; font-size:11px; min-width:48px; text-align:right; flex-shrink:0; }
+      .edge-pct.bad { color:#eb5757; }
+      .edge-pct.mid { color:var(--ember); }
+      .edge-pct.good { color:#6fcf97; }
+      .edge-pct.best { color:#6fcf97; font-weight:700; }
+    </style>
+
+    <div class="edge-chart">
+      <div class="edge-chart-title">House Edge by Player Strategy Level</div>
+      <div class="edge-row">
+        <div class="edge-label">No strategy<br>(gut instinct)</div>
+        <div class="edge-track"><div class="edge-fill" style="width:100%; background:linear-gradient(90deg,#7f1d1d,#eb5757);"><span>Average 4–5% house edge</span></div></div>
+        <div class="edge-pct bad">~4.5%</div>
+      </div>
+      <div class="edge-row">
+        <div class="edge-label">Partial strategy<br>(some charts memorized)</div>
+        <div class="edge-track"><div class="edge-fill" style="width:60%; background:linear-gradient(90deg,rgba(201,162,39,0.7),rgba(201,162,39,0.4));"><span>Common mistakes cost ~2%</span></div></div>
+        <div class="edge-pct mid">~2%</div>
+      </div>
+      <div class="edge-row">
+        <div class="edge-label">Perfect basic strategy<br>(standard 6-deck rules)</div>
+        <div class="edge-track"><div class="edge-fill" style="width:11%; background:linear-gradient(90deg,#1a6b3a,#6fcf97);"><span>0.5%</span></div></div>
+        <div class="edge-pct good">~0.5%</div>
+      </div>
+      <div class="edge-row">
+        <div class="edge-label">Basic strategy +<br>favorable rules (single deck, 3:2)</div>
+        <div class="edge-track"><div class="edge-fill" style="width:4%; background:linear-gradient(90deg,#1a6b3a,#6fcf97);"></div></div>
+        <div class="edge-pct best">~0.17%</div>
+      </div>
+    </div>
+
+    <p>The leap from "no strategy" to "perfect basic strategy" is not a marginal improvement — it's the difference between reliably losing money and playing close to break-even. Each 1% of house edge saved means 1 token preserved per 100 wagered, compounded across every hand in a session. Over 200 hands, a player with no strategy expects to lose roughly 9 tokens per 100 bet; a player with perfect strategy expects to lose roughly 1 token. That gap is the direct monetary value of knowing the chart.</p>
+
+    <h3>The decisions that matter most for house edge reduction</h3>
+    <p>Not all strategy decisions are equal — some errors cost far more house edge than others. The three highest-impact decisions: <strong>never taking insurance</strong> (the insurance bet carries a ~7% house edge and is never correct for basic strategy players), <strong>always splitting Aces and 8s</strong> (failing to split 8s against any upcard costs roughly 0.4% per occurrence), and <strong>doubling correctly on 10 and 11</strong> (players who don't double when the strategy chart says to surrender significant long-run value on every such hand). Internalize these three before anything else.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- NEW SECTION: Rule Variations Impact Table                 -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <style>
+    .rules-table-wrap { overflow-x:auto; margin:28px 0; }
+    .rules-table { border-collapse:collapse; width:100%; font-family:'JetBrains Mono',monospace; font-size:11px; }
+    .rules-table th { background:#0e0d0b; color:var(--ember); letter-spacing:0.1em; text-transform:uppercase; padding:9px 12px; text-align:left; border:1px solid rgba(232,224,208,0.07); font-size:9px; }
+    .rules-table td { padding:10px 12px; border:1px solid rgba(232,224,208,0.05); color:var(--dust); vertical-align:top; font-size:12px; line-height:1.6; }
+    .rules-table tr:nth-child(even) td { background:rgba(232,224,208,0.02); }
+    .rules-table .rule-col { color:var(--chalk); font-weight:700; }
+    .rules-table .bad-rule { color:#eb5757; }
+    .rules-table .good-rule { color:#6fcf97; }
+    .rules-table .neutral-rule { color:var(--ember); }
+  </style>
+
+  <div class="section">
+    <h2>Common Rule Variations and How They Affect Your Strategy</h2>
+    <p>Blackjack is not one game — it's a family of games with rule variations that meaningfully change the house edge you're playing against. Not all rule sets are created equal. When you have any choice in the rules applied to a session, understanding which rules are player-favorable and which are player-hostile lets you make an informed decision about where to invest your tokens.</p>
+
+    <div class="rules-table-wrap">
+      <table class="rules-table">
+        <thead>
+          <tr>
+            <th>Rule Variation</th>
+            <th>Player Impact</th>
+            <th>House Edge Change</th>
+            <th>What It Means in Practice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rule-col">Blackjack pays 6:5<br><span style="font-weight:400;color:var(--ash);">(instead of 3:2)</span></td>
+            <td class="bad-rule">Very Bad</td>
+            <td class="bad-rule">+1.39%</td>
+            <td>On a 100-token blackjack, you receive 120 instead of 150. This single rule change nearly triples the house edge. Avoid 6:5 games whenever possible.</td>
+          </tr>
+          <tr>
+            <td class="rule-col">Dealer hits soft 17<br><span style="font-weight:400;color:var(--ash);">(H17 vs S17)</span></td>
+            <td class="bad-rule">Bad</td>
+            <td class="bad-rule">+0.22%</td>
+            <td>When the dealer hits soft 17 (Ace+6), they bust slightly less often — and hit 18+ slightly more often. This marginally changes some double-down and splitting decisions.</td>
+          </tr>
+          <tr>
+            <td class="rule-col">No double after split<br><span style="font-weight:400;color:var(--ash);">(DAS not allowed)</span></td>
+            <td class="bad-rule">Moderately Bad</td>
+            <td class="bad-rule">+0.14%</td>
+            <td>Removes the ability to double down on hands resulting from a pair split, slightly reducing the value of splitting some pairs.</td>
+          </tr>
+          <tr>
+            <td class="rule-col">Player may not re-split</td>
+            <td class="neutral-rule">Slight Disadvantage</td>
+            <td class="neutral-rule">+0.08%</td>
+            <td>When you receive a third card matching a split pair, you cannot split again. Rare edge case but directionally negative for the player.</td>
+          </tr>
+          <tr>
+            <td class="rule-col">Early surrender allowed</td>
+            <td class="good-rule">Good</td>
+            <td class="good-rule">−0.62%</td>
+            <td>Rare in modern games, but very favorable: allows you to surrender before the dealer checks for blackjack, getting half your bet back even when the dealer has a likely natural.</td>
+          </tr>
+          <tr>
+            <td class="rule-col">Late surrender allowed</td>
+            <td class="good-rule">Moderately Good</td>
+            <td class="good-rule">−0.08%</td>
+            <td>Allows surrendering after the dealer checks for blackjack. Correct surrender plays (hard 16 vs 10, hard 15 vs 10/Ace) save money on the worst hands in the game.</td>
+          </tr>
+          <tr>
+            <td class="rule-col">Single-deck game<br><span style="font-weight:400;color:var(--ash);">(vs. 6-deck)</span></td>
+            <td class="good-rule">Good</td>
+            <td class="good-rule">−0.48%</td>
+            <td>Fewer decks is better for the player, but only at 3:2 payouts. A single-deck 6:5 game is actually worse than a 6-deck 3:2 game — the payout rule matters more than deck count.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The bottom line on rule variations: the 3:2 vs. 6:5 blackjack payout is by far the most impactful single rule. If you have any ability to choose between a 6:5 and a 3:2 session, always choose 3:2. Every other rule variation in the table above is secondary to this one decision. A player who correctly identifies and avoids 6:5 games has already captured more edge than they would get from memorizing every nuanced strategy adjustment in the chart.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- NEW SECTION: Card Counting Basics                         -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Card Counting Basics: Not Cheating, Just Math</h2>
+    <p>Card counting has a reputation as either a superpower or a crime, depending on who's talking about it. The reality is more mundane and more interesting: card counting is a method of tracking the proportion of high cards (tens and aces) versus low cards (twos through sixes) remaining in an undealt shoe. When more high cards remain relative to low cards, the deck is said to be "rich" — and a rich deck statistically favors the player, not the house.</p>
+
+    <p>The reason high cards favor players is specific: blackjacks (naturals) are more likely when the deck is rich, and blackjacks pay more to the player than they cost. Additionally, dealers are more likely to bust on high-card-rich decks because they're forced to hit hard totals that players can stand on. When the count is high (more tens and aces remaining), the basic strategy adjustment is to bet more. When the count is low or negative, bet less.</p>
+
+    <h3>The Hi-Lo count: the simplest system that works</h3>
+    <p>The Hi-Lo system assigns each card a value: low cards (2, 3, 4, 5, 6) count as +1; neutral cards (7, 8, 9) count as 0; high cards (10, J, Q, K, A) count as −1. As cards are dealt, you maintain a running count in your head. A positive running count means more low cards have been dealt and the remaining shoe is rich in high cards — player-favorable. A negative count means the opposite.</p>
+
+    <ul>
+      <li><strong>Running count:</strong> The raw tally of +1/0/−1 values as cards are seen</li>
+      <li><strong>True count:</strong> Running count divided by the number of decks remaining in the shoe. This normalization allows comparison across different deck states.</li>
+      <li><strong>Betting spread:</strong> Card counters increase bets when the true count is +2 or higher, and decrease to minimum bets at neutral or negative counts. The spread between minimum and maximum bets is where the edge is captured.</li>
+    </ul>
+
+    <p>On video chat platforms like <a href="https://shitboxshuffle.com/">Shitbox Shuffle</a>, card counting has different practical implications than in a land casino. In a casino, counters are asked to leave if identified. In peer-vs-peer play with a shuffled deck each hand (or continuous shuffle), counting provides minimal advantage because the count resets. However, understanding counting fundamentally deepens your understanding of why basic strategy decisions exist in the first place — the strategy chart is not arbitrary; it's derived from exactly the kind of deck-composition mathematics that counting formalizes.</p>
+
+    <div class="callout">
+      <strong>Counting vs. strategy priority:</strong> Mastering basic strategy produces a larger practical improvement than learning card counting for most players. A counter who plays imperfect basic strategy loses more from strategy errors than they gain from count-based bet spreading. Get the strategy to automatic first. Counting is the advanced layer built on top of a flawless foundation.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- NEW SECTION: Building a Practice Routine                  -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <style>
+    .practice-timeline { margin:36px 0; display:flex; flex-direction:column; gap:0; }
+    .practice-phase { display:flex; gap:20px; padding:20px 0; border-left:2px solid var(--phantom); margin-left:16px; padding-left:24px; position:relative; }
+    .practice-phase:first-child { padding-top:0; }
+    .practice-phase::before { content:''; position:absolute; left:-7px; top:24px; width:12px; height:12px; border-radius:50%; background:var(--ember); border:2px solid var(--void); }
+    .practice-phase:first-child::before { top:0; }
+    .practice-phase-num { font-family:'Bebas Neue',sans-serif; font-size:28px; color:rgba(201,162,39,0.3); line-height:1; flex-shrink:0; width:30px; }
+    .practice-phase-content { flex:1; }
+    .practice-phase-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ember); margin-bottom:8px; }
+    .practice-phase-duration { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; color:var(--ash); margin-bottom:10px; }
+    .practice-phase-desc { font-size:14px; color:var(--dust); line-height:1.7; }
+  </style>
+
+  <div class="section">
+    <h2>Building a Blackjack Practice Routine That Actually Works</h2>
+    <p>Knowing the strategy chart intellectually and executing it automatically under pressure are different skills. The gap between them is where most players live — they understand the right play but hesitate in the moment, make a gut-instinct exception, or simply don't remember the correct action for a soft 18 against a dealer 9 at 11:30 PM. A structured practice routine closes that gap. Here's how to build one.</p>
+
+    <div class="practice-timeline">
+      <div class="practice-phase">
+        <div class="practice-phase-num">1</div>
+        <div class="practice-phase-content">
+          <div class="practice-phase-title">Chart Familiarization</div>
+          <div class="practice-phase-duration">Week 1 — 15 minutes/day</div>
+          <div class="practice-phase-desc">Print or save a basic strategy chart and read through it systematically by hand total and dealer upcard. Don't try to memorize it wholesale — identify the logical patterns. Hard totals 8 and under: always hit. Hard 17 and above: always stand. Hard 10 or 11: almost always double. Soft hands: the flexible ones that require the most attention. Understanding the logic makes memorization faster and more durable.</div>
+        </div>
+      </div>
+      <div class="practice-phase">
+        <div class="practice-phase-num">2</div>
+        <div class="practice-phase-content">
+          <div class="practice-phase-title">Flash Card Drilling</div>
+          <div class="practice-phase-duration">Week 2 — 20 minutes/day</div>
+          <div class="practice-phase-desc">Use a deck of cards or a digital flashcard tool. Deal yourself two cards and a dealer upcard, then state the correct decision out loud before checking the chart. The verbalization matters — it forces explicit decision-making rather than the vague sense of "I think I should hit." Track which hand/upcard combinations you consistently get wrong. Those are your drill priorities. Focus the session on the errors, not the decisions you already know.</div>
+        </div>
+      </div>
+      <div class="practice-phase">
+        <div class="practice-phase-num">3</div>
+        <div class="practice-phase-content">
+          <div class="practice-phase-title">Speed Drilling</div>
+          <div class="practice-phase-duration">Week 3 — 15 minutes/day</div>
+          <div class="practice-phase-desc">Repeat the flash card drill, but with a target decision speed. You should be able to name the correct play within 2–3 seconds of seeing the hand. If you're hesitating past 5 seconds on any hand combination, that combination goes back to the error pile. Speed matters because real sessions have social pressure, opponent timing, and emotional context — decisions that require extended deliberation under those conditions are decisions made under partial-attention conditions.</div>
+        </div>
+      </div>
+      <div class="practice-phase">
+        <div class="practice-phase-num">4</div>
+        <div class="practice-phase-content">
+          <div class="practice-phase-title">Live Session Application</div>
+          <div class="practice-phase-duration">Week 4 onward — concurrent with play</div>
+          <div class="practice-phase-desc">Play real sessions on Shitbox Shuffle using the chart as a reference (peer-vs-peer play typically allows this). After each session, review any hand where you hesitated or felt uncertain. The goal is to reduce chart-consultation frequency each week until decisions are fully automatic. Most players reach automatic execution on hard totals within a few weeks; soft hands and splits take longer because they appear less frequently and therefore practice less organically.</div>
+        </div>
+      </div>
+      <div class="practice-phase">
+        <div class="practice-phase-num">5</div>
+        <div class="practice-phase-content">
+          <div class="practice-phase-title">Stress Testing</div>
+          <div class="practice-phase-duration">Ongoing — monthly check</div>
+          <div class="practice-phase-desc">Every few weeks, run 50 hands of flash card drilling without the reference chart. No looking anything up. The correct answer should surface automatically within 2 seconds. Any hand that consistently requires deliberation has not been fully internalized — it goes back into the drill rotation. The standard to meet: 50 consecutive flash card hands with zero hesitations and zero errors. That's the benchmark for genuinely automatic execution.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>What to do about soft hands specifically</h3>
+    <p>Soft hand strategy is the most commonly undertrained portion of the basic strategy chart. The reason is simple: soft hands appear less frequently than hard hands, so they practice less naturally. But the decisions are consequential — failing to double on soft 17 against a dealer 6 (the correct play) costs more expected value per occurrence than most common hard-hand errors. Allocate at least 40% of your flash card drilling time to soft totals (soft 13 through soft 18) and pair splits, even though they represent a minority of hands dealt. Overweight the underrepresented decisions in your training.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- NEW SECTION: Video Chat Blackjack vs. Casino Blackjack    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>How Video Chat Blackjack Differs from Casino Blackjack</h2>
+    <p>Playing blackjack against a real person on video chat is a fundamentally different experience from playing against a casino dealer or a software algorithm, even though the underlying math is identical. Understanding those differences helps you deploy your strategy more effectively in the actual context you're playing in.</p>
+
+    <h3>The human factor</h3>
+    <p>In a casino, the dealer has zero emotional involvement in the outcome — they deal mechanically, follow fixed rules, and are completely unaffected by whether you win or lose. In video chat play, you're facing a real person who has their own emotional state, strategic decisions (if they're playing as dealer), and reactions. This introduces a social layer that traditional blackjack entirely lacks: your opponent is watching you as closely as you're watching them, and both of you have visible cameras. The psychological dimension of blackjack expands significantly when there's a human face on the other side of the game.</p>
+
+    <h3>Rule negotiation and flexibility</h3>
+    <p>Casino blackjack operates under fixed, posted rules with no negotiation. Video chat sessions between peers can operate under agreed-upon rules that may vary session to session. This is an opportunity — if you understand rule variations and their impact on house edge, you can advocate for favorable rules (3:2 payouts, surrender, double-after-split) more readily than you can at a casino table. Understanding the rule variation impact table from the previous section gives you the knowledge base to negotiate from.</p>
+
+    <h3>Deck penetration and shuffling</h3>
+    <p>In a land casino with a physical shoe, cards are dealt until a cut card is reached (typically 70–80% through the shoe before reshuffling). This penetration is what enables card counting to work — you get enough information from seen cards to gain meaningful insight about the remaining deck composition. In video chat play, shuffle timing varies. Some sessions use physical cards dealt manually; others use digital randomizers that effectively shuffle every hand. Understanding the shuffling method in play determines whether count-aware betting adjustments have any practical value in a given session.</p>
+
+    <h3>The pace advantage</h3>
+    <p>One underappreciated advantage of video chat play: the pace is typically slower than a live casino or a software casino game that auto-deals every few seconds. This slower pace gives you more time to execute strategy correctly without feeling rushed. Early in your chart internalization phase, this is significant — you have time to think through less familiar hands (soft 18, pair of 9s against dealer 7) without the pressure of a dealer waiting or software timing out your decision. Use the pace advantage deliberately during your learning phase.</p>
+
+    <div class="callout">
+      <strong>The camera as strategy signal:</strong> In video chat play, your expressions and body language are visible to your opponent. Practice delivering decisions — hits, stands, doubles, splits — with consistent affect regardless of your actual hand strength. Your excitement when you complete a double on 11 or your visible hesitation before standing on a soft 18 are information. Neutral execution is its own form of strategic discipline, even in blackjack where the "correct play" is predetermined by the chart.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- ADDITIONAL FAQ ITEMS                                       -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="faq-item">
+      <div class="faq-q">How much does basic strategy actually reduce the house edge?</div>
+      <div class="faq-a">In standard 6-deck blackjack with 3:2 payouts and typical casino rules, perfect basic strategy reduces the house edge from approximately 4–5% (playing by gut instinct) to roughly 0.5%. That's a tenfold reduction. In single-deck games with favorable rules, the edge can fall as low as 0.17%. The improvement is mathematical and consistent — every strategy decision you get right is money you're not surrendering to variance and poor probability assessment.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is card counting illegal?</div>
+      <div class="faq-a">No. Card counting is a legal cognitive technique — you're using your memory and arithmetic, not any device or method that cheats the game. Casinos can ask counters to leave or stop playing blackjack because they're private businesses with the right to refuse service, but counting itself is not illegal anywhere in the United States. In peer-vs-peer video chat play, counting is simply a skill applied to the same mathematical reality that governs every blackjack game.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How long does it take to memorize the basic strategy chart?</div>
+      <div class="faq-a">With focused drilling — flash card practice for 15–20 minutes daily — most players reach automatic execution on hard totals within two to three weeks. Soft hands and pair splits take another two to four weeks because they appear less frequently and therefore receive less natural practice. The full chart, executed automatically without hesitation, typically requires four to six weeks of consistent drilling. The investment pays immediate dividends: even partial strategy knowledge significantly reduces the house edge from its uninformed baseline.</div>
+    </div>
+  </div>
+
 </div><!-- end page-wrap -->
 
 <div style="max-width:720px; margin:0 auto; padding:0 28px;">

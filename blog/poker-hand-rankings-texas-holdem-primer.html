@@ -632,6 +632,301 @@
     </div>
   </div>
 
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- NEW SECTION: Pot Odds and Implied Odds                    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Pot Odds and Implied Odds: The Math That Drives Every Calling Decision</h2>
+    <p>Pot odds are the single most important mathematical concept in poker — not because they're complex, but because they convert every "should I call this?" situation from a gut feeling into an arithmetic problem. Once you can calculate pot odds automatically, a significant category of mistakes disappears from your game entirely, because the math either justifies the call or it doesn't.</p>
+
+    <p>The calculation is simple: pot odds are the ratio of the pot size to the cost of the call. If the pot contains 100 tokens and your opponent bets 50, the total pot you'd be calling into is 150 tokens, and it costs 50 to call — so your pot odds are 3:1, or 25%. That means you need to win this hand at least 25% of the time to make calling profitable in the long run.</p>
+
+    <h3>The "outs times 4" quick equity estimate</h3>
+    <p>Outs are the cards remaining in the deck that will complete your drawing hand. If you have four cards to a flush after the flop, there are nine flush cards remaining in the deck — so you have nine outs. On the flop (with two cards still to come), multiply your outs by four to get a rough equity percentage: nine outs × 4 = 36% chance of completing the flush by the river. On the turn (with one card to come), multiply by two: nine outs × 2 = 18%.</p>
+
+    <p>Compare that equity to your pot odds requirement: if you need 25% equity to call and you have 36%, the call is profitable. If you need 33% equity and you only have 18%, you fold — the math doesn't support continuing regardless of how much you want to hit the flush.</p>
+
+    <h3>Common outs reference table</h3>
+
+    <style>
+      .odds-table-wrap { overflow-x:auto; margin:28px 0; }
+      .odds-table { border-collapse:collapse; width:100%; font-family:'JetBrains Mono',monospace; font-size:11px; }
+      .odds-table th { background:#0e0d0b; color:var(--ember); letter-spacing:0.1em; text-transform:uppercase; padding:9px 12px; text-align:left; border:1px solid rgba(232,224,208,0.07); font-size:9px; }
+      .odds-table td { padding:8px 12px; border:1px solid rgba(232,224,208,0.05); color:var(--dust); vertical-align:top; }
+      .odds-table tr:nth-child(even) td { background:rgba(232,224,208,0.02); }
+      .odds-table .num { text-align:center; color:var(--chalk); font-weight:700; }
+      .odds-table .good { color:#6fcf97; }
+      .odds-table .marginal { color:var(--ember); }
+      .odds-table .tight { color:var(--ash); }
+    </style>
+
+    <div class="odds-table-wrap">
+      <table class="odds-table">
+        <thead>
+          <tr>
+            <th>Drawing Hand</th>
+            <th>Outs</th>
+            <th>Flop Equity (%)</th>
+            <th>Turn Equity (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Open-ended straight flush draw</td>
+            <td class="num">15</td>
+            <td class="num good">54%</td>
+            <td class="num good">30%</td>
+          </tr>
+          <tr>
+            <td>Flush draw</td>
+            <td class="num">9</td>
+            <td class="num good">36%</td>
+            <td class="num marginal">18%</td>
+          </tr>
+          <tr>
+            <td>Open-ended straight draw</td>
+            <td class="num">8</td>
+            <td class="num marginal">32%</td>
+            <td class="num marginal">16%</td>
+          </tr>
+          <tr>
+            <td>Two overcards</td>
+            <td class="num">6</td>
+            <td class="num marginal">24%</td>
+            <td class="num tight">12%</td>
+          </tr>
+          <tr>
+            <td>Gutshot straight draw</td>
+            <td class="num">4</td>
+            <td class="num tight">16%</td>
+            <td class="num tight">8%</td>
+          </tr>
+          <tr>
+            <td>One overcard</td>
+            <td class="num">3</td>
+            <td class="num tight">12%</td>
+            <td class="num tight">6%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Implied odds: the pot that doesn't exist yet</h3>
+    <p>Implied odds extend pot odds by accounting for the tokens you expect to win on future betting streets if you complete your draw. If a flush draw is slightly unprofitable based on current pot odds alone — say you need 25% equity and you have 18% on the turn — but hitting the flush will almost certainly win you a large river bet from your opponent, the actual expected value of calling is higher than the current pot odds suggest. Implied odds are highest against opponents who tend to stack off with strong second-best hands (like sets or top two pair) when flush and straight cards complete on the river.</p>
+
+    <div class="callout">
+      <strong>The implied odds ceiling:</strong> Implied odds only count as extra value when your completed hand is both likely to be the best hand <em>and</em> likely to get paid. A backdoor flush that completes on a paired board may not get paid even when you hit it, because the board looks scary enough that your opponent checks behind. Implied odds are a function of both your hand's strength and your read on whether your opponent will pay it off.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- NEW SECTION: Position Bar Chart Visual                    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <style>
+    .pos-bar-chart { margin:36px 0; }
+    .pos-bar-title { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ember); margin-bottom:20px; }
+    .pos-bar-row { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+    .pos-bar-label { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ash); text-transform:uppercase; letter-spacing:0.08em; min-width:80px; text-align:right; flex-shrink:0; }
+    .pos-bar-track { flex:1; height:20px; background:var(--phantom); border-radius:2px; overflow:hidden; position:relative; }
+    .pos-bar-fill { height:100%; border-radius:2px; transition:width 0.3s; display:flex; align-items:center; padding-left:8px; }
+    .pos-bar-fill span { font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; color:var(--void); letter-spacing:0.08em; white-space:nowrap; }
+    .pos-bar-value { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dust); min-width:36px; text-align:right; flex-shrink:0; }
+  </style>
+
+  <div class="section">
+    <h2>Position Importance: Why Your Seat Matters More Than Your Cards</h2>
+    <p>This is one of the most counterintuitive truths in poker for beginners: position — where you sit relative to the dealer button — has more impact on your long-run profitability than most starting hand decisions. Professional poker players exploit positional advantage so systematically that they can profitably play far weaker hands from the button than they can from early position. Understanding why explains the entire architecture of poker strategy.</p>
+
+    <p>Position matters because poker is an information game. Acting last in a betting round means you have seen every other player's decision before making your own. You know whether the flop was checked around (weakness) or bet into (strength). You know whether your continuation bet was called or raised. This informational advantage compounds across every street — preflop, flop, turn, and river — meaning a late-position player makes better-informed decisions on four separate occasions per hand compared to an early-position player who is betting blind into the unknown.</p>
+
+    <div class="pos-bar-chart">
+      <div class="pos-bar-title">Positional Profitability (relative win rate, 6-max Texas Hold'em)</div>
+      <div class="pos-bar-row">
+        <div class="pos-bar-label">Button</div>
+        <div class="pos-bar-track"><div class="pos-bar-fill" style="width:100%; background:linear-gradient(90deg,var(--ember),var(--flame));"><span>Best seat at the table</span></div></div>
+        <div class="pos-bar-value">++++</div>
+      </div>
+      <div class="pos-bar-row">
+        <div class="pos-bar-label">Cutoff</div>
+        <div class="pos-bar-track"><div class="pos-bar-fill" style="width:82%; background:linear-gradient(90deg,var(--ember),rgba(201,162,39,0.7));"><span>Strong position</span></div></div>
+        <div class="pos-bar-value">+++</div>
+      </div>
+      <div class="pos-bar-row">
+        <div class="pos-bar-label">Hijack</div>
+        <div class="pos-bar-track"><div class="pos-bar-fill" style="width:62%; background:rgba(201,162,39,0.45);"><span>Middle position</span></div></div>
+        <div class="pos-bar-value">++</div>
+      </div>
+      <div class="pos-bar-row">
+        <div class="pos-bar-label">UTG+1</div>
+        <div class="pos-bar-track"><div class="pos-bar-fill" style="width:38%; background:rgba(201,162,39,0.28);"><span>Early position</span></div></div>
+        <div class="pos-bar-value">+</div>
+      </div>
+      <div class="pos-bar-row">
+        <div class="pos-bar-label">UTG</div>
+        <div class="pos-bar-track"><div class="pos-bar-fill" style="width:28%; background:rgba(232,224,208,0.15);"><span>Tightest range</span></div></div>
+        <div class="pos-bar-value">±</div>
+      </div>
+      <div class="pos-bar-row">
+        <div class="pos-bar-label">Big Blind</div>
+        <div class="pos-bar-track"><div class="pos-bar-fill" style="width:18%; background:rgba(232,224,208,0.09);"><span>OOP postflop</span></div></div>
+        <div class="pos-bar-value">−</div>
+      </div>
+      <div class="pos-bar-row">
+        <div class="pos-bar-label">Small Blind</div>
+        <div class="pos-bar-track"><div class="pos-bar-fill" style="width:10%; background:rgba(232,224,208,0.06);"><span>Worst position</span></div></div>
+        <div class="pos-bar-value">−−</div>
+      </div>
+    </div>
+
+    <h3>What position changes in practice</h3>
+    <p>In late position (button or cutoff), you can profitably open a wider range of starting hands, because you'll have the informational advantage on every postflop street. Hands like suited connectors, small pocket pairs, and suited aces that are losing propositions from early position become playable from the button. You can also make more profitable bluffs from late position — you've seen the weakness signals before betting, rather than stabbing blind.</p>
+
+    <p>In early position, tighten your opening range to primarily premium hands and strong broadway combinations. You'll be acting first on every postflop street against the remaining players, which means you'll frequently be betting without knowing whether you're ahead. The compensation for this disadvantage is playing only hands strong enough to withstand that uncertainty.</p>
+
+    <div class="callout">
+      <strong>The one-sentence rule:</strong> If you're unsure whether to play a borderline hand, ask yourself where you are relative to the dealer button. If you're in the final two positions before the blinds, the hand is more playable than it looks. If you're in the first two positions, it's less playable than it looks. Position adjusts the value of every hand upward or downward by a significant margin.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- NEW SECTION: Reading Betting Patterns                     -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <style>
+    .tells-table-wrap { overflow-x:auto; margin:28px 0; }
+    .tells-table { border-collapse:collapse; width:100%; font-family:'JetBrains Mono',monospace; font-size:11px; }
+    .tells-table th { background:#0e0d0b; color:var(--ember); letter-spacing:0.1em; text-transform:uppercase; padding:9px 12px; text-align:left; border:1px solid rgba(232,224,208,0.07); font-size:9px; }
+    .tells-table td { padding:10px 12px; border:1px solid rgba(232,224,208,0.05); color:var(--dust); vertical-align:top; font-size:12px; line-height:1.6; }
+    .tells-table tr:nth-child(even) td { background:rgba(232,224,208,0.02); }
+    .tells-table .pattern-col { color:var(--chalk); font-weight:700; font-size:11px; }
+    .tells-table .likely-col { color:#6fcf97; }
+    .tells-table .caution-col { color:var(--ember); }
+  </style>
+
+  <div class="section">
+    <h2>Reading Betting Patterns for Beginners</h2>
+    <p>One of the most important skills in poker — arguably more important than memorizing hand rankings — is learning to read what betting patterns tell you about your opponent's hand strength. This isn't mystical. It's pattern recognition built on a simple foundation: most players, especially beginners, bet in ways that correlate with their hand strength. They bet large when they have something and bet small or check when they don't. Learning to read these signals doesn't require years of experience — it requires attentiveness to the action from hand one.</p>
+
+    <p>In video chat poker specifically, you have an additional layer that's unavailable in online text-only poker: the camera. You can watch your opponent's physical responses to community cards, their hesitation before betting, their body language when they receive their hole cards. These are additional data points — not definitive, but informative — on top of the betting pattern information the game itself provides.</p>
+
+    <div class="tells-table-wrap">
+      <table class="tells-table">
+        <thead>
+          <tr>
+            <th>Betting Pattern</th>
+            <th>Likely Interpretation</th>
+            <th>How to Respond</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pattern-col">Bet → Check → Bet (flop bet, turn check, river bet)</td>
+            <td class="likely-col">Often a polarized range: strong hand or missed draw that turned into a river bluff</td>
+            <td>Consider pot odds carefully; if the river card completed obvious draws, the bet is more likely a value hand</td>
+          </tr>
+          <tr>
+            <td class="pattern-col">Bet large on every street without hesitation</td>
+            <td class="likely-col">Usually strong hand value-betting for maximum extraction</td>
+            <td class="caution-col">Give significant credit; need strong hand or strong pot odds to continue</td>
+          </tr>
+          <tr>
+            <td class="pattern-col">Preflop limp, then call raises passively</td>
+            <td>Weak holdings or speculative hands (suited connectors, small pairs) hoping to hit cheap</td>
+            <td>Continuation bet frequently on dry boards; they often miss and fold</td>
+          </tr>
+          <tr>
+            <td class="pattern-col">Check-raise after initially checking</td>
+            <td class="likely-col">Strong hand (set, two pair, top pair with strong kicker) or aggressive bluff</td>
+            <td class="caution-col">Respect this line heavily early in a session; beginners rarely bluff-check-raise</td>
+          </tr>
+          <tr>
+            <td class="pattern-col">Minimum bet (betting the smallest allowable amount)</td>
+            <td>Testing the waters, often with a medium-strength hand; sometimes a value hand that doesn't know how to size</td>
+            <td>Raise to get information or take down the pot; min-bets rarely represent the nuts</td>
+          </tr>
+          <tr>
+            <td class="pattern-col">Instant call without any hesitation</td>
+            <td>Drawing hand with adequate pot odds, or medium pair that doesn't want to raise but can't fold</td>
+            <td>Be more cautious on completing draw cards; continue to value-bet if draw misses</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>The single best habit for pattern reading</h3>
+    <p>Watch every hand you're not involved in with the same attention you give hands you're playing. Most players check out when they fold. This is one of the most expensive mistakes in poker: the hands you're not playing are your primary source of information about how your opponents think and bet. When you see someone bet big on the flop and get called, then check the turn — note it. When you see someone limp in four consecutive hands from early position — note it. You're building a behavioral model that pays dividends in every hand you play against them.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- NEW SECTION: The Mental Game                              -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>The Mental Game: Tilt, Patience, and Decision Fatigue</h2>
+    <p>Poker is played by human beings using a human brain — which means all of the cognitive vulnerabilities that affect every other high-stakes decision-making context affect poker as well. The difference between a technically skilled player and a <em>winning</em> player is often not the quality of their strategy but the quality of their mental state while executing it.</p>
+
+    <p><strong>Tilt</strong> is the state of playing emotionally rather than strategically, typically triggered by a bad beat (losing a hand you had every right to win), a series of coolers, or a perceived slight from an opponent. The physical sensation of tilt — the tightness in your chest, the urgency to recover losses immediately, the frustration at someone who played poorly and got lucky — is real, but the decisions it produces are reliably worse than your baseline. Recognizing tilt as a state rather than a justified reaction is the beginning of managing it. When you notice yourself making a bet motivated by frustration rather than calculation, that's the moment to stop and reset.</p>
+
+    <h3>Practical tilt management techniques</h3>
+    <ul>
+      <li><strong>The pause rule:</strong> After any hand that triggers an emotional response, give yourself 20 seconds before acting in the next hand. Use that pause to ask: "Am I making this decision based on the cards, or based on how I feel right now?"</li>
+      <li><strong>Stop-loss limits:</strong> Before any session, decide the maximum you're willing to lose and commit to ending the session if you hit it. The decision to stop is much easier to make before you're losing than in the middle of a losing run when the urge to chase is strongest.</li>
+      <li><strong>Attribution reset:</strong> A bad beat means your opponent got lucky — not that you played incorrectly. If you got the money in with 80% equity and lost, you made the right decision. The outcome was unlucky. These are different things. Conflating outcome with decision quality is the fastest way to mislearn from poker.</li>
+    </ul>
+
+    <p><strong>Decision fatigue</strong> is less discussed but equally destructive. After playing for two or three hours, the quality of decisions measurably declines — not because you know less, but because the brain's capacity for effortful deliberation has been taxed. The solution isn't willpower; it's time limits. Set a session length in advance and stick to it. The last hour of a four-hour session is almost always the worst poker you play all day.</p>
+
+    <p><strong>Patience</strong> is not passive — it's active. Patient poker means folding 70–80% of starting hands without frustration, because you understand that selective engagement is the structural edge. Every hand you fold correctly is a small win: you preserved your stack for the spots where you have genuine advantage. Players who experience folding as losing ground rather than choosing good spots are fighting against the basic math of the game.</p>
+
+    <div class="callout">
+      <strong>The mental game bottom line:</strong> Poker rewards rational decision-making under uncertainty. Anything that compromises the rationality of your decision-making — tilt, fatigue, desperation, overconfidence — costs you money regardless of how well you know the strategy. The mental game isn't separate from poker strategy. It <em>is</em> poker strategy at the highest level.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- NEW SECTION: Bankroll Management for Poker                -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Bankroll Management for Poker Specifically</h2>
+    <p>Poker bankroll management is more demanding than bankroll management for most other casino games because poker is a game of skill played against other players — meaning your results include both variance (luck) and edge (skill). A player with a genuine edge can still lose over significant sample sizes due to variance alone. Bankroll management is the discipline that keeps you in action long enough for your edge to express itself.</p>
+
+    <p>The standard guidance for cash game poker: maintain a bankroll of at least 20–30 buy-ins for the stakes you're playing. This means if you're playing at a level where the standard buy-in is 100 tokens, your total playing bankroll should be 2,000–3,000 tokens before you sit at that table regularly. This cushion exists specifically to absorb the variance that even skilled players experience over hundreds of hands.</p>
+
+    <h3>Why poker requires more cushion than other games</h3>
+    <p>In blackjack with basic strategy, the variance per session is relatively predictable because you're playing against a fixed mathematical house edge. In poker, you're playing against humans whose skill levels vary wildly, and the single-hand variance can be enormous — even with 80% equity going all-in preflop, you lose 20% of the time. Over a session, that variance stacks. A 20-buy-in downswing is statistically possible for a genuinely winning player. A player with insufficient bankroll will go broke before that variance resolves itself, even if their edge over the field is real.</p>
+
+    <h3>Token stake guidelines for Shitbox Shuffle sessions</h3>
+    <ul>
+      <li><strong>Micro stakes (learning phase):</strong> Risk no more than 2% of your total tokens per session. Play as many sessions as it takes to build mechanical familiarity with hand rankings, position, and basic betting decisions.</li>
+      <li><strong>Low stakes (developing phase):</strong> Risk no more than 5% of total tokens per session. Focus on applying pot odds and position principles. Track decisions, not results.</li>
+      <li><strong>Regular stakes (competitive phase):</strong> 20 buy-in rule applies. Move down if your bankroll drops below 15 buy-ins for current stakes; move up when it exceeds 30 buy-ins.</li>
+      <li><strong>At all levels:</strong> Never play at stakes where losing a session would affect your mood, stress level, or financial life outside of Shitbox Shuffle. If the stakes feel existentially meaningful, they're too high for your current bankroll.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>The table-selection advantage:</strong> Unlike casino games, poker lets you choose your opponents. On any given platform, some players are far less experienced than others. Sitting at a table with a skill edge — not just a bankroll edge — is the most reliable bankroll protection available. Seek tables with players who have demonstrated loose, passive tendencies, not tables with the highest stakes or the most aggressive action. The goal is not the most exciting game; it's the most profitable one.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- ADDITIONAL FAQ ITEMS                                       -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="faq-item">
+      <div class="faq-q">What are implied odds in poker?</div>
+      <div class="faq-a">Implied odds extend the pot odds calculation by estimating how much more you expect to win on future streets if you complete your drawing hand. If current pot odds don't quite justify a call, but hitting your flush or straight will likely win a large additional bet on the river, the implied value of those future winnings can make the call profitable. Implied odds are highest against opponents who tend to stack off (bet all their chips) with second-best hands when draws complete on the board.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I stop going on tilt during a poker session?</div>
+      <div class="faq-a">The most effective tilt prevention is pre-commitment: decide your stop-loss limit before the session begins, when you're calm and rational. During play, use the 20-second pause rule after any hand that triggers an emotional response. The most important reframe: a bad beat means you got unlucky, not that you played incorrectly. If you got 80% equity into the middle and lost, you made the right decision — the outcome was unfortunate but the decision was sound. Separating outcomes from decision quality is the core mental game skill in poker.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How many buy-ins should I have before playing a poker stake level regularly?</div>
+      <div class="faq-a">The standard recommendation for cash game poker is 20–30 buy-ins for your chosen stake level. This cushion exists to absorb the significant variance that even winning players experience over hundreds of hands. If your bankroll drops below 15 buy-ins, move down in stakes. If it grows past 30 buy-ins consistently, you can consider moving up. Playing with fewer than 20 buy-ins creates the risk of going broke before your edge has enough hands to express itself statistically.</div>
+    </div>
+  </div>
+
 </div><!-- end page-wrap -->
 
 <div style="max-width:720px; margin:0 auto; padding:0 28px;">

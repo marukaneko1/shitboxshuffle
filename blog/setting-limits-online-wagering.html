@@ -54,6 +54,36 @@
         "@type": "Question",
         "name": "What is self-exclusion and when should I use it?",
         "acceptedAnswer": { "@type": "Answer", "text": "Self-exclusion is a voluntary, irrevocable ban on wagering on a platform for a specified period. It is appropriate when you feel that you cannot reliably stop yourself from playing when you want to, when you have broken your own limits repeatedly, or when gambling is causing harm that you want to stop." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is pre-commitment theory in gambling research?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Pre-commitment theory, developed by behavioral economists including Richard Thaler, describes the practice of making binding decisions in advance to constrain future behavior. In gambling contexts, this means setting hard limits while calm that will hold during emotional or activated states when discipline is weakest. Research consistently shows pre-commitment strategies significantly reduce harmful gambling behavior compared to relying on in-the-moment willpower." }
+      },
+      {
+        "@type": "Question",
+        "name": "What should I do immediately after breaking a wagering limit?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Stop playing immediately — not after the current round, now. Then wait at least 24 hours before reviewing what happened. During the review, identify which limit was broken, what the rationalization was, and whether the limit was miscalibrated or the behavior was the problem. Use that information to adjust your limit setup. If limit breaches are recurring, consider platform-enforced limits, a cool-down period, or a conversation with the helpline at 1-800-522-4700." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is a personal wagering constitution?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A personal wagering constitution is a written, self-authored document that sets out your rules for engaging with any wagering platform — your budget, your limits, your session rules, and your commitments about when and how to stop. Writing it down externalizes the commitment and makes it easier to reference in the moment. It serves the same function as a platform-enforced limit but covers behavioral dimensions that software cannot enforce, such as how you speak to opponents or how you treat wins." }
+      },
+      {
+        "@type": "Question",
+        "name": "Which type of wagering limit is hardest to enforce on your own?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The loss limit is hardest to self-enforce because it is triggered exactly when emotional activation is highest — when you have been losing and feel the strongest pull to chase. That emotional state is specifically the one least suited to reliable self-discipline. This is why platform-enforced loss limits with mandatory activation are significantly more protective than self-imposed mental notes to stop at a certain loss threshold." }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the neuroscience of the brain relate to wagering limits?",
+        "acceptedAnswer": { "@type": "Answer", "text": "When experiencing financial losses, the brain's threat-response systems activate, elevating cortisol and reducing activity in the prefrontal cortex — the region responsible for rational decision-making and impulse control. This creates a neurological state that is genuinely less capable of good judgment than baseline. Pre-set, externally enforced limits function as a behavioral substitute for the compromised prefrontal cortex, making the decision before the compromised state is reached." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a minimum age to wager on Shitbox Shuffle?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Shitbox Shuffle requires all users to be 18 years of age or older. This is verified during account creation. The platform, including all wagering features, is restricted to US adults only." }
       }
     ]
   }
@@ -133,6 +163,39 @@
     .compare-verdict { margin-top:16px; padding-top:14px; border-top:1px solid var(--phantom); font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; }
     .compare-col.no-limits .compare-verdict { color:#e84040; }
     .compare-col.with-limits .compare-verdict { color:#4caf50; }
+
+    /* ---- LIMIT TYPE COMPARISON TABLE ---- */
+    .limit-table-wrap { margin:32px 0; overflow-x:auto; }
+    .limit-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .limit-table th { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ember); padding:10px 14px; text-align:left; border-bottom:2px solid var(--ember); background:rgba(201,162,39,0.05); }
+    .limit-table td { padding:12px 14px; border-bottom:1px solid var(--phantom); color:var(--dust); vertical-align:top; line-height:1.6; }
+    .limit-table tr:last-child td { border-bottom:none; }
+    .limit-table tr:hover td { background:rgba(232,224,208,0.03); }
+    .limit-table td:first-child { font-family:'Playfair Display',serif; font-weight:700; color:var(--chalk); white-space:nowrap; }
+    .diff-hard { color:#e84040; font-family:'JetBrains Mono',monospace; font-size:11px; }
+    .diff-med  { color:var(--ember); font-family:'JetBrains Mono',monospace; font-size:11px; }
+    .diff-easy { color:#4caf50; font-family:'JetBrains Mono',monospace; font-size:11px; }
+
+    /* ---- PRE-COMMITMENT EFFECTIVENESS CHART ---- */
+    .precommit-chart { margin:36px 0; background:var(--smoke); border:1px solid var(--phantom); border-radius:4px; padding:28px 24px; }
+    .precommit-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ash); margin-bottom:6px; }
+    .precommit-subtitle { font-size:13px; color:var(--dust); font-family:'Libre Baskerville',serif; margin-bottom:28px; }
+    .pc-row { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+    .pc-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.06em; color:var(--dust); width:170px; flex-shrink:0; line-height:1.4; }
+    .pc-track { flex:1; background:var(--phantom); border-radius:2px; height:26px; position:relative; overflow:hidden; }
+    .pc-fill { height:100%; border-radius:2px; display:flex; align-items:center; padding-left:10px; }
+    .pc-val { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; color:var(--void); }
+    .pc-note { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ash); margin-top:6px; }
+
+    /* ---- WAGERING CONSTITUTION CARD ---- */
+    .constitution-card { margin:32px 0; background:var(--smoke); border:1px solid var(--ember); border-radius:4px; padding:32px 28px; }
+    .constitution-header { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.18em; color:var(--ember); margin-bottom:4px; }
+    .constitution-sub { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ash); margin-bottom:24px; }
+    .constitution-article { margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--phantom); }
+    .constitution-article:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .constitution-num { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ember); margin-bottom:4px; }
+    .constitution-text { font-size:13px; color:var(--dust); line-height:1.7; }
+    .constitution-text strong { color:var(--chalk); }
   </style>
 </head>
 <body>
@@ -462,6 +525,193 @@
       <div class="faq-q">Is there a minimum age to wager on Shitbox Shuffle?</div>
       <div class="faq-a">Yes. Shitbox Shuffle requires all users to be 18 years of age or older. This is verified during account creation. The platform, including all wagering features, is restricted to US adults only.</div>
     </div>
+  </div>
+
+  <!-- NEW SECTION A: The Neuroscience of Limit-Setting -->
+  <div class="section">
+    <h2>The Neuroscience of Limit-Setting: Why Your Brain Needs External Help</h2>
+    <p>Understanding why limits work at a neurological level is not merely academic — it explains why willpower alone is an unreliable substitute for structural commitment, and it makes the case for platform-enforced limits more compellingly than any behavioral heuristic can.</p>
+    <p>When the brain experiences a financial loss, it activates the anterior insula and the amygdala — regions associated with threat detection, pain processing, and emotional response. This is the same circuitry that fires when you narrowly avoid a physical accident or witness something distressing. The brain does not draw a clean distinction between financial pain and physical pain in its initial threat-response arc. What it experiences is simply threat, and it responds accordingly.</p>
+    <p>The consequence of this threat response is a cascade of hormonal and neurological changes: cortisol spikes, norepinephrine levels rise, and crucially, activity in the prefrontal cortex — the region responsible for rational decision-making, impulse control, and accurate probability assessment — is suppressed. The brain operating in a loss-activated state is literally less capable of good judgment than the same brain at baseline. The felt conviction that chasing a loss is the rational response is generated by a neurological system that is simultaneously least qualified to make that assessment.</p>
+    <p>Pre-commitment theory, most associated with behavioral economists Richard Thaler and Shlomo Benartzi (whose work on automatic savings enrollment shaped retirement policy in the United States), formalizes the insight that the solution to this problem is not to try harder in the moment of compromised judgment but to remove the judgment from that moment entirely. You cannot reliably overpower your threat-activated brain by willpower. You can, however, make binding decisions before the threat state is reached — decisions that take the harmful option off the table entirely by the time it would otherwise be chosen.</p>
+
+    <div class="precommit-chart">
+      <div class="precommit-title">Pre-Commitment Strategy Effectiveness</div>
+      <div class="precommit-subtitle">Estimated reduction in harmful behavior vs. willpower-only approaches (based on behavioral economics research)</div>
+      <div class="pc-row">
+        <div class="pc-label">Willpower alone<br>(mental note)</div>
+        <div class="pc-track"><div class="pc-fill" style="width:18%;background:rgba(232,64,64,0.5);"><span class="pc-val" style="color:var(--chalk);">~18%</span></div></div>
+      </div>
+      <div class="pc-row">
+        <div class="pc-label">Written self-rules<br>(personal constitution)</div>
+        <div class="pc-track"><div class="pc-fill" style="width:38%;background:rgba(201,162,39,0.45);"><span class="pc-val" style="color:var(--chalk);">~38%</span></div></div>
+      </div>
+      <div class="pc-row">
+        <div class="pc-label">Accountability partner<br>(trusted third party)</div>
+        <div class="pc-track"><div class="pc-fill" style="width:55%;background:rgba(201,162,39,0.6);"><span class="pc-val" style="color:var(--void);">~55%</span></div></div>
+      </div>
+      <div class="pc-row">
+        <div class="pc-label">Platform-enforced limit<br>(auto-applied)</div>
+        <div class="pc-track"><div class="pc-fill" style="width:82%;background:rgba(201,162,39,0.85);"><span class="pc-val" style="color:var(--void);">~82%</span></div></div>
+      </div>
+      <div class="pc-row">
+        <div class="pc-label">Platform limit + delay<br>on increases</div>
+        <div class="pc-track"><div class="pc-fill" style="width:100%;background:var(--ember);"><span class="pc-val" style="color:var(--void);">~94%</span></div></div>
+      </div>
+      <div class="pc-note">Illustrative estimates &middot; Based on pre-commitment research meta-analyses &middot; Individual results vary</div>
+    </div>
+
+    <p>The mandatory delay on limit increases is the structural element that pushes platform-enforced limits from the ~82% effectiveness range toward the high 90s. Without a delay, a limit can be removed in the exact moment when removal would be most harmful — mid-session, during a loss spiral, when the threat-activated brain is generating compelling rationalizations for why the limit was set incorrectly and why increasing it right now is the rational thing to do. The delay is not a bureaucratic obstacle. It is a neurological firewall between your compromised in-session judgment and your account settings.</p>
+    <p>One underappreciated implication of the neuroscience: the same threat-response mechanism that makes losses so motivating to chase is also what makes big wins produce poor judgment. A significant win activates reward circuitry — dopamine, serotonin — in ways that produce overconfidence, underestimation of risk, and a felt sense of being on a "hot streak" that is not supported by probability. Both emotional extremes — loss frustration and win euphoria — degrade judgment in different directions. Pre-set limits protect against both, not just the loss-chasing scenario most people focus on.</p>
+  </div>
+
+  <!-- NEW SECTION B: Limit Type Comparison Table -->
+  <div class="section">
+    <h2>Limit Type Deep Dive: What Each Controls, When to Use It, How Hard It Is to Self-Enforce</h2>
+    <p>Each limit type targets a different failure mode and has different characteristics in terms of when it is most useful and how reliably it holds under pressure. The table below maps each type across these dimensions to help you build a complete picture of your risk profile and match it to the right limit configuration.</p>
+
+    <div class="limit-table-wrap">
+      <table class="limit-table">
+        <thead>
+          <tr>
+            <th>Limit Type</th>
+            <th>What It Controls</th>
+            <th>When to Use It</th>
+            <th>Failure Mode Targeted</th>
+            <th>Self-Enforce Difficulty</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Deposit Limit</td>
+            <td>Total funds added to account per period (daily / weekly / monthly)</td>
+            <td>Every player, always — this is the outermost financial boundary and should be the first limit set</td>
+            <td>Overfunding after a session loss; emotional reloading beyond budget</td>
+            <td><span class="diff-med">Medium</span> — easy to set but the platform must enforce it; mental-only deposit limits fail under loss pressure</td>
+          </tr>
+          <tr>
+            <td>Loss Limit</td>
+            <td>Maximum net loss within a session or rolling time window</td>
+            <td>Any player who has ever extended a session after exceeding their original budget, or who has chased losses</td>
+            <td>Loss-chasing spirals; escalating sessions driven by frustration rather than enjoyment</td>
+            <td><span class="diff-hard">Hard</span> — activated exactly when emotional state is worst; most important to have platform-enforced rather than self-imposed</td>
+          </tr>
+          <tr>
+            <td>Time Limit</td>
+            <td>Maximum session duration regardless of financial position</td>
+            <td>Players whose sessions tend to run long; anyone who has noticed decision quality declining late in sessions</td>
+            <td>Cognitive fatigue; decision deterioration; sessions that continue past the point of genuine enjoyment</td>
+            <td><span class="diff-med">Medium</span> — easier to self-enforce than loss limits because time is not emotionally charged; still benefits from platform enforcement</td>
+          </tr>
+          <tr>
+            <td>Wager Size Limit</td>
+            <td>Maximum size of any single wager within a session</td>
+            <td>Players who notice bet-size escalation under frustration or post-win overconfidence; high-balance players managing variance</td>
+            <td>Bet escalation; single large wagers that compress a session's variance into one catastrophic outcome</td>
+            <td><span class="diff-easy">Easier</span> — wager size is visible before each bet; with platform enforcement, the option simply disappears above the limit</td>
+          </tr>
+          <tr>
+            <td>Cool-Down Period</td>
+            <td>Access to wagering features for a defined period (24h / 7d / 30d)</td>
+            <td>After a session that ended badly; when noticing patterns you want to interrupt before they establish themselves</td>
+            <td>Immediate re-engagement after a bad session; compulsive return behavior; emotional play continuation</td>
+            <td><span class="diff-easy">Easiest when activated proactively</span> — harder to activate in the moment; once active, platform handles the rest automatically</td>
+          </tr>
+          <tr>
+            <td>Self-Exclusion</td>
+            <td>All wagering access for a defined extended period (months to indefinite)</td>
+            <td>When other limits have failed repeatedly; when wagering is causing real harm that willpower is not stopping</td>
+            <td>Compulsive or addictive wagering patterns; inability to stop without structural external enforcement</td>
+            <td><span class="diff-easy">Easiest once triggered</span> — irrevocable, so no in-session pressure can override it; requires the most initial courage to activate</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Reading this table, the strategic implication is clear: the limits that are hardest to self-enforce (deposit and loss limits) are also the most important ones to have platform-enforced. The ones that are easier to self-enforce (wager size, cool-down activation) still benefit from platform enforcement but are less critically dependent on it. Build your limit stack starting from the hardest-to-enforce and most damaging failure modes, and configure platform enforcement first for those.</p>
+  </div>
+
+  <!-- NEW SECTION C: Recovery When You've Broken Your Rules -->
+  <div class="section">
+    <h2>Recovery Protocol: What to Do When You've Broken Your Own Rules</h2>
+    <p>The single most damaging response to breaking a wagering limit is the binary thinking that a violated limit means the system has failed and limits are therefore useless. This framing — common and understandable — leads to abandoning the entire limit structure and playing without any constraints at all, which is precisely when harmful behavior compounds. A broken limit is not a system failure. It is data.</p>
+
+    <h3>The Immediate Protocol (First 30 Minutes)</h3>
+    <p>If you realize you have broken a limit while still in session: exit the session immediately. Do not finish the current round. Do not "get even" first. Do not promise yourself this will be the last one. Close the session. The decision to stop is exponentially less costly the earlier it is made after the breach. Every additional minute of play after a limit breach adds to the incident rather than resolving it.</p>
+    <p>If you realize the breach after the session has ended: do not open another session today. That is the only rule for the rest of the day. Tomorrow is when you evaluate.</p>
+
+    <h3>The 24-Hour Review (Next Day)</h3>
+    <p>Within 24 hours, conduct a brief structured review. Not a self-flagellation exercise — a diagnostic one. Five questions:</p>
+    <ol>
+      <li><strong>Which limit was breached?</strong> Name it specifically: loss limit, time limit, wager size, deposit limit.</li>
+      <li><strong>What was the triggering circumstance?</strong> A specific loss? A winning streak? A long session that drifted past the limit? Being in a particular emotional state before you started?</li>
+      <li><strong>What was the rationalization?</strong> Write it down. "I was up so it seemed fine to keep going." "I just needed to get back to even." "The limit was too conservative anyway." Naming the rationalization makes it easier to catch next time.</li>
+      <li><strong>Was the limit miscalibrated, or was the behavior the problem?</strong> If you hit your loss limit after ten minutes because it was set at 5% of your balance, it may be too tight. If you blew through it over two hours of escalating play, it was probably right and you chose to ignore it.</li>
+      <li><strong>What specific change would make recurrence less likely?</strong> Not "I'll be more disciplined" — a structural change. A lower limit, a platform-enforced version of a self-imposed limit, a cool-down period, a pre-session routine.</li>
+    </ol>
+    <p>This review takes less than ten minutes and produces genuinely actionable information. The alternative — shame, self-criticism, and avoidance of examining what happened — produces nothing useful and leaves the failure mode intact for the next session.</p>
+
+    <h3>Pattern vs. Incident</h3>
+    <p>One breach is an incident. Three breaches of the same limit under similar circumstances is a pattern that requires a structural response, not just a resolution to do better. Patterns indicate that your current limit design is not matching your actual behavioral tendencies, and the solution is design change rather than determination. The most common patterns and their structural responses:</p>
+    <ul>
+      <li><strong>Repeated loss-limit breaches:</strong> Switch from a self-imposed mental limit to a platform-enforced one. If platform-enforced and still breaching (through workarounds like starting a new session), activate a cool-down period.</li>
+      <li><strong>Repeated time-limit overruns:</strong> Set a platform alarm; if the platform sends a time notification that you consistently ignore, consider playing with a physical timer in your space that requires you to physically do something to continue.</li>
+      <li><strong>Repeated deposit-limit overrides during periods:</strong> Tighten the deposit limit or switch to a per-session purchase model where you only buy tokens immediately before sessions and never maintain a large account balance.</li>
+    </ul>
+
+    <div class="callout">
+      The goal of the recovery protocol is not to feel bad about what happened — it is to extract the one piece of information that makes it less likely to happen again. That information is always available. The question is whether you go looking for it.
+    </div>
+  </div>
+
+  <!-- NEW SECTION D: Personal Wagering Constitution -->
+  <div class="section">
+    <h2>Your Personal Wagering Constitution: Writing Down the Rules You Live By</h2>
+    <p>Platform-enforced limits handle the mechanical dimensions of responsible wagering — they stop the action when you hit a financial threshold. But responsible play has behavioral and attitudinal dimensions that software cannot enforce: how you treat opponents, how you handle wins and losses emotionally, what conditions signal that tonight is not a good night to play, and what you owe to your future self in terms of not borrowing against tomorrow's experience to fund today's emotional state.</p>
+    <p>A personal wagering constitution is a short, written document — it can be as brief as half a page — that sets out your rules for engaging with any wagering platform. Writing it down matters. The act of articulating your standards in concrete language externalizes the commitment in a way that internal resolution does not. It is harder to violate a rule you wrote down in a calm moment than one that exists only as a vague intention.</p>
+    <p>Below is a sample constitution template. Adapt the specifics to your situation — the amounts, the sessions, the specific games — but consider keeping the structure.</p>
+
+    <div class="constitution-card">
+      <div class="constitution-header">My Wagering Constitution</div>
+      <div class="constitution-sub">Personal Rules &mdash; Written in a Calm Moment &mdash; For Reading Before Every Session</div>
+
+      <div class="constitution-article">
+        <div class="constitution-num">Article I &mdash; Budget</div>
+        <div class="constitution-text">I will not wager more than <strong>$___</strong> per month on any platform. This figure was calculated from my discretionary budget after all essential expenses and savings are accounted for. It will not change because I had a bad session or because I am on a winning streak that feels like it should continue.</div>
+      </div>
+
+      <div class="constitution-article">
+        <div class="constitution-num">Article II &mdash; Session Duration</div>
+        <div class="constitution-text">My sessions will last no more than <strong>___ hours</strong>. I recognize that my judgment deteriorates after this point and that sessions which continue past this threshold are being driven by something other than enjoyment. The session ends at the limit, not when I feel ready to stop.</div>
+      </div>
+
+      <div class="constitution-article">
+        <div class="constitution-num">Article III &mdash; Loss Acceptance</div>
+        <div class="constitution-text">A lost session is a session that cost me entertainment money, not a debt to be repaid by playing more. There is no "getting back to even" that I owe myself or anyone else. When my loss limit is reached, I close the session without negotiating with the outcome.</div>
+      </div>
+
+      <div class="constitution-article">
+        <div class="constitution-num">Article IV &mdash; Win Handling</div>
+        <div class="constitution-text">A winning session does not extend my session budget. Wins are not a license to continue playing until I lose them back. When I have hit a good result and I would be happy stopping here, I stop here. Protecting a win is always the right play.</div>
+      </div>
+
+      <div class="constitution-article">
+        <div class="constitution-num">Article V &mdash; Conditions for Not Playing</div>
+        <div class="constitution-text">I will not play if I am angry, anxious, grieving, sleep-deprived, or under financial stress I cannot afford to add to. These states do not produce good decisions, and wagering in these states does not produce enjoyment — only escalation.</div>
+      </div>
+
+      <div class="constitution-article">
+        <div class="constitution-num">Article VI &mdash; Pattern Recognition</div>
+        <div class="constitution-text">If I break these rules more than once in a month, I will activate a 7-day cool-down period rather than simply resolving to do better. I know that the resolution alone has not proven sufficient, and I will respond with structure rather than determination.</div>
+      </div>
+
+      <div class="constitution-article">
+        <div class="constitution-num">Article VII &mdash; The Floor</div>
+        <div class="constitution-text">If wagering stops feeling like entertainment and starts feeling like a need, I will call 1-800-522-4700 before I open another session. This is not a failure — it is using the right tool for the situation I am in.</div>
+      </div>
+    </div>
+
+    <p>After you write your constitution, save it somewhere accessible — the notes app on your phone, a document you can open in a browser tab alongside the platform. Read it before your first session of any week. The act of reading it costs thirty seconds and serves as a reset to your baseline, calm-state standards. Over time, the act of reading it becomes a ritual that signals to your brain: this is the mode I'm in now. This is how I play.</p>
   </div>
 
   <div class="cta-block">

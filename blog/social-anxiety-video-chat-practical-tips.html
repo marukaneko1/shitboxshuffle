@@ -70,6 +70,16 @@
           "@type": "Question",
           "name": "When should I seek professional help for video chat anxiety?",
           "acceptedAnswer": {"@type": "Answer", "text": "Consider professional support when anxiety is preventing you from engaging in activities you want to engage in, when it's affecting your work or existing relationships, when physical symptoms are severe, or when avoidance is becoming your primary coping mechanism. Normal nervousness responds to practice and gradual exposure; clinical social anxiety disorder benefits significantly from CBT and sometimes medication."}
+        },
+        {
+          "@type": "Question",
+          "name": "How do I know if my online social activity is helping or reinforcing my avoidance?",
+          "acceptedAnswer": {"@type": "Answer", "text": "The key test is whether you are doing things during sessions you would normally avoid and whether anxiety is decreasing over time. Productive exposure involves genuine challenge and diminishing anxiety across repeated sessions. Accommodation involves structuring sessions to minimize challenge — keeping them short, avoiding anything difficult, using video chat as a substitute for in-person interaction rather than as practice for it. Anxiety that holds steady or increases over weeks of regular use is a signal that something about your approach needs to change, and professional support may help identify what."}
+        },
+        {
+          "@type": "Question",
+          "name": "What should I track in an anxiety journal for video chat practice?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Track pre-session anxiety (0–10), peak in-session anxiety (0–10), post-session anxiety (0–10), one thing that went well, one specific anxiety trigger, and one thing you'd do differently next session. Averaging your scores every ten sessions makes gradual progress visible, which is important because anxiety management progress is often invisible to the person making it. The journal's most powerful function is documenting that anticipated catastrophes rarely materialize, progressively weakening the anticipatory anxiety that makes starting each session feel harder than it is."}
         }
       ]
     }
@@ -216,6 +226,32 @@ footer{margin-top:72px;padding:40px 0;border-top:1px solid var(--phantom);displa
 .step-5{--step-color:#c9a227;}
 .step-6{--step-color:#e8c547;}
 .step-7{--step-color:#e07c1a;}
+
+/* ── VISUAL 3: Exposure Hierarchy Ladder (stepped levels) ── */
+.exp-hierarchy{margin:40px 0;display:flex;flex-direction:column;gap:6px;position:relative;}
+.exp-step{display:flex;align-items:center;gap:0;position:relative;}
+.exp-indent{flex-shrink:0;}
+.exp-block{flex:1;border-radius:3px;padding:14px 18px;display:flex;align-items:center;gap:16px;position:relative;}
+.exp-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;width:24px;text-align:center;flex-shrink:0;}
+.exp-label{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--chalk);flex:1;}
+.exp-anxiety-tag{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:2px;white-space:nowrap;flex-shrink:0;}
+.exp-s1{--exp-color:#27ae60;} .exp-s2{--exp-color:#52c87d;} .exp-s3{--exp-color:#4a9eda;} .exp-s4{--exp-color:#6bb8e8;} .exp-s5{--exp-color:#c9a227;} .exp-s6{--exp-color:#e8c547;} .exp-s7{--exp-color:#e07c1a;} .exp-s8{--exp-color:#e05c1a;}
+.exp-block{background:rgba(232,224,208,0.02);border-left:3px solid var(--exp-color);}
+.exp-num{color:var(--exp-color);}
+.exp-anxiety-tag{background:rgba(232,224,208,0.04);border:1px solid var(--exp-color);color:var(--exp-color);}
+
+/* ── VISUAL 4: Thought Record Table ── */
+.thought-table{margin:36px 0;border:1px solid var(--phantom);border-radius:4px;overflow:hidden;width:100%;}
+.thought-table-header{display:grid;grid-template-columns:1fr 1fr 1fr;background:rgba(201,162,39,0.08);border-bottom:1px solid var(--phantom);}
+.tth-cell{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ember);padding:12px 14px;}
+.thought-row{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--phantom);}
+.thought-row:last-child{border-bottom:none;}
+.thought-row:nth-child(odd){background:rgba(232,224,208,0.02);}
+.tr-cell{padding:12px 14px;font-size:13px;color:var(--dust);line-height:1.6;}
+.tr-cell.situation{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ash);letter-spacing:0.05em;}
+.tr-cell.thought{font-style:italic;color:var(--bone);}
+.tr-cell.reframe{color:var(--dust);}
+.tr-cell strong{color:var(--chalk);}
 
 /* ── VISUAL 2: Pre-Session Checklist ── */
 .checklist-wrap{
@@ -566,11 +602,223 @@ footer{margin-top:72px;padding:40px 0;border-top:1px solid var(--phantom);displa
     <p>Normal nervousness, by contrast, responds well to exactly the strategies outlined in this article: pre-session preparation, technical adjustments (self-view off, camera angle, lighting), the self-permission to be imperfect, graduated exposure across sessions, and the structural anxiety reduction that comes from adding a game to pure conversation. These tools are real and the effects are measurable. Use them without apology — and if they're not enough, that's not a personal failing. It's information about what level of support you actually need.</p>
   </div>
 
+  <div class="section">
+    <h2>The Role of Authenticity in Anxiety Reduction: Why Performing Confidence Backfires</h2>
+    <p>One of the most common pieces of advice given to anxious people in social situations is some version of "just act confident." The instruction sounds helpful, and the underlying intention — don't let anxiety control your behavior — is valid. But the specific advice to perform confidence, rather than to tolerate anxiety while behaving authentically, tends to backfire in ways that are worth understanding before you try to apply it on video chat.</p>
+
+    <p>Performing confidence requires cognitive resources — specifically, monitoring how confident you appear and adjusting your behavior to match a confidence standard you're not actually feeling. These resources come from the same limited pool that generates interesting conversation, reads social cues, manages turn-taking, and everything else a good video chat interaction requires. Adding a performance requirement to an already cognitively demanding situation does not reduce its difficulty; it increases it. Anxious people who try to perform confidence typically find that their actual conversational quality decreases, because the performance is consuming resources that genuine engagement would otherwise use.</p>
+
+    <p>The alternative — behaving authentically while experiencing anxiety — is both less cognitively expensive and more socially effective. Authentic behavior during anxiety typically means: speaking more slowly than you might otherwise (which reads as deliberate rather than nervous to an outside observer), taking genuine pauses rather than rushing to fill silence, acknowledging moments of uncertainty rather than covering them with false confidence, and letting genuine reactions show rather than filtering them through a confident-appearing mask. These behaviors are less effortful than performance, produce more authentic social signals, and tend to generate more genuine responses from the other person.</p>
+
+    <p>This is related to a concept sometimes called <strong>acceptance-based coping</strong>: rather than trying to change how you feel (which is hard and often counterproductive), you change your relationship to the feeling. Anxiety is present. It's uncomfortable. You're going to engage anyway, not despite the anxiety but alongside it. This acceptance posture reduces the secondary anxiety-about-anxiety that often makes initial nervousness spiral, and it frees up the cognitive resources that fighting or hiding the anxiety would otherwise consume.</p>
+
+    <p>On video chat specifically, this approach has an additional advantage: the medium amplifies authenticity. Genuine reactions — real laughter, actual interest, authentic surprise — translate well through a screen. Performed reactions — manufactured enthusiasm, forced smiles, artificial ease — read as slightly off, because the micro-expressions and timing of performed emotions don't quite match the real thing. Authentic anxiety managed gracefully is more compelling to watch than performed confidence managed badly.</p>
+  </div>
+
+  <div class="section">
+    <h2>Leveraging the Social Benefits of Low-Stakes Online Interaction</h2>
+    <p>One of the underappreciated benefits of platforms like Shitbox Shuffle for socially anxious people is the specifically low-stakes nature of random matching. Every person you connect with is someone you've never met, may never meet again, and who has no connection to your existing social network. This is typically presented as a limitation — no continuity, no relationship building — but for someone building social confidence, it's an asset of the first order.</p>
+
+    <p>The low stakes of the random encounter mean that every session is a safe practice field. There is no social consequence if a session goes badly, because the person you connect with has no access to your social world, no ability to communicate their impression of you to people you know, and no ongoing relationship that would be damaged by a suboptimal encounter. For someone accustomed to the high-stakes social landscape of workplaces, existing friend groups, and family contexts — where every interaction has potential consequences for your reputation and relationships — a random video chat session is essentially zero-cost in social terms.</p>
+
+    <p>This zero-cost structure is not just emotionally reassuring; it changes behavior in measurable ways. People in low-stakes social contexts are more willing to try things — different conversational topics, different levels of disclosure, different games — because the cost of failure is minimal. This willingness to experiment produces more authentic, varied, and interesting interactions than the safe, reputation-managing behavior that high-stakes social contexts tend to enforce. The randomness of the encounter is the freedom of the encounter.</p>
+
+    <p>As confidence builds through repeated positive experiences in this low-stakes environment, the skills and confidence developed there transfer progressively to higher-stakes social contexts. The person who has learned, through fifty random video chat sessions, that they can start a conversation, sustain it through awkward moments, recover from blanking, propose a game, and exit gracefully — that person carries all of those capabilities with them into every subsequent social situation. The practice is real even when the stakes are low.</p>
+  </div>
+
   <div class="cta-block">
     <div class="cta-headline">Less Blank Screen. More to Do. Less to Fear.</div>
     <div class="cta-body">Shitbox Shuffle gives you structured games running alongside video chat — which means your attention goes to the next move, not to how you're coming across. A better experience for anxious and confident people alike.</div>
     <a href="https://shitboxshuffle.com/lobby.html" class="cta-btn">Enter the Room</a>
     <div class="cta-fine">18+ &nbsp;&middot;&nbsp; US only &nbsp;&middot;&nbsp; Real tokens &nbsp;&middot;&nbsp; Play responsibly</div>
+  </div>
+
+  <div class="section">
+    <h2>Using Games as Anxiety Scaffolding: A Deeper Look at the Mechanism</h2>
+    <p>Earlier in this article we established that games reduce video chat anxiety by redirecting attention from self-monitoring toward task-monitoring. This is accurate but incomplete. The full picture of how games function as anxiety scaffolding involves several additional mechanisms that are worth understanding in detail — because understanding them allows you to use games more deliberately rather than simply hoping the effect occurs.</p>
+
+    <h3>The Predictability Dividend</h3>
+    <p>Anxiety spikes most severely in the presence of unpredictability — specifically, when we can't anticipate what will be required of us next and therefore can't prepare adequately. Pure open-ended conversation with a stranger is maximally unpredictable in this way: you genuinely don't know what will come up, what will be asked of you, or what register the interaction will take. This unpredictability is not just uncomfortable; it's cognitively expensive, because your brain is maintaining a constant readiness state for any of a thousand possible social demands.</p>
+
+    <p>Games introduce predictability by defining what will happen next. After your turn at blackjack, it's their turn. After one trivia question, there's another. The game provides a temporal scaffold — a sequence of events with known structure — that allows your brain to exit the expensive readiness state and settle into the more manageable state of task execution. This predictability dividend is available from the very first question or the very first card, which is why anxious people often report feeling better almost immediately once a game starts.</p>
+
+    <h3>The Permission Structure</h3>
+    <p>A more subtle function: games grant social permission to be imperfect. In unstructured conversation, every response carries implicit evaluation weight — was that interesting? was that weird? was that too much or too little? There is no game-equivalent of "that was a wrong answer" in polite conversation; there is only the diffuse, ambient question of whether you are being well-received, which is both more consequential and less answerable than any trivia question. A wrong answer in trivia is just a wrong answer. It produces a moment of shared acknowledgment — "oh, it was France" — and then the game moves on. The structured forgiveness of game formats is profoundly relieving for anxious people who are used to treating every conversational misstep as lasting evidence of their social inadequacy.</p>
+
+    <h3>Identity Anchoring Through Role</h3>
+    <p>In open conversation, the question "who am I in this interaction?" is continuously active and continuously unresolved — am I interesting? am I likeable? am I being authentic or performing? These identity questions are anxiety-generating because they're ambiguous and unanswerable in the moment. A game assigns a concrete, temporary role that substitutes for these ambiguous identity questions: you are the person playing black on card seven, trying to get to twenty-one. That role is specific, concrete, and entirely unambiguous. It doesn't resolve the deeper identity questions, but it suspends them for the duration of the game — and suspension is exactly what anxious people need during the high-anxiety opening minutes of a social encounter.</p>
+
+    <h3>Choosing the Right Game for Your Anxiety Profile</h3>
+    <p>Different games reduce anxiety through different specific mechanisms, and your anxiety profile determines which mechanism is most useful. If your primary anxiety is blank-screen dread — the terror of unstructured social time — almost any game will help significantly, because any game converts unstructured time into structured time. If your primary anxiety is self-presentation anxiety — worry about how you look or come across — collaborative games where focus is on a shared external task (GeoGuessr-style challenges) are more effective than competitive games where you are more directly observed performing. If your primary anxiety is evaluation anxiety — fear of being judged by your knowledge or competence — word-based games with no right answers (word association, "would you rather") are more effective than knowledge-testing games like trivia that produce explicit wrong answers. Match the mechanism to the anxiety.</p>
+  </div>
+
+  <div class="section">
+    <h2>The Full Exposure Hierarchy: From Lowest to Highest Anxiety Tasks</h2>
+    <p>The anxiety ladder introduced earlier in this article covers the major structural stages of graduated video chat exposure. But within each stage there are smaller gradations that matter enormously for people whose anxiety is significant enough that even "step one" feels overwhelming. This expanded hierarchy provides a more granular scaffold — one that starts low enough to be accessible even for people who find any online social contact difficult, and climbs methodically toward full engagement.</p>
+
+    <p>The principle is the same at every level: spend enough time at the current step that your anxiety response diminishes measurably before advancing. This doesn't mean waiting until you feel no anxiety — that standard is too high and often never arrives. It means waiting until the anxiety at the current step is background rather than foreground: present but not consuming. That's the signal to advance.</p>
+
+    <div class="exp-hierarchy">
+      <div class="exp-step exp-s1">
+        <div class="exp-block">
+          <div class="exp-num">1</div>
+          <div class="exp-label">Reading about video chat interactions (articles, forums, guides)</div>
+          <div class="exp-anxiety-tag">Minimal</div>
+        </div>
+      </div>
+      <div class="exp-step exp-s1" style="padding-left:16px;">
+        <div class="exp-block">
+          <div class="exp-num">2</div>
+          <div class="exp-label">Anonymous text chat with no personal information shared</div>
+          <div class="exp-anxiety-tag">Very Low</div>
+        </div>
+      </div>
+      <div class="exp-step exp-s2" style="padding-left:32px;">
+        <div class="exp-block">
+          <div class="exp-num">3</div>
+          <div class="exp-label">Text chat with mild self-disclosure (sharing an opinion or preference)</div>
+          <div class="exp-anxiety-tag">Low</div>
+        </div>
+      </div>
+      <div class="exp-step exp-s3" style="padding-left:48px;">
+        <div class="exp-block">
+          <div class="exp-num">4</div>
+          <div class="exp-label">Audio-only call with a stranger (no camera)</div>
+          <div class="exp-anxiety-tag">Low–Moderate</div>
+        </div>
+      </div>
+      <div class="exp-step exp-s3" style="padding-left:64px;">
+        <div class="exp-block">
+          <div class="exp-num">5</div>
+          <div class="exp-label">Brief video call (under 3 min), self-view hidden, no pressure to perform</div>
+          <div class="exp-anxiety-tag">Moderate</div>
+        </div>
+      </div>
+      <div class="exp-step exp-s5" style="padding-left:80px;">
+        <div class="exp-block">
+          <div class="exp-num">6</div>
+          <div class="exp-label">Video call (5–10 min) with a structured game to anchor attention</div>
+          <div class="exp-anxiety-tag">Moderate</div>
+        </div>
+      </div>
+      <div class="exp-step exp-s5" style="padding-left:96px;">
+        <div class="exp-block">
+          <div class="exp-num">7</div>
+          <div class="exp-label">Extended video call (15–30 min), game + conversation, no time pressure</div>
+          <div class="exp-anxiety-tag">Moderate–High</div>
+        </div>
+      </div>
+      <div class="exp-step exp-s7" style="padding-left:112px;">
+        <div class="exp-block">
+          <div class="exp-num">8</div>
+          <div class="exp-label">Full engagement: video, game, real token stakes, deep conversation, multiple sessions</div>
+          <div class="exp-anxiety-tag">Managed</div>
+        </div>
+      </div>
+    </div>
+
+    <p>The visual stepping of this hierarchy is deliberate: each level is slightly more exposed than the last, with the indentation representing the additional vulnerability involved. Moving from step five to step six may seem small from the outside — you've already been on camera briefly — but for someone with significant camera anxiety, adding even five minutes to the duration represents a real and meaningful exposure challenge. Respecting these gradations, rather than jumping several steps at once, produces more durable anxiety reduction and fewer experiences of overwhelm that reinforce avoidance.</p>
+
+    <div class="callout">
+      You don't have to complete this hierarchy in any particular time frame. Some people move from step one to step eight in a few weeks. Others spend months at the same step before advancing. Both are fine. The only meaningful measure of progress is whether you're moving forward at all, however slowly.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Cognitive Restructuring: Rewriting the Scripts Anxiety Uses Against You</h2>
+    <p>Social anxiety is not just a feeling — it's a narrative. The feeling arises from thoughts, and the thoughts follow specific, identifiable patterns that psychologists call cognitive distortions. The most common of these in social anxiety are mind-reading (assuming you know what others are thinking about you), catastrophizing (predicting the worst possible outcome), personalizing (interpreting neutral events as negative comments on you), and all-or-nothing thinking (treating a less-than-perfect interaction as a total failure).</p>
+
+    <p>Cognitive restructuring is the CBT-derived practice of identifying these thought patterns in real time and replacing them with more accurate, more useful alternatives — not falsely positive ones, but calibrated ones that reflect what the evidence actually supports. The table below shows the most common anxious thoughts in video chat contexts and their cognitive restructuring responses.</p>
+
+    <div class="thought-table">
+      <div class="thought-table-header">
+        <div class="tth-cell">Situation</div>
+        <div class="tth-cell">Anxious Thought</div>
+        <div class="tth-cell">Restructured Response</div>
+      </div>
+      <div class="thought-row">
+        <div class="tr-cell situation">Awkward silence mid-conversation</div>
+        <div class="tr-cell thought">"They think I'm boring. This is going terribly."</div>
+        <div class="tr-cell reframe">Silences happen in all conversations. They're thinking too. This is uncomfortable for both of us — that's normal, not failure.</div>
+      </div>
+      <div class="thought-row">
+        <div class="tr-cell situation">I blanked on what to say</div>
+        <div class="tr-cell thought">"I sound like an idiot. They'll remember this."</div>
+        <div class="tr-cell reframe">Blanking happens to everyone. Naming it ("sorry, I blanked") is more endearing than hiding it. They won't remember it the way I will.</div>
+      </div>
+      <div class="thought-row">
+        <div class="tr-cell situation">My face looked weird on camera</div>
+        <div class="tr-cell thought">"They noticed how bad I look. I should turn off my camera."</div>
+        <div class="tr-cell reframe">I'm monitoring myself more than they are. They're managing their own experience. My self-view is already off — this is my perception, not theirs.</div>
+      </div>
+      <div class="thought-row">
+        <div class="tr-cell situation">They seemed distracted or less engaged</div>
+        <div class="tr-cell thought">"I'm boring them. They wish they were talking to someone else."</div>
+        <div class="tr-cell reframe">Distraction has a thousand causes. Maybe they got a notification. Maybe they're tired. Their attention lapse is not about me specifically.</div>
+      </div>
+      <div class="thought-row">
+        <div class="tr-cell situation">I lost badly at the game</div>
+        <div class="tr-cell thought">"Now they know I'm not good at this. They'll think less of me."</div>
+        <div class="tr-cell reframe">Losing is part of every game. Laughing at it signals confidence and good sportsmanship. Winning streaks matter less than how I hold myself during a loss.</div>
+      </div>
+      <div class="thought-row">
+        <div class="tr-cell situation">The session ended quickly</div>
+        <div class="tr-cell thought">"They couldn't wait to get away from me. I made them uncomfortable."</div>
+        <div class="tr-cell reframe">Short sessions happen for a hundred reasons. They may have had an obligation. It doesn't mean the session was bad or that I failed.</div>
+      </div>
+    </div>
+
+    <p>The goal of cognitive restructuring is not to force yourself to believe something optimistic. It's to replace a thought that is almost certainly less accurate than it feels with one that represents the actual probability. The anxious thought "they think I'm boring" assigns a high probability to one interpretation of ambiguous data. The restructured thought doesn't assign probability to the opposite — it recognizes that the data is ambiguous and allows for the full range of more likely explanations.</p>
+
+    <h3>Practicing Restructuring in Real Time</h3>
+    <p>The table above describes restructuring as it looks on paper, in a calm moment. In real time, during a video chat session, the process needs to be much faster. Develop a simple, memorable shorthand for each of your most common anxious thoughts: a word or phrase that reliably triggers the restructured version. For "they think I'm boring," the shorthand might simply be "distraction." As in: when you feel the anxious thought arising, flash the word "distraction" in your mind to remind yourself that their attention lapse is most probably about something else entirely. This single-word interrupt takes practice but becomes increasingly automatic over time.</p>
+  </div>
+
+  <div class="section">
+    <h2>When Online Interaction Helps vs. When It Reinforces Avoidance</h2>
+    <p>One of the most important distinctions in anxiety management — and one that self-help resources often gloss over — is the difference between exposure that reduces anxiety over time and accommodation that maintains or increases it. Not all online social interaction is therapeutic. Some forms of it are, and some undermine the progress you're trying to make without either party realizing it.</p>
+
+    <h3>When Online Interaction Helps</h3>
+    <p><strong>When it's in your exposure hierarchy and slightly above your current comfort level.</strong> The experience is challenging but manageable. Anxiety is present but not overwhelming. You're doing something you might normally avoid, and you're proving to yourself that the anticipated catastrophe doesn't materialize. This is productive exposure.</p>
+
+    <p><strong>When it produces authentic social experiences.</strong> A session that ends with a genuine laugh, a real moment of connection, a conversation that surprised you — these experiences directly challenge the anxious story that social interaction leads to rejection or humiliation. The more of these you accumulate, the harder the anxious narrative is to sustain.</p>
+
+    <p><strong>When it substitutes for in-person interaction you'd otherwise miss entirely.</strong> For people in situations where in-person social contact is limited — geographic isolation, health limitations, unusual schedules — online interaction that keeps social skills practiced is clearly better than no interaction at all. The skills are transferable and the relationships are real.</p>
+
+    <h3>When Online Interaction Reinforces Avoidance</h3>
+    <p><strong>When it completely replaces in-person interaction as a way of avoiding in-person anxiety.</strong> If you're using video chat specifically because it's less threatening than real-world social situations, and if your in-person social life is contracting while your online social life expands, that pattern warrants attention. The goal of exposure is to build tolerance in the domain where anxiety limits you — for most people, that includes the physical world.</p>
+
+    <p><strong>When you're structuring sessions to minimize challenge.</strong> Choosing only very short sessions, always ending before any difficult conversational territory, avoiding games with stakes, staying with the same safe routines — these behaviors can look like engagement but function as accommodation. You're technically present but not actually doing the exposure work.</p>
+
+    <p><strong>When the anxiety is getting worse rather than better over time.</strong> Genuine exposure produces habituation — anxiety decreases with repeated contact. If your anxiety around video chat is increasing over months of regular use, the sessions are not functioning as exposure. Something about how you're using them is maintaining or feeding the anxiety rather than reducing it, and professional support to identify and change that pattern is genuinely warranted.</p>
+
+    <div class="callout">
+      The test is simple: Are you doing things during video chat sessions that you would normally avoid? If yes, and the anxiety is decreasing over time, you're doing exposure. If no, or if it's increasing, you're accommodating the anxiety rather than challenging it.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Tracking Progress: The Anxiety Journal for Video Chat</h2>
+    <p>Progress in anxiety management is often invisible to the person making it. Because anxiety is so present-moment-focused — when it's happening, it feels like it has always been this bad — it's easy to miss gradual improvement that is real and meaningful. An anxiety journal is a simple tool that makes progress visible and serves several additional functions: it builds emotional self-awareness, creates a feedback loop that improves your practice, and provides evidence that challenges the anxious narrative that things never get better.</p>
+
+    <h3>What to Track</h3>
+    <p>Keep each entry brief — three to five minutes immediately after a session while the experience is fresh. The core elements worth tracking are:</p>
+    <ul>
+      <li><strong>Pre-session anxiety level (0–10):</strong> How anxious were you before connecting? This measures anticipatory anxiety, which often improves before in-session anxiety does.</li>
+      <li><strong>Peak in-session anxiety level (0–10):</strong> The highest point of anxiety during the session, not the average. This tracks your ceiling, which tends to come down with practice.</li>
+      <li><strong>Post-session anxiety level (0–10):</strong> How do you feel immediately after the session ends? For many people, sessions end with relief and mild positive affect — tracking this counters the anticipatory dread that inflates pre-session anxiety.</li>
+      <li><strong>What went well:</strong> One specific thing, however small. The game round that felt relaxed. The moment you asked a question and actually listened to the answer. The decision to extend the session past your usual stopping point. Small positives are the building material of confidence.</li>
+      <li><strong>What triggered the highest anxiety:</strong> One specific moment or thought. Over several weeks, patterns emerge that tell you what your most reliable anxiety triggers are — and knowing your triggers is the prerequisite for managing them deliberately.</li>
+      <li><strong>What you'd do differently:</strong> Not a self-criticism exercise but a planning one. If you froze and wish you'd used your rescue question, note it. Next session, the rescue question is already active in memory.</li>
+    </ul>
+
+    <h3>Reading Your Progress Over Time</h3>
+    <p>After ten sessions, average your pre-session and peak anxiety scores and compare them to your first five. After twenty sessions, do it again. Most people who are genuinely engaged in exposure practice — not just going through the motions — will see a meaningful drop in average scores over this period. The drop may be uneven: some sessions will feel worse than the trend, some better. The trend is the signal, not any individual data point.</p>
+
+    <p>The journal also tends to reveal something surprising: the sessions you most dreaded in advance are rarely the ones that were actually worst. Anticipatory anxiety is almost always larger than the in-session reality, and the journal makes this pattern visible. Over time, this evidence accumulates against the catastrophic predictions that anxiety generates, and the predictions become harder to believe. That disconfirmation — seeing your own evidence that the feared thing doesn't usually materialize — is one of the most durable mechanisms of anxiety reduction available.</p>
+
+    <h3>When to Review and When to Stop</h3>
+    <p>Review your journal briefly before each session — not to dwell on past anxieties but to recall what strategies helped and what you planned to try differently. Stop keeping the journal when the pre-session anxiety has dropped consistently below 3 out of 10 for at least ten consecutive sessions. At that point, the tool has served its purpose: you've built enough evidence of successful experience that the anxiety journal is no longer needed to make progress visible. The progress is now just your baseline.</p>
   </div>
 
   <div class="section" style="margin-top:64px;">
@@ -604,6 +852,36 @@ footer{margin-top:72px;padding:40px 0;border-top:1px solid var(--phantom);displa
     <div class="faq-item">
       <div class="faq-q">When should I seek professional help for video chat anxiety?</div>
       <div class="faq-a">Consider professional support when anxiety is preventing you from engaging in activities you want to engage in, when it's affecting your work or existing relationships, when physical symptoms feel uncontrollable, or when avoidance is becoming your primary and expanding coping mechanism. Normal nervousness responds well to the strategies in this article. Clinical Social Anxiety Disorder benefits significantly from CBT, which has a strong evidence base specifically for social anxiety and is considerably more effective than self-help alone at that level.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I know if my online social activity is helping or reinforcing my avoidance?</div>
+      <div class="faq-a">The key distinction is whether you're doing things during sessions that you would normally avoid, and whether anxiety is decreasing over time with repeated exposure. If your video chat sessions are genuinely challenging — you're staying longer than comfortable, having conversations you'd normally avoid, tolerating the anxiety without escaping — that's productive exposure. If you're structuring sessions to be as low-challenge as possible, ending them before anything difficult arises, or using video chat as a substitute for in-person interaction you're actively avoiding, that's accommodation. Anxiety that decreases over weeks of practice indicates healthy exposure; anxiety that holds steady or increases signals accommodation that needs to change.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What should I write in an anxiety journal for video chat practice?</div>
+      <div class="faq-a">Keep entries brief and consistent — three to five minutes per session, immediately afterward. Track pre-session anxiety (0–10), peak in-session anxiety (0–10), post-session anxiety (0–10), one thing that went well, one specific anxiety trigger, and one thing you'd approach differently next time. After ten sessions, average your scores and compare them to your first five — this makes gradual progress visible and counters the anxious narrative that nothing is changing. The journal's most powerful function is documenting that your worst anticipated outcomes rarely materialize, which progressively weakens anticipatory anxiety over time.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What's the difference between cognitive restructuring and just "thinking positive"?</div>
+      <div class="faq-a">Cognitive restructuring is not positive thinking. It's accurate thinking — replacing distorted interpretations of ambiguous events with interpretations that reflect the actual probability of different outcomes. "They think I'm boring" is almost never supported by the evidence; it's an assumption presented as certainty. Cognitive restructuring doesn't replace it with "they definitely like me" — it replaces it with "their attention lapse could have many causes, and I have no real evidence it's about me." This is more accurate, more useful, and more credible to the anxious mind than forced optimism, which rarely holds up under pressure.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How does the exposure hierarchy for video chat differ from standard CBT exposure therapy?</div>
+      <div class="faq-a">The structure is the same — graduated steps of increasing difficulty, with habituation at each level before advancing — but the content is specific to video chat's particular anxiety triggers. Standard exposure hierarchies for social anxiety might progress from thinking about social situations through imaginal exposure to real-world situations. The video chat hierarchy addresses the specific technical triggers: the self-face effect, audio latency, camera angle anxiety, context collapse from a visible home background, and the blank-screen pressure of unstructured stranger interaction. The key difference from general social anxiety work is that many of these triggers are resolvable through technical adjustments (self-view off, camera angle, lighting) rather than purely through repeated exposure — which is why the setup checklist belongs at the foundation of any video chat anxiety management approach.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is it possible to become completely comfortable on video chat, or will some anxiety always remain?</div>
+      <div class="faq-a">Complete elimination of anxiety is not a realistic goal and not actually desirable — a small amount of arousal improves performance on social tasks by sharpening attention and motivation. The realistic goal is to reduce anxiety from the level where it impairs your performance and enjoyment to the level where it's a manageable background hum that doesn't interfere with genuine engagement. Most people who practice graduated exposure consistently over two to three months reach a state where video chat feels no more anxiety-provoking than other normal social situations. The residual nervousness that remains is typically proportional to the actual novelty or stakes of the specific situation, which is exactly what anxiety is supposed to be doing.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Why is random video chat with strangers actually a good anxiety practice environment?</div>
+      <div class="faq-a">Random video chat has a specific property that makes it an unusually effective anxiety practice environment: the stakes of each individual encounter are genuinely low. The person you connect with has no access to your social network, no ability to communicate their impression of you to people you know, and no ongoing relationship to damage. This zero-cost social environment allows you to experiment with behaviors you'd avoid in higher-stakes contexts — new conversational approaches, more direct personal disclosure, tolerating awkward silences without rescuing them. The skills and confidence built in these low-stakes practice encounters transfer directly to higher-stakes social situations, because the underlying competencies are the same even when the stakes differ.</div>
     </div>
   </div>
 

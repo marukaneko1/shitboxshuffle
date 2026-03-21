@@ -24,14 +24,14 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "Smart Wagering Habits for Adults: How to Keep Token Play Enjoyable",
-    "description": "A comprehensive guide to responsible wagering habits: session budgets, stop-loss rules, tilt recognition, variance, and platform tools.",
+    "description": "A comprehensive guide to responsible wagering habits: session budgets, stop-loss rules, tilt recognition, variance, bankroll management, cognitive biases, and platform tools.",
     "url": "https://shitboxshuffle.com/blog/smart-wagering-habits-adults-only.html",
     "datePublished": "2026-01-20",
     "dateModified": "2026-03-20",
     "author": { "@type": "Organization", "name": "Shitbox Shuffle", "url": "https://shitboxshuffle.com" },
     "publisher": { "@type": "Organization", "name": "Shitbox Shuffle", "url": "https://shitboxshuffle.com" },
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://shitboxshuffle.com/blog/smart-wagering-habits-adults-only.html" },
-    "keywords": ["smart wagering tips", "responsible wagering", "token wagering strategy", "session budget", "stop-loss gambling", "tilt"]
+    "keywords": ["smart wagering tips", "responsible wagering", "token wagering strategy", "session budget", "stop-loss gambling", "tilt", "bankroll management", "gambler's fallacy", "cognitive bias wagering"]
   }
   </script>
 
@@ -54,6 +54,31 @@
         "@type": "Question",
         "name": "How are tokens different from cash in wagering?",
         "acceptedAnswer": { "@type": "Answer", "text": "Tokens represent real value on the platform and should be treated with the same respect as the equivalent cash amount. The abstraction of tokens can psychologically reduce perceived cost, which is why smart players consciously convert token amounts to their cash equivalents when making wagering decisions." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the 5% bankroll rule in wagering?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The 5% rule states that no single wager should exceed 5% of your total session bankroll. This prevents any one hand or round from wiping out a meaningful portion of your stake. It extends session length, reduces variance impact, and preserves your ability to keep playing even through a losing streak." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the gambler's fallacy?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The gambler's fallacy is the false belief that past independent events influence future outcomes in a probabilistic system. After five losing hands in a row, many players feel 'due' for a win. This is mathematically incorrect — each hand is independent and the probability distribution is identical regardless of what happened before." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is a session audit in wagering?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A session audit is a structured post-session review of your own play covering financial outcome, decision quality, emotional state, and whether you honored your pre-set limits. It takes less than five minutes and provides the data needed to identify patterns that lead to bad sessions, such as playing late at night or after a stressful day." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the sunk cost fallacy in wagering?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The sunk cost fallacy in wagering is the error of letting already-lost tokens influence future decisions. Thinking 'I've already lost 300 tokens so I need to keep playing to get back' treats past losses as a reason to continue — when rationally, past losses are irrelevant to whether continuing makes sense. The decision to keep playing should be based on your current state and remaining budget, not on what you've already lost." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I build a personal wagering policy?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A personal wagering policy is a written set of rules you commit to before each session: your session budget, stop-loss threshold, session time limit, wager sizing rules, and the conditions under which you will not play (tired, stressed, drinking). Writing it down and reviewing it before each session is the key — the policy only works if it is active in your mind before you open the platform, not constructed on the fly during play." }
       }
     ]
   }
@@ -136,6 +161,38 @@
     .tilt-sign-row:last-child { border-bottom:none; }
     .tilt-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:6px; }
     .tilt-sign-text { font-size:14px; color:var(--dust); line-height:1.6; }
+
+    /* ---- COGNITIVE BIAS TABLE ---- */
+    .bias-table-wrap { margin:36px 0; overflow-x:auto; border:1px solid var(--phantom); border-radius:4px; }
+    .bias-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .bias-table thead tr { background:var(--smoke); }
+    .bias-table th { padding:13px 16px; text-align:left; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ash); border-bottom:2px solid var(--phantom); }
+    .bias-table th.symptom-col { color:rgba(232,64,64,0.8); }
+    .bias-table th.fix-col { color:rgba(92,184,122,0.8); }
+    .bias-table tbody tr { border-bottom:1px solid var(--phantom); }
+    .bias-table tbody tr:nth-child(odd) { background:rgba(232,224,208,0.02); }
+    .bias-table tbody tr:hover { background:rgba(201,162,39,0.03); }
+    .bias-table td { padding:12px 16px; vertical-align:top; line-height:1.55; }
+    .bias-table td.bias-name { font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--chalk); white-space:nowrap; }
+    .bias-table td.symptom-col { font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(232,120,80,0.9); }
+    .bias-table td.fix-col { font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(92,184,122,0.9); }
+
+    /* ---- BANKROLL ALLOCATION BAR VISUAL ---- */
+    .bankroll-wrap { margin:36px 0; padding:32px 28px; background:var(--smoke); border:1px solid var(--phantom); border-radius:4px; }
+    .bankroll-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ash); margin-bottom:24px; text-align:center; }
+    .bankroll-bar { display:flex; height:40px; border-radius:3px; overflow:hidden; margin-bottom:20px; }
+    .bankroll-seg { display:flex; align-items:center; justify-content:center; }
+    .bankroll-seg-essential { flex:0 0 60%; background:rgba(92,150,200,0.3); border-right:1px solid rgba(92,150,200,0.5); }
+    .bankroll-seg-savings { flex:0 0 20%; background:rgba(92,184,122,0.3); border-right:1px solid rgba(92,184,122,0.5); }
+    .bankroll-seg-entertain { flex:0 0 15%; background:rgba(201,162,39,0.3); border-right:1px solid var(--ember); }
+    .bankroll-seg-wager { flex:0 0 5%; background:var(--ember); }
+    .bankroll-seg-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.08em; text-transform:uppercase; color:var(--chalk); writing-mode:initial; }
+    .bankroll-legend { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media(max-width:500px) { .bankroll-legend { grid-template-columns:1fr; } }
+    .bankroll-leg-row { display:flex; align-items:center; gap:10px; }
+    .bankroll-leg-swatch { width:12px; height:12px; border-radius:2px; flex-shrink:0; }
+    .bankroll-leg-text { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.08em; color:var(--dust); }
+    .bankroll-leg-pct { font-family:'Bebas Neue',sans-serif; font-size:14px; color:var(--chalk); margin-left:auto; }
   </style>
 </head>
 <body>
@@ -153,13 +210,13 @@
 
   <span class="article-tag">Smart Wagering</span>
   <h1>Smart Wagering Habits for Adults: How to Keep Token Play Enjoyable</h1>
-  <p class="article-meta">Updated March 2026 &nbsp;&middot;&nbsp; 14 min read &nbsp;&middot;&nbsp; Shitbox Shuffle Editorial</p>
+  <p class="article-meta">Updated March 2026 &nbsp;&middot;&nbsp; 20 min read &nbsp;&middot;&nbsp; Shitbox Shuffle Editorial</p>
 
   <!-- SECTION 1 -->
   <div class="section">
     <p>Token wagering on a video chat platform is, at its best, a genuinely enjoyable way to add stakes to social games with strangers. A well-run session has rhythm, tension, laughter, and the particular satisfaction of having played well &mdash; regardless of whether the tokens went your way. At its worst, a session devolves into something that doesn't feel like fun anymore: chasing, frustration, staying in past the point where you're having a good time, and waking up the next day wondering why you did that.</p>
     <p>The difference between those two experiences is almost never about luck. It is almost entirely about the habits and frameworks you carry into the session. Smart wagering doesn't mean wagering less or enjoying it less &mdash; it means approaching play in a way that keeps it genuinely fun over the long run instead of creating regret cycles that erode the enjoyment entirely.</p>
-    <p>This guide covers twelve specific areas where habit and mindset determine outcome: how to set a session budget that actually works, why time limits matter as much as money limits, how to recognize and escape emotional play, what variance really means for short-term results, why records help even casual players, and how the platform's built-in tools can do some of the work for you. These aren't rules imposed from outside &mdash; they're the practical methods that consistently experienced and satisfied players actually use.</p>
+    <p>This guide covers the specific areas where habit and mindset determine outcome: how to set a session budget that actually works, why time limits matter as much as money limits, how to recognize and escape emotional play, what variance really means for short-term results, why records help even casual players, how cognitive biases actively sabotage good decisions, the 5% bankroll rule that professionals use, and how to build a personal wagering policy that actually holds. These aren't rules imposed from outside &mdash; they're the practical methods that consistently experienced and satisfied players actually use.</p>
   </div>
 
   <!-- SECTION 2 -->
@@ -323,7 +380,128 @@
     <p>Understanding variance also provides the strongest rational argument against chasing losses. Chasing assumes that your current losing streak creates a statistical pressure toward recovery &mdash; that you're "due" for a win. This is the gambler's fallacy, and it is false. Each independent event has the same probability distribution regardless of what happened before it. Your losses from last round have zero causal relationship to the outcome of the next round. Staying to "get even" is not a strategy. It's a feeling masquerading as a strategy.</p>
   </div>
 
-  <!-- SECTION 8 -->
+  <!-- SECTION 8 — BANKROLL MANAGEMENT + VISUAL -->
+  <div class="section">
+    <h2>Bankroll Management 101: The 5% Rule</h2>
+    <p>Bankroll management is the practice of structuring your wager sizes relative to your total available stake so that variance cannot wipe you out in a single session or a short run of bad luck. It is one of the most universally taught concepts in professional gambling and one of the most universally ignored by recreational players. The gap between knowing the concept and practicing it is where most session-level damage occurs.</p>
+    <p>The foundational principle is simple: no single wager should represent more than a small percentage of your total session bankroll. The most widely cited threshold among experienced players is five percent. The 5% rule works because it ensures that even a long losing streak cannot eliminate your ability to keep playing within the session budget you set.</p>
+
+    <!-- CSS VISUAL: Bankroll Allocation Bar -->
+    <div class="bankroll-wrap">
+      <div class="bankroll-title">Where Your Session Budget Should Come From — Monthly Budget Breakdown</div>
+      <div class="bankroll-bar">
+        <div class="bankroll-seg bankroll-seg-essential">
+          <span class="bankroll-seg-label">Essentials</span>
+        </div>
+        <div class="bankroll-seg bankroll-seg-savings">
+          <span class="bankroll-seg-label">Savings</span>
+        </div>
+        <div class="bankroll-seg bankroll-seg-entertain">
+          <span class="bankroll-seg-label">Entertain.</span>
+        </div>
+        <div class="bankroll-seg bankroll-seg-wager">
+        </div>
+      </div>
+      <div class="bankroll-legend">
+        <div class="bankroll-leg-row">
+          <div class="bankroll-leg-swatch" style="background:rgba(92,150,200,0.5);"></div>
+          <span class="bankroll-leg-text">Essential expenses (housing, food, utilities, debt)</span>
+          <span class="bankroll-leg-pct">60%</span>
+        </div>
+        <div class="bankroll-leg-row">
+          <div class="bankroll-leg-swatch" style="background:rgba(92,184,122,0.5);"></div>
+          <span class="bankroll-leg-text">Savings &amp; investments</span>
+          <span class="bankroll-leg-pct">20%</span>
+        </div>
+        <div class="bankroll-leg-row">
+          <div class="bankroll-leg-swatch" style="background:rgba(201,162,39,0.35);"></div>
+          <span class="bankroll-leg-text">General entertainment (dining, streaming, events)</span>
+          <span class="bankroll-leg-pct">15%</span>
+        </div>
+        <div class="bankroll-leg-row">
+          <div class="bankroll-leg-swatch" style="background:var(--ember);"></div>
+          <span class="bankroll-leg-text">Token wagering budget (from entertainment allocation)</span>
+          <span class="bankroll-leg-pct">~5%</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>How the 5% Rule Extends Session Life</h3>
+    <p>Here is the math that makes the 5% rule protective. If you bring 1,000 tokens to a session and your standard wager is 50 tokens (5%), you can lose twenty consecutive wagers before reaching zero. The probability of twenty consecutive losses in any fair skill-based game is extremely low. In practice, variance distributes wins and losses through a session — even a player running significantly below their expected win rate will almost certainly survive a session with their bankroll meaningfully intact if they are wagering at 5% or below per hand.</p>
+    <p>Contrast this with a player who brings the same 1,000 tokens but wagers 200 tokens per hand (20%). They are five consecutive losses from zero. A five-loss streak is not unusual in any game with significant variance. The player wagering 20% per hand is exposing themselves to session-ending variance on every five-hand sequence, which happens regularly in normal play.</p>
+
+    <h3>Adjusting the Rule for Skill-Based Games</h3>
+    <p>The 5% rule is most conservative in games of pure chance. In skill-based games where you have genuine edge through better play, some players extend the threshold to 8% or 10% — reflecting that their expected value per hand is positive, reducing the risk of extended losing runs. This adjustment requires genuine skill and honest self-assessment. Most recreational players overestimate their edge. If in doubt, stay at 5% or below. The cost of being too conservative is slightly shorter sessions at a given stake level. The cost of being too aggressive is a session that ends badly.</p>
+
+    <h3>Applying the 5% Rule in Practice</h3>
+    <p>Before your first hand of any session, divide your session bankroll by 20. That number is your per-hand wager ceiling. Write it down if necessary. Stick to it through winning and losing runs alike. Many players instinctively want to increase their wager size when ahead ("pressing") or when behind ("chasing"). Both impulses violate the bankroll management principle and both should be resisted unless you have a deliberate, pre-decided strategy for doing so.</p>
+  </div>
+
+  <!-- SECTION 9 — COGNITIVE BIAS TABLE -->
+  <div class="section">
+    <h2>Cognitive Biases That Kill Wagering Discipline</h2>
+    <p>The gap between knowing what smart wagering looks like and actually doing it is almost entirely explained by cognitive biases — systematic errors in thinking that affect all humans and that are particularly active in high-feedback, reward-linked environments like wagering games. Understanding these biases by name doesn't eliminate them, but it does give you a framework for catching yourself mid-error and correcting course before the damage is done.</p>
+
+    <!-- CSS VISUAL: Cognitive Bias Identification Table -->
+    <div class="bias-table-wrap">
+      <table class="bias-table">
+        <thead>
+          <tr>
+            <th style="width:22%;">Bias</th>
+            <th class="symptom-col" style="width:39%;">How It Shows Up in Sessions</th>
+            <th class="fix-col" style="width:39%;">How to Counter It</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="bias-name">Gambler's Fallacy</td>
+            <td class="symptom-col">After five losses: "I'm due for a win — I'll bet bigger this hand."</td>
+            <td class="fix-col">Repeat: each hand is independent. Past results have zero causal effect on next outcome.</td>
+          </tr>
+          <tr>
+            <td class="bias-name">Sunk Cost Fallacy</td>
+            <td class="symptom-col">"I've already lost 400 tokens, I can't leave now — I need to get it back."</td>
+            <td class="fix-col">Past losses are irrelevant to future decisions. Ask: would I start a new session right now with my current balance?</td>
+          </tr>
+          <tr>
+            <td class="bias-name">Hot Hand Fallacy</td>
+            <td class="symptom-col">"I've won three in a row — I'm on a streak, so I'll bet everything this hand."</td>
+            <td class="fix-col">Winning runs don't predict future wins. Apply the 5% rule regardless of current streak direction.</td>
+          </tr>
+          <tr>
+            <td class="bias-name">Loss Aversion</td>
+            <td class="symptom-col">Holding on in a losing game too long to avoid the pain of formally "locking in" the loss.</td>
+            <td class="fix-col">Honor stop-loss rules mechanically. The loss is already real whether you close the position or not.</td>
+          </tr>
+          <tr>
+            <td class="bias-name">Availability Heuristic</td>
+            <td class="symptom-col">Overweighting last session's big win as typical, underweighting losses that weren't as memorable.</td>
+            <td class="fix-col">Keep records. Let data replace memory as the basis for evaluating your real results.</td>
+          </tr>
+          <tr>
+            <td class="bias-name">Illusion of Control</td>
+            <td class="symptom-col">"I have a system — if I follow this pattern, I can control the outcome."</td>
+            <td class="fix-col">Separate what you control (decisions, strategy, bankroll) from what you don't (card distribution, dice, variance).</td>
+          </tr>
+          <tr>
+            <td class="bias-name">House Money Effect</td>
+            <td class="symptom-col">Wagering won tokens recklessly because they feel like "free money" that wasn't yours to begin with.</td>
+            <td class="fix-col">Won tokens have the same value as starting tokens. Treat your full stack as equally real at any point in the session.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>The Gambler's Fallacy in Depth</h3>
+    <p>The gambler's fallacy deserves extended treatment because it is the most common and most damaging cognitive error in recreational wagering. The fallacy is the belief that past independent random events influence future outcomes &mdash; that a roulette wheel that has landed on red five times in a row is "due" for black, or that a card game that has gone against you repeatedly is about to turn in your favor. This belief is mathematically false in any system with independent events.</p>
+    <p>The seductive power of the gambler's fallacy comes from a genuine pattern-recognition instinct that has served humans well in other contexts. If you flip a fair coin and get heads ten times in a row, something does feel wrong &mdash; and in many real-world situations, that feeling would be correct (perhaps the coin is weighted). The problem is that in games of chance, this instinct is actively misleading. The coin has no memory. Neither does the card deck, the dice, or any other random generator. Each event is statistically independent, and the fallacy treats them as if they were part of a correcting sequence.</p>
+
+    <h3>The Sunk Cost Fallacy in Depth</h3>
+    <p>The sunk cost fallacy in wagering is the tendency to let already-lost tokens influence future decisions. "I've already spent 300 tokens tonight, I can't stop now" is sunk cost thinking. The 300 tokens are gone regardless of whether you continue playing. The only relevant question is: given your current state and remaining budget, does it make sense to continue? That question should be answered based on your energy level, emotional state, remaining bankroll, and session time — not on what you've already lost.</p>
+    <p>Sunk cost thinking is particularly dangerous in wagering because it creates exactly the conditions for chasing behavior. Each additional loss adds to the "investment" that feels like it needs to be recovered, ratcheting up the psychological pressure to keep playing. The only exit from this logic trap is to consciously recognize it: past losses are sunk. They are not a reason to continue. They are not recoverable by continuing. They are background noise to be ignored when making the next decision.</p>
+  </div>
+
+  <!-- SECTION 10 -->
   <div class="section">
     <h2>The Value of Keeping Records: Simple Tracking Methods</h2>
     <p>Most recreational players have no accurate idea of their actual wagering results over time. This isn't dishonesty &mdash; it's the natural consequence of how memory works. We remember wins more vividly than losses, recall big sessions more readily than average ones, and construct a narrative of our gambling history that tends to be more favorable than the numbers would show. Keeping records corrects this distortion and provides genuinely useful information.</p>
@@ -343,7 +521,54 @@
     <p>After two or three months of consistent tracking, your records will show you patterns that you can't see session by session: which days of the week produce your worst results (hint: it's often late nights on weekdays when you're tired), whether your longer sessions produce better or worse average outcomes, how your emotional state correlates with session results, and what your actual net position is. This information is inherently stabilizing &mdash; it replaces feeling and narrative with data, and data is a much better basis for decisions about how to engage with wagering.</p>
   </div>
 
-  <!-- SECTION 9 -->
+  <!-- SECTION 11: THE SESSION AUDIT -->
+  <div class="section">
+    <h2>The Session Audit Technique</h2>
+    <p>Records tell you what happened. The session audit tells you why. A session audit is a structured five-minute review of your own play, conducted immediately after a session ends, that goes beyond financial outcome to examine the quality of your decisions and the state you were in while making them. It is one of the most consistently recommended techniques among experienced recreational players and one of the least practiced.</p>
+    <p>The audit does not require elaborate process. It is a brief, honest conversation with yourself about the session that just ended. The questions below are the framework. Answer them mentally or in writing &mdash; writing produces better retention and more honest reflection.</p>
+
+    <h3>The Session Audit Questions</h3>
+    <ul>
+      <li><strong>Did I honor my budget?</strong> If yes, note it. If no, when did I override it and what was I thinking at that moment?</li>
+      <li><strong>Did I honor my stop-loss?</strong> Same question — specific moment of override, specific mental state when it happened.</li>
+      <li><strong>Did I honor my time limit?</strong> If you played longer than planned, what kept you there? Winning? Losing? Enjoyment? Inertia?</li>
+      <li><strong>At any point did my wager sizes increase from frustration rather than strategy?</strong> Even one instance is worth noting.</li>
+      <li><strong>How do I feel right now?</strong> Satisfied, energized, entertained? Or frustrated, regretful, depleted? This feeling is the most honest assessment of whether the session was a success.</li>
+      <li><strong>Would I play again right now if I could?</strong> If yes and it's for the right reasons (the session was fun and you feel good), that's healthy. If yes and it's because you want to get back to even, that's a red flag worth logging.</li>
+    </ul>
+
+    <h3>Using Audit Patterns Over Time</h3>
+    <p>Individual audits are useful. Patterns across audits are transformative. After twenty or thirty audits, you will have a clear picture of the specific conditions under which your worst sessions occur. Most players who practice this technique identify three or four consistent patterns: a specific time of day or day of week, a specific emotional state coming into the session, a specific trigger that causes them to override their limits. With those patterns identified, you can make preemptive changes — decide in advance not to play on Thursday nights, or to check your emotional state before opening the platform on days you know are stressful.</p>
+    <div class="callout">
+      The session audit takes less time than a single hand of blackjack. Players who practice it consistently report that it is the single habit that most reliably improves their experience over time — not by changing how they play, but by changing when and in what state they play.
+    </div>
+  </div>
+
+  <!-- SECTION 12: BUILDING A PERSONAL WAGERING POLICY -->
+  <div class="section">
+    <h2>Building a Personal Wagering Policy</h2>
+    <p>All of the frameworks in this guide converge on a single practical output: your personal wagering policy. A personal wagering policy is a written document &mdash; it does not need to be long, one page is sufficient &mdash; that specifies how you will engage with token wagering: your budget rules, your wager sizing rules, your stop conditions, the states in which you will not play, and your commitment to the session audit process. It is your own responsible play framework, written by you, for you.</p>
+    <p>The act of writing it matters as much as the content. Externalizing rules from your head into written form changes their psychological status. They move from "things I intend to do" to "commitments I have made" &mdash; and commitments are harder to override in the moment than intentions. This is not magical thinking; it is how pre-commitment strategies work in behavioral economics, and it has robust empirical support.</p>
+
+    <h3>What a Personal Wagering Policy Contains</h3>
+    <p>Your policy should cover, at minimum:</p>
+    <ul>
+      <li><strong>Monthly wagering budget:</strong> A specific token or cash amount that represents your maximum monthly entertainment spend on the platform. This is the outer boundary that session budgets draw from.</li>
+      <li><strong>Session budget rule:</strong> How you determine your per-session budget (for example: a fixed amount, or a percentage of your monthly budget per session).</li>
+      <li><strong>Wager sizing rule:</strong> The 5% rule, or your own chosen ceiling, applied consistently regardless of current session outcome.</li>
+      <li><strong>Stop-loss threshold:</strong> The specific loss amount that ends the session, stated as a percentage of your session budget (e.g., stop at 60% loss).</li>
+      <li><strong>Stop-win threshold:</strong> Optional but recommended — the win amount at which you protect profits by stepping back or stopping.</li>
+      <li><strong>Session time limit:</strong> Your maximum session duration, with the commitment to stop at that point.</li>
+      <li><strong>No-play conditions:</strong> The specific circumstances in which you commit not to play — late nights before obligations, after more than two drinks, when significantly stressed or emotionally depleted.</li>
+      <li><strong>Session audit commitment:</strong> Your agreement with yourself to complete a brief audit after each session.</li>
+    </ul>
+
+    <h3>Reviewing and Updating Your Policy</h3>
+    <p>A personal wagering policy is not a fixed document. It should be reviewed monthly, or immediately after any session where you felt it failed you. If you've been overriding your stop-loss regularly, the policy needs to address that &mdash; either by adjusting the threshold to something you'll actually honor, or by adding platform enforcement to back up the self-imposed rule. If a particular no-play condition isn't one you're respecting, add friction around it (a note on your phone's wallpaper, a commitment made to someone else, a platform cool-down pre-set for high-risk days).</p>
+    <p>The policy is a living document that gets more accurate over time as your session audit data accumulates. A policy written after six months of audits and records will be significantly more effective than one written on day one, because it will be tuned to your actual behavioral patterns rather than your aspirational ones.</p>
+  </div>
+
+  <!-- SECTION 13 -->
   <div class="section">
     <h2>Social Wagering vs. Solo Wagering: Why Video Chat Changes the Risk Profile</h2>
     <p>There is a meaningful and underappreciated difference between wagering in a social video chat context &mdash; where real people are visible and audible in real time &mdash; and solo wagering on a machine or algorithm. The social dimension of video chat wagering introduces friction and context that changes the experience in ways that are often protective.</p>
@@ -356,7 +581,7 @@
     <p>The remaining risk in online social wagering is that you're still physically alone in your environment. No one in the video session can see how long you've been sitting there, what time it is where you are, or that you've been playing for four hours. The social layer is real but partial. This is why personal limits and platform tools remain important even in the social wagering context &mdash; they fill the gap that the social dimension can't fully cover.</p>
   </div>
 
-  <!-- SECTION 10 -->
+  <!-- SECTION 14 -->
   <div class="section">
     <h2>When to Walk Away: Specific Triggers You Should Set in Advance</h2>
     <p>The general instruction to "know when to walk away" is true but nearly useless without specificity. What makes it actionable is converting it into concrete, pre-decided trigger conditions: if X happens, I stop. Not "I'll think about whether to stop" &mdash; I stop.</p>
@@ -396,7 +621,7 @@
     </div>
   </div>
 
-  <!-- SECTION 11 -->
+  <!-- SECTION 15 -->
   <div class="section">
     <h2>How Platform Tools Help: Using Shitbox Shuffle's Built-In Session Tools</h2>
     <p>Personal discipline and good habits are the foundation. Platform tools are the reinforcement layer that makes them hold when your in-session judgment is working against you. Here's how to use the tools available on Shitbox Shuffle specifically, and why each one matters.</p>
@@ -414,7 +639,7 @@
     <p>Enable the periodic session summary notifications. Every 30 or 60 minutes, a brief overlay shows you your session duration and activity. This interrupts the time distortion that active play creates. You may be surprised, occasionally, by how long you've been in a session you thought was 45 minutes. That information is valuable.</p>
   </div>
 
-  <!-- SECTION 12 -->
+  <!-- SECTION 16 -->
   <div class="section">
     <h2>The Token Economy Explained: Treat Tokens with Real Respect</h2>
     <p>Tokens are the currency of wagering on this platform. They have real monetary value &mdash; they are purchased with real money and can affect your real financial position. The fact that they are called "tokens" rather than dollars, and that they appear as on-screen numbers rather than physical objects, can psychologically reduce their perceived weight. This is called the "cashless effect," and it is well-documented in behavioral economics research. You spend more freely when the thing you're spending doesn't feel like money.</p>
@@ -444,6 +669,21 @@
     </div>
 
     <div class="faq-item">
+      <div class="faq-q">What is the 5% bankroll rule in wagering?</div>
+      <div class="faq-a">The 5% rule states that no single wager should exceed 5% of your total session bankroll. If you bring 1,000 tokens to a session, your maximum per-hand wager is 50 tokens. This rule ensures that even a long losing streak cannot eliminate your entire stake in a short period, extending your session life and reducing the damage from variance. It is one of the most universally practiced bankroll management principles among experienced recreational players.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What is the gambler's fallacy and why does it matter?</div>
+      <div class="faq-a">The gambler's fallacy is the false belief that past independent outcomes influence future ones in a probabilistic system. After five losses in a row, many players feel "due" for a win and bet larger. This is mathematically incorrect — each hand is independent and the probability distribution is identical regardless of what happened before. The fallacy is dangerous because it directly motivates chasing behavior: increasing bets after losses in the belief that a correction is coming. Understanding it as a named, well-documented cognitive error is the first step toward catching yourself acting on it.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What is a session audit and how do I do one?</div>
+      <div class="faq-a">A session audit is a brief, structured self-review conducted immediately after a wagering session. It takes five minutes and covers: Did you honor your budget? Your stop-loss? Your time limit? Did you increase wager sizes from emotion rather than strategy? How do you feel right now? The answers reveal patterns over time — specific conditions (late nights, stressful days, certain emotional states) where your limits consistently break down. That information is what enables you to make preemptive changes before the next problematic session rather than post-hoc regret after it.</div>
+    </div>
+
+    <div class="faq-item">
       <div class="faq-q">Does keeping records actually help, or is it just busywork?</div>
       <div class="faq-a">Records provide two things that can't be replicated any other way: accurate data on your actual outcomes (versus your memory, which systematically favors wins), and pattern information that reveals when and how your worst sessions happen. Most players who start keeping records find, after a few months, at least one specific pattern they weren't previously aware of &mdash; a particular time of day, emotional state, or session length where outcomes are consistently worse. That's genuinely useful for making better decisions.</div>
     </div>
@@ -456,6 +696,42 @@
     <div class="faq-item">
       <div class="faq-q">Can I wager on Shitbox Shuffle if I'm under 18?</div>
       <div class="faq-a">No. Shitbox Shuffle is an adults-only platform requiring users to be 18 years of age or older. Age verification is part of the account creation process. Wagering on the platform by minors is not permitted under any circumstances.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>The Psychology of Winning: Managing Success as Carefully as Loss</h2>
+    <p>Most responsible wagering discussion focuses on how to handle losses — how to avoid chasing, how to enforce stop-losses, how to manage tilt. The psychology of winning sessions receives far less attention, but winning sessions carry their own set of cognitive traps that can erode gains or set up bad future sessions if not handled deliberately.</p>
+
+    <h3>The Euphoria Effect</h3>
+    <p>A significant winning session triggers a dopamine response that is neurologically similar to, but distinctly different from, the response to a losing session's cortisol spike. Euphoria after a big win creates overconfidence — a feeling that you are playing well, reading your opponents accurately, making all the right calls. Sometimes this is true. More often, it is partly a product of variance that will regress to the mean over subsequent sessions. Treating a good session as evidence of skill mastery leads to a predictable behavioral error: over-wagering in the next session, expecting to replicate the success.</p>
+    <p>The professional approach to a winning session is, counterintuitively, similar to the approach to a losing one: step back, audit the session honestly, and resist any temptation to immediately re-enter the platform on the momentum of the win. Wins feel like permission to press. They are not. They are data points in a long-run sample that doesn't yet know what next session will look like.</p>
+
+    <h3>Locking In Wins Without Killing Fun</h3>
+    <p>The practical question for a player who has had a good session is: how do you lock in the win without making the experience joyless? The answer is the stop-win threshold — the pre-decided point at which you step back from or significantly reduce your wager sizes to protect the session's gains. A stop-win doesn't mean you stop playing entirely (though you can); it means you transition to reduced stakes for the remainder of the session, treating the rest as bonus play rather than continuing to press at full size. This approach protects the bulk of the gain while preserving the social and competitive engagement of continued play.</p>
+
+    <h3>The Next-Session Trap</h3>
+    <p>Perhaps the most dangerous moment after a winning session is the twenty-four hours that follow it. Players who ended a session up are statistically more likely to enter their next session with higher-than-usual confidence, a slightly elevated budget (because last night's win is subconsciously factored in), and a reduced caution threshold. This is the next-session trap: winning creates complacency that shows up one session later. The antidote is to treat every session as independent — same budget, same stop-loss, same wager sizing rules, regardless of what happened yesterday. Your wins from last session have no bearing on tonight's session. Your budget for tonight was set before you knew how last night went.</p>
+  </div>
+
+  <div class="section">
+    <h2>Responsible Play Resources: When to Seek Help</h2>
+    <p>Everything in this guide is written for recreational players who are engaging with token wagering as entertainment. The habits, frameworks, and tools described here are designed to keep that engagement in the entertainment zone — genuinely enjoyable, within financial bounds, free of the regret cycles that make wagering harmful rather than fun. But it is important to acknowledge clearly that for some people, wagering creates genuine harm, and those people deserve direct information about where to get help.</p>
+
+    <h3>Warning Signs That Go Beyond "Bad Session"</h3>
+    <p>There is a difference between a bad session and a pattern that signals a problem. A bad session — where you exceeded your budget, stayed too long, or made decisions you regret — is recoverable and is something almost every recreational player experiences at some point. A problem pattern looks different: persistent inability to honor pre-set limits despite genuine intent to do so, wagering with money you cannot afford to lose, lying to others about the amount you spend or the time you devote to wagering, experiencing significant distress or anxiety related to wagering outcomes, or finding that thoughts about wagering are intruding on the rest of your life.</p>
+    <p>If any of those descriptions feel uncomfortably accurate, the guides and frameworks in this article are not the right tool. The right tool is a conversation with a professional who specializes in gambling-related harm. That conversation is not a failure — it is good judgment.</p>
+
+    <h3>Available Resources</h3>
+    <ul>
+      <li><strong>National Problem Gambling Helpline:</strong> 1-800-522-4700 — available 24/7, free, confidential</li>
+      <li><strong>National Council on Problem Gambling:</strong> ncpgambling.org — resources, treatment locator, self-assessment tools</li>
+      <li><strong>Gamblers Anonymous:</strong> gamblersanonymous.org — peer support group meetings nationally</li>
+      <li><strong>SAMHSA National Helpline:</strong> 1-800-662-4357 — behavioral health referrals</li>
+    </ul>
+    <p>Shitbox Shuffle's platform tools — cool-down periods, session limits, wagering limits — are available in your account settings and can be configured at any time. These tools work best as precautionary measures, used before you think you need them. If you are at the point of needing them urgently, use them immediately and consider whether a longer break or professional support is appropriate.</p>
+    <div class="callout">
+      If you're reading this section and wondering if it applies to you, it might. That uncertainty itself is worth taking seriously. The 1-800-522-4700 helpline is free, confidential, and available around the clock.
     </div>
   </div>
 

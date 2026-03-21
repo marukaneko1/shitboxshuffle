@@ -69,6 +69,36 @@
           "@type": "Question",
           "name": "How are Shitbox Shuffle tokens different from sweepstakes coins on other platforms?",
           "acceptedAnswer": {"@type": "Answer", "text": "Sweepstakes coins on other social casino platforms are tied to a dual-currency model where a parallel 'premium' currency can theoretically be redeemed for prizes. Shitbox Shuffle tokens are single-currency and not redeemable for cash or prizes — they exist purely as an entertainment wagering unit within the platform ecosystem."}
+        },
+        {
+          "@type": "Question",
+          "name": "What are the key principles of good token economy design?",
+          "acceptedAnswer": {"@type": "Answer", "text": "A well-designed token economy has several characteristics: clear earn/spend mechanics with no confusion about value, a single unified currency rather than multiple parallel currencies with different rules, scarcity that makes tokens feel meaningful without being punishingly hard to obtain, and a feedback loop where skill improves token outcomes over time. Shitbox Shuffle's design prioritizes transparency and simplicity: one token type, clear pricing, zero-rake wager settlement."}
+        },
+        {
+          "@type": "Question",
+          "name": "Can tokens inflate or deflate over time on Shitbox Shuffle?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Since the platform does not create new tokens through mechanisms like daily login bonuses at large scale, and since every token won was previously held by someone who lost it, the total token supply in the system stays relatively stable. Tokens do not inflate the way a currency with government printing does. However, the effective value of a token in entertainment terms can change based on how the platform's game variety and session quality evolve over time."}
+        },
+        {
+          "@type": "Question",
+          "name": "What advanced strategies do regular players use to manage their tokens?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Regular players typically employ several strategies: wager sizing based on Kelly Criterion principles (never betting more than 5-10% of balance on a single game), game selection based on personal skill advantage, maintaining a session budget separate from overall token balance, and treating winning sessions as opportunities to bank tokens rather than extend play. Consistent winners tend to play at stakes where they have skill advantages rather than chasing high-variance outcomes."}
+        },
+        {
+          "@type": "Question",
+          "name": "What is the legal difference between tokens and real money in online wagering?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Real money online gambling is regulated under state gaming laws and requires operator licenses. Tokens are a virtual entertainment currency with no cash redemption path, making them legally distinct from money in the gambling regulatory sense. This distinction is the foundation of how Shitbox Shuffle can operate across US states without the licensing framework required for real-money gambling platforms."}
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a way to track how many tokens I have won or lost over time?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Your Shitbox Shuffle account dashboard includes session history with token outcomes. Reviewing this history periodically is useful for understanding your personal win rate, average session length, and which games produce the best outcomes for you specifically. This data is the foundation of any skill-improvement strategy."}
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if I run out of tokens?",
+          "acceptedAnswer": {"@type": "Answer", "text": "If your token balance reaches zero, wagered sessions are unavailable until you add tokens through a bundle purchase. The welcome allocation is a one-time benefit for new accounts. Running out of tokens is the normal signal that your session budget for the period is spent — this is working as intended and is a healthy boundary between entertainment sessions."}
         }
       ]
     }
@@ -139,6 +169,37 @@ footer{margin-top:72px;padding:40px 0;border-top:1px solid var(--phantom);displa
 .flow-box.lose{border-color:#c96b6b;background:rgba(201,107,107,0.07);}
 .flow-box.lose .flow-box-value{color:#c96b6b;}
 .flow-branch-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;}
+
+/* === CSS VISUAL 3: Token Lifecycle Flow === */
+.lifecycle-wrap{margin:40px 0;padding:32px 24px;background:var(--smoke);border:1px solid var(--phantom);border-radius:4px;}
+.lifecycle-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ash);text-align:center;margin-bottom:28px;}
+.lifecycle-row{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;}
+.lc-node{display:flex;flex-direction:column;align-items:center;min-width:100px;max-width:120px;}
+.lc-circle{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--phantom);background:var(--ink);margin-bottom:8px;}
+.lc-circle.active{border-color:var(--ember);background:rgba(201,162,39,0.1);}
+.lc-circle.win-node{border-color:#5cb87a;background:rgba(92,184,122,0.07);}
+.lc-circle.lose-node{border-color:#c96b6b;background:rgba(201,107,107,0.07);}
+.lc-icon{font-size:22px;line-height:1;}
+.lc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);text-align:center;line-height:1.4;}
+.lc-label.ember{color:var(--ember);}
+.lc-arrow{font-size:20px;color:var(--ember);padding:0 4px;line-height:64px;}
+.lc-branch{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:100px;}
+.lc-branch-arrows{display:flex;gap:32px;font-size:16px;color:var(--ash);}
+
+/* === CSS VISUAL 4: Token vs Money Legal Comparison === */
+.legal-table-wrap{margin:36px 0;overflow-x:auto;}
+.legal-table{width:100%;border-collapse:collapse;font-size:13px;}
+.legal-table th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:2px solid var(--phantom);}
+.legal-table th:first-child{color:var(--ash);}
+.legal-table th.col-token{color:var(--ember);background:rgba(201,162,39,0.05);}
+.legal-table th.col-money{color:#4d9ed4;background:rgba(77,158,212,0.05);}
+.legal-table td{padding:11px 14px;border-bottom:1px solid var(--phantom);color:var(--dust);vertical-align:top;line-height:1.6;}
+.legal-table tr:last-child td{border-bottom:none;}
+.legal-table td:first-child{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ash);white-space:nowrap;}
+.legal-table td.col-token{background:rgba(201,162,39,0.03);}
+.legal-table td.col-money{background:rgba(77,158,212,0.03);}
+.check-yes{color:#5cb87a;font-weight:700;}
+.check-no{color:#c96b6b;font-weight:700;}
 
 /* === CSS VISUAL 2: Token Stack Chips === */
 .chip-stack-wrap{margin:40px 0;display:flex;flex-direction:column;align-items:center;gap:0;padding:32px 24px;background:var(--smoke);border:1px solid var(--phantom);border-radius:4px;}
@@ -465,6 +526,164 @@ footer{margin-top:72px;padding:40px 0;border-top:1px solid var(--phantom);displa
       <div class="faq-q">How are Shitbox Shuffle tokens different from sweepstakes coins?</div>
       <div class="faq-a">Sweepstakes coins on social casino platforms exist within a dual-currency model where a premium currency can be redeemed for real prizes under sweepstakes law. Shitbox Shuffle uses a single-currency system with no redemption path — tokens cannot be converted to cash or prizes under any circumstance. This makes the system simpler and more transparent, while avoiding the regulatory complexity and potential consumer confusion of the dual-currency sweepstakes model.</div>
     </div>
+  </div>
+
+  <!-- NEW SECTION: Token Economy Design Principles -->
+  <div class="section">
+    <h2>Token Economy Design: What Makes a Token System Genuinely Engaging</h2>
+    <p>Not all virtual token systems are created equal. Poorly designed economies create frustration, confusion, or a vague sense that the system is working against you. Well-designed economies feel transparent, fair, and motivating — they give you a clear sense of what you have, how you got it, and what skill or strategy can do for your future balance. Understanding what separates good token economy design from bad helps you appreciate what Shitbox Shuffle built and why it works the way it does.</p>
+
+    <h3>The Scarcity Principle</h3>
+    <p>For a token to feel meaningful, it must be scarce enough to matter. A system that hands out thousands of tokens for trivial actions (daily logins, clicking through tutorials, watching ads) inflates the supply without increasing value, and players quickly learn that their token balance is a meaningless number rather than a real stake in anything. Shitbox Shuffle deliberately keeps its supply mechanics simple: welcome allocation, bundle purchases, and game winnings. Each token earned represents something — either money spent or a game won. That foundation is what gives individual tokens weight.</p>
+
+    <h3>Single-Currency Clarity</h3>
+    <p>Dual-currency systems — where platforms run "free coins" alongside a premium redeemable currency — are notoriously confusing. Players often do not understand which currency they are spending in which context, what the exchange rate is, or why their "winnings" are denominated in a currency they cannot spend on the game they want to play. The cognitive overhead of managing two parallel currencies degrades the experience. Shitbox Shuffle's single-currency design eliminates this entirely. You have one balance, one type of token, and one set of rules. You always know exactly where you stand.</p>
+
+    <h3>Zero-Rake Wager Settlement</h3>
+    <p>In traditional casino environments, the house extracts a percentage of every bet or pot — the "rake." This creates a mathematical certainty that players, in aggregate, lose over time regardless of skill. Shitbox Shuffle's wager settlement is zero-rake: every token won came from the opponent's balance, with nothing skimmed by the platform. This means the system is genuinely skill-dependent in its aggregate outcomes. Players who play better win more tokens. Players who play worse lose them. The platform earns its revenue through bundle sales, not by extracting a fraction of every wager outcome.</p>
+
+    <h3>The Feedback Loop That Keeps It Engaging</h3>
+    <p>The most engaging token economies create a clear feedback loop between skill and outcome. When decisions improve outcomes, and when the token balance visibly reflects those improvements, the system becomes intrinsically motivating: players want to get better because getting better demonstrably increases their balance. Shitbox Shuffle's games are designed with this loop in mind. Blackjack rewards correct basic strategy. Poker rewards reading opponents. Trivia rewards breadth of knowledge. In each case, there is a learnable skill that produces measurable token-balance improvement over time, and that learnability is what keeps experienced players engaged long after the novelty of the platform has faded.</p>
+
+    <!-- Token Lifecycle Flow Diagram -->
+    <div class="lifecycle-wrap">
+      <div class="lifecycle-title">Token Lifecycle &mdash; Earn &rarr; Hold &rarr; Wager &rarr; Reinvest</div>
+      <div class="lifecycle-row">
+        <div class="lc-node">
+          <div class="lc-circle active"><span class="lc-icon">&#128178;</span></div>
+          <div class="lc-label ember">Earn<br>Tokens</div>
+        </div>
+        <div class="lc-arrow">&#8594;</div>
+        <div class="lc-node">
+          <div class="lc-circle active"><span class="lc-icon">&#128184;</span></div>
+          <div class="lc-label ember">Hold<br>Balance</div>
+        </div>
+        <div class="lc-arrow">&#8594;</div>
+        <div class="lc-node">
+          <div class="lc-circle active"><span class="lc-icon">&#127922;</span></div>
+          <div class="lc-label ember">Wager<br>in Match</div>
+        </div>
+        <div class="lc-arrow">&#8594;</div>
+        <div class="lc-node">
+          <div class="lc-circle active"><span class="lc-icon">&#9878;</span></div>
+          <div class="lc-label ember">Outcome<br>Settled</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:60px;margin-top:12px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#5cb87a;">Win &#8594;</div>
+          <div class="lc-circle win-node" style="width:56px;height:56px;"><span class="lc-icon" style="font-size:18px;">&#8593;</span></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5cb87a;text-align:center;">Balance<br>Grows</div>
+          <div style="font-size:14px;color:#5cb87a;">&#8594;</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ash);text-align:center;">Reinvest<br>or Bank</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#c96b6b;">Lose &#8594;</div>
+          <div class="lc-circle lose-node" style="width:56px;height:56px;"><span class="lc-icon" style="font-size:18px;">&#8595;</span></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#c96b6b;text-align:center;">Balance<br>Shrinks</div>
+          <div style="font-size:14px;color:#c96b6b;">&#8594;</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ash);text-align:center;">Adjust<br>Strategy</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Why the Lifecycle Matters for Your Strategy</h3>
+    <p>Understanding the full token lifecycle changes how you approach session management. Tokens are not consumed by playing — they are transferred. When you lose, your tokens go to someone who outplayed you in that session. When you win, you accumulate tokens that originally funded someone else's session. This zero-sum foundation means that the long-run outcome of your token balance is determined not by luck alone but by whether you are, on balance, a better player than the people you are matched against. The lifecycle diagram makes this visible: every win feeds back into your balance for future reinvestment, and every loss is a tuition payment toward understanding what you need to improve.</p>
+  </div>
+
+  <!-- NEW SECTION: Tokens vs Real Money Legal Comparison -->
+  <div class="section">
+    <h2>Tokens vs. Real Money: The Legal and Practical Distinction</h2>
+    <p>The distinction between tokens and real money is not merely semantic — it is legal, structural, and deeply consequential for how the platform operates and how you should think about your token balance. Getting this distinction clear protects you from misplaced expectations and helps you engage with the platform in a way that is appropriate to what it actually is.</p>
+
+    <div class="legal-table-wrap">
+      <table class="legal-table">
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th class="col-token">Shitbox Shuffle Tokens</th>
+            <th class="col-money">Real Money (Licensed Gambling)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cash Withdrawal</td>
+            <td class="col-token"><span class="check-no">No</span> — tokens cannot be converted to cash under any circumstances</td>
+            <td class="col-money"><span class="check-yes">Yes</span> — winnings can be withdrawn to bank accounts</td>
+          </tr>
+          <tr>
+            <td>Regulatory Oversight</td>
+            <td class="col-token">Platform responsible gaming policies; not regulated as gambling under state gaming law</td>
+            <td class="col-money">State gaming commission licensing required; strict AML, KYC, and payout regulations</td>
+          </tr>
+          <tr>
+            <td>Tax Implications</td>
+            <td class="col-token"><span class="check-no">None</span> — token winnings are not taxable income; tokens have no monetary value</td>
+            <td class="col-money"><span class="check-yes">Yes</span> — gambling winnings over thresholds are taxable; W-2G forms issued</td>
+          </tr>
+          <tr>
+            <td>Geographic Restrictions</td>
+            <td class="col-token">US adults 18+ only; no state-by-state license variation required</td>
+            <td class="col-money">Available only in states with specific authorization (NJ, PA, MI, NV, WV, CT, etc.)</td>
+          </tr>
+          <tr>
+            <td>Identity Verification</td>
+            <td class="col-token">Age and identity verification for responsible platform operation</td>
+            <td class="col-money">Extensive KYC (Know Your Customer) requirements under federal law</td>
+          </tr>
+          <tr>
+            <td>House Edge / Rake</td>
+            <td class="col-token"><span class="check-no">None</span> — zero-rake wager settlement; 100% of wagered tokens go to winner</td>
+            <td class="col-money"><span class="check-yes">Yes</span> — house edge built into all games; rake taken from poker pots</td>
+          </tr>
+          <tr>
+            <td>Transferability</td>
+            <td class="col-token"><span class="check-no">No</span> — tokens are non-transferable between users</td>
+            <td class="col-money"><span class="check-yes">Sometimes</span> — depends on platform; poker chips can sometimes be transferred</td>
+          </tr>
+          <tr>
+            <td>Emotional Weight</td>
+            <td class="col-token">Intentionally lower stakes; designed for entertainment without financial risk beyond purchase price</td>
+            <td class="col-money">Real financial risk; losses represent actual money from personal finances</td>
+          </tr>
+          <tr>
+            <td>Long-Run Outcome Determinism</td>
+            <td class="col-token">Skill-dependent within the zero-rake system; better players accumulate tokens over time</td>
+            <td class="col-money">House edge means most players lose in the long run regardless of skill</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The most important row in this table is the last one. Because Shitbox Shuffle operates with zero rake, the long-run token economics are genuinely skill-dependent in a way that real-money casino games are not. A skilled blackjack player in a licensed casino is still fighting a mathematical house edge of about 0.5% on every hand with perfect basic strategy. A skilled blackjack player on Shitbox Shuffle is competing only against opponents, with no house edge extracted. Over a large enough sample of sessions, skill is the primary determinant of whether your token balance grows or shrinks — not the mathematics of the house, and not luck alone.</p>
+    <p>This does not mean anyone should expect to profit financially from playing Shitbox Shuffle. Tokens are entertainment currency. But it does mean the experience rewards learning and improvement in a more direct way than any house-edge system can, which is part of why experienced players find the platform more engaging the more they play.</p>
+  </div>
+
+  <!-- NEW SECTION: Token Inflation and Advanced Strategies -->
+  <div class="section">
+    <h2>Token Supply Mechanics: Inflation, Deflation, and System Balance</h2>
+    <p>Understanding how the token supply works at a system level helps you think about your individual strategy within a broader context. Unlike government-issued currencies, which can expand through money creation, or many game currencies, which inflate through generous daily-login bonuses and achievement rewards, Shitbox Shuffle's token supply is designed to be relatively stable.</p>
+
+    <h3>How Tokens Enter the System</h3>
+    <p>New tokens enter the system through two mechanisms: welcome allocations to new verified accounts, and token bundle purchases. Welcome allocations are fixed per account and represent a bounded injection into the total supply. Bundle purchases convert dollars into tokens at a fixed ratio — they expand the circulating token supply in proportion to the number of bundles sold. As the platform grows and more players join, more tokens are purchased and the total supply increases proportionally with the player base. This is more like population-driven currency expansion than inflationary printing, and it is generally benign from a per-player economics standpoint.</p>
+
+    <h3>How Tokens Leave the System</h3>
+    <p>Tokens exit the system through account closure or long-term dormancy where expirable bonus balances lapse. In the normal course of play, tokens do not leave the system — they merely move between players through wager outcomes. The system is broadly conservative: token creation mechanisms are finite and tied to actual player onboarding, while token destruction is limited. This produces a relatively stable per-player token density over time, which means the "feel" of what a token represents in the system does not dramatically shift as the platform scales.</p>
+
+    <h3>Deflationary Pressure from Skill Concentration</h3>
+    <p>One real dynamic in any zero-rake peer-to-peer wagering system is skill concentration: over time, more skilled players tend to accumulate tokens from less skilled players, concentrating the supply in fewer accounts. This is not a dysfunction — it is the correct operation of a skill-based system. But it does mean that as any platform matures, the average opponent you encounter may become more skilled over time, and the skill required to maintain a flat or growing balance may increase. Regular players who want to remain competitive should treat their game study as an ongoing practice rather than a one-time orientation.</p>
+
+    <h3>Advanced Token Strategies for Regular Players</h3>
+    <p>Players who have been on the platform for several sessions and want to move beyond beginner-level token management can consider the following more sophisticated approaches:</p>
+    <ul>
+      <li><strong>Kelly Criterion wager sizing:</strong> The Kelly Criterion is a mathematical formula that determines the optimal fraction of your bankroll to wager on a bet where you have a known edge. For a game where you estimate your win probability at 55%, Kelly suggests wagering approximately 10% of your balance (2p-1 = 2(0.55)-1 = 0.1). Most players will find fractional Kelly (wagering half the Kelly recommendation) more appropriate to manage variance, especially in sessions with a stranger whose skill level is unknown.</li>
+      <li><strong>Game selection based on personal advantage:</strong> If you are significantly better at blackjack than poker, play blackjack. The skill differential between you and a random opponent is your edge, and maximizing that edge means playing where your skills are relatively strongest. Track your outcomes by game type — the data will tell you where to focus.</li>
+      <li><strong>Session budgeting separate from total balance:</strong> Rather than treating your entire token balance as your session budget, allocate a specific session amount before entering the lobby. This prevents a good session from turning into an extended session that gives back everything gained plus the original allocation.</li>
+      <li><strong>The "bank a portion" strategy:</strong> After any session where you are up significantly from where you started, mentally bank a portion of the gain by deciding it is not available for the current session's remaining wagers. Some players do this by setting a mental high-water mark: if you started at 500 tokens and reached 800, decide 700 is your new floor for the session. This prevents winning sessions from fully reverting.</li>
+      <li><strong>Opponent reading from early in the session:</strong> In any wagered match, you are seeing your opponent's decision-making in real time. Early in a session, play at lower stakes while gathering information about their risk appetite, strategic sophistication, and emotional tells. Increase stakes once you have useful data about how they play.</li>
+    </ul>
+
+    <div class="callout">Advanced strategy assumes a foundation: you are playing within your entertainment budget, you are not chasing losses, and your token balance represents money you have decided to spend on this entertainment. Strategy applied on top of a solid responsible-play foundation is genuinely useful. Strategy applied as a justification for chasing is not strategy — it is rationalization in a different costume.</div>
   </div>
 
   <!-- CTA Block -->

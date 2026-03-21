@@ -102,6 +102,45 @@
     .breadcrumb span { color:var(--phantom); margin:0 7px; }
     .article-meta { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ash); margin-bottom:40px; display:flex; gap:16px; flex-wrap:wrap; }
     .meta-sep { color:var(--ember); }
+
+    /* ── VISUAL 3: Knowledge Radar — horizontal bar approximation ── */
+    .radar-wrap { margin:36px 0; }
+    .radar-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ash); margin-bottom:20px; }
+    .radar-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+    .radar-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.08em; text-transform:uppercase; color:var(--dust); width:120px; flex-shrink:0; }
+    .radar-track { flex:1; height:8px; background:rgba(232,224,208,0.06); border-radius:4px; overflow:hidden; position:relative; }
+    .radar-fill { height:100%; border-radius:4px; background:var(--fill-color, var(--ember)); }
+    .radar-pct { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--ash); width:36px; text-align:right; flex-shrink:0; }
+    .radar-note { font-family:'JetBrains Mono',monospace; font-size:8px; color:rgba(232,224,208,0.25); margin-top:12px; line-height:1.5; }
+
+    /* ── VISUAL 4: Cognitive Load Diagram ── */
+    .cog-wrap { margin:36px 0; }
+    .cog-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ash); margin-bottom:20px; }
+    .cog-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .cog-panel { border:1px solid var(--phantom); border-radius:3px; padding:18px 16px; }
+    .cog-panel.high { border-color:rgba(201,162,39,0.4); background:rgba(201,162,39,0.05); }
+    .cog-panel.low { border-color:rgba(232,224,208,0.12); background:rgba(232,224,208,0.02); }
+    .cog-panel-title { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:12px; }
+    .cog-panel.high .cog-panel-title { color:var(--ember); }
+    .cog-panel.low .cog-panel-title { color:var(--ash); }
+    .cog-item { display:flex; align-items:flex-start; gap:8px; margin-bottom:8px; }
+    .cog-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+    .cog-panel.high .cog-dot { background:var(--ember); }
+    .cog-panel.low .cog-dot { background:rgba(232,224,208,0.3); }
+    .cog-text { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--dust); line-height:1.5; }
+    .cog-bar-section { margin-top:16px; }
+    .cog-bar-label { font-family:'JetBrains Mono',monospace; font-size:8px; color:var(--ash); margin-bottom:4px; }
+    .cog-bar-track { height:6px; background:rgba(232,224,208,0.06); border-radius:3px; overflow:hidden; }
+    .cog-bar-fill { height:100%; border-radius:3px; }
+
+    /* ── Opponent Profiling Checklist ── */
+    .prof-wrap { margin:36px 0; border:1px solid var(--phantom); border-radius:4px; overflow:hidden; }
+    .prof-header { padding:14px 18px; background:rgba(201,162,39,0.08); border-bottom:1px solid var(--phantom); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ember); }
+    .prof-row { display:flex; align-items:flex-start; gap:14px; padding:12px 18px; border-bottom:1px solid var(--phantom); }
+    .prof-row:last-child { border-bottom:none; }
+    .prof-icon { width:28px; height:28px; border:1px solid rgba(201,162,39,0.3); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:12px; }
+    .prof-signal { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--chalk); margin-bottom:2px; letter-spacing:0.05em; }
+    .prof-meaning { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--ash); line-height:1.5; }
   </style>
 
   <script type="application/ld+json">
@@ -166,6 +205,16 @@
             "@type": "Question",
             "name": "What are the most common trivia categories I should prepare for?",
             "acceptedAnswer": { "@type": "Answer", "text": "The most common trivia categories are History, Science & Nature, Geography, Pop Culture, Sports, Literature, and Food & Drink. History and Science appear in nearly every trivia format. Building a knowledge base in those two categories alone will meaningfully improve your performance in any trivia format you encounter." }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the difference between processing speed and recall in trivia?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Recall is the retrieval of a stored fact from long-term memory — how quickly a known answer surfaces when you hear a question. Processing speed is the underlying cognitive rate at which you parse the question, activate memory networks, and evaluate what you've retrieved. Two players with equally consolidated knowledge can produce different response times based on processing speed differences. Improving recall requires spaced repetition practice; improving processing speed under pressure requires practice under timed, competitive conditions that simulate the stress of a real match." }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I build an accurate picture of my opponent's knowledge in a trivia match?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Profile your opponent progressively across the match by tracking their timing and accuracy by category. Sub-second responses indicate confident knowledge retrieval — this is their home territory. Consistently slow or absent responses in a category confirm a knowledge gap you can exploit. Physical recognition responses (a micro-nod, a forward lean before buzzing) signal they've retrieved the answer. Post-answer composure or anxiety reveals their confidence in their choices. By mid-match you should have a rough category heat map: where they're strong, where they're guessing, and how they handle emotional pressure." }
           }
         ]
       }
@@ -517,12 +566,266 @@
   </div>
 
   <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Building a Long-Term Trivia Practice: The 90-Day Improvement Framework</h2>
+
+    <p>Meaningful trivia improvement — the kind that produces consistently better results against random opponents across all category distributions — doesn't happen in a week of intensive study. It develops over weeks and months of consistent, structured practice that builds both knowledge depth and retrieval speed simultaneously. The following ninety-day framework organizes the preparation approach covered in this guide into a realistic, progressive schedule.</p>
+
+    <h3>Days 1–30: Foundation and Self-Assessment</h3>
+    <p>The first month is diagnostic and foundational. Run a baseline assessment: twenty questions in each of the major categories (History, Science, Geography, Pop Culture, Sports, Food, Literature) under timed conditions (five seconds per question). Record your accuracy by category. This is your starting profile — the benchmark against which all future progress will be measured.</p>
+
+    <p>Simultaneously, begin your spaced repetition deck. Add ten cards per day drawn from your weakest categories. Review for fifteen minutes daily. Don't try to rush the deck — the early days are about building the habit and the initial card set. By day thirty, you should have three hundred cards in your deck and a clear sense of which categories have improved and which remain weak.</p>
+
+    <h3>Days 31–60: Category Sprints and Competitive Practice</h3>
+    <p>The middle month introduces competitive practice and category sprints. Run one category sprint per week (fifty questions in a single category, timed at five seconds each). Add wrong answers from each sprint to your spaced repetition deck. Play three to four live trivia matches per week on Shitbox Shuffle, specifically focusing on opponent profiling and reading tells rather than raw performance. Keep a brief match log: which categories appeared, how your opponent performed, what your tell-read accuracy was.</p>
+
+    <p>By the end of month two, your strongest categories should be showing 75%+ accuracy on timed flashcard reviews. Your weakest categories should have improved from their baseline by at least 10–15 percentage points if you've been consistent. Competitive match results will still vary — category distribution variance is high — but you should notice that you're blanking less often and guessing less randomly.</p>
+
+    <h3>Days 61–90: Pressure Training and Strategic Refinement</h3>
+    <p>The final month focuses on performance under pressure and strategic sophistication. Introduce deliberate pressure to your solo practice: faster timers, music or background noise, self-recorded sessions where you watch your own performance afterward. The goal is to simulate the competitive environment more closely so that the performance gap between solo practice and live play narrows.</p>
+
+    <p>Refine your wagering strategy based on ninety days of match data. Which categories have consistently produced your highest win rates? Which have been money-losers regardless of preparation? Use this data to inform your mid-match wager adjustments with the specificity that only real match history can provide. By day ninety, you should have a clearly defined competitive profile: your stronghold categories, your acceptable categories, and your categories to avoid or play conservatively — and you should know how to use that profile strategically against the range of random opponents you'll encounter on the platform.</p>
+
+    <div class="callout">
+      <strong>The Compound Effect in Trivia:</strong> Consistent daily practice for ninety days produces dramatically better results than the equivalent time spent in intensive bursts. The spacing effect that makes spaced repetition work applies to the practice schedule itself: regular, moderate practice compounds over time in ways that irregular intensive study cannot replicate.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
   <div class="cta-block">
     <div class="cta-eyebrow">Ready to Play</div>
     <div class="cta-headline">Test Your Knowledge Live on Camera</div>
     <div class="cta-body">Match with real people, compete in trivia for tokens, and find out what random opponents know that you don't — and what you know that they don't. The questions start immediately.</div>
     <a href="https://shitboxshuffle.com/" class="cta-btn">Enter the Room</a>
     <div class="cta-fine">18+ Only &nbsp;·&nbsp; US Only &nbsp;·&nbsp; Play Responsibly &nbsp;·&nbsp; 1-800-522-4700</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>The Conversation Layer: Using Trivia to Build Genuine Connection</h2>
+
+    <p>Trivia strategy guides tend to focus exclusively on performance: how to answer faster, wager better, and accumulate more points. This one is no exception in those respects. But there is a dimension of competitive trivia that pure strategy guides miss entirely, and it's one that matters specifically in the video chat context: the conversation that trivia generates is often as valuable as the game itself, and the best trivia players treat the conversational layer as part of their experience rather than an interruption to it.</p>
+
+    <p>Every question your opponent gets wrong is a potential conversation thread. "How did you know that?" after an impressive fast answer invites genuine self-disclosure about what the person reads, watches, or does. "I have never been more confident of a wrong answer in my life" after a spectacular miss opens a conversation about confidence calibration and the difference between knowing and thinking you know. The moment when both players are wrong on the same question and the answer surprises both simultaneously — "wait, it was actually Portugal?" — creates a shared experience of discovery that has a specific quality of social warmth that few other game moments can replicate.</p>
+
+    <p>Strategic players who are also socially intelligent deploy these conversational hooks deliberately. After a question where your opponent's profiling data was confirmed — they were fast on sports, just like you expected — briefly acknowledging that tell ("you clearly know your sports") both deepens the relationship and, strategically, signals that you are paying attention to their strengths. Players who feel genuinely seen in their areas of knowledge tend to be more engaged, more honest in their reactions, and more generous social partners throughout the remainder of the match. This is not manipulation; it's good sportsmanship that happens to also be strategically sound.</p>
+
+    <p>The longer sessions — those that extend beyond a single game into a third or fourth round — almost always have a robust conversational layer running alongside the game. The game is the structure and the stake; the conversation is the substance. By the time two players are deep into their third trivia round, the questions are almost background music to the conversation they're having about what the questions reminded them of, what they actually know, where they've been, what they've done, who they are. This is the platform working as designed. The trivia got you to the conversation. The conversation is the point.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>The Mental Game: Self-Talk, Rituals, and Pre-Match Preparation</h2>
+
+    <p>Competitive trivia performance is not solely a function of what you know. It is equally a function of the mental state you bring to the match. Two players with identical knowledge profiles will produce meaningfully different results based on how they manage their internal state before, during, and between questions. This is the mental game of trivia, and it is almost entirely neglected by players who focus exclusively on the knowledge side of their preparation.</p>
+
+    <h3>Pre-Match Ritual</h3>
+    <p>Elite performers in every competitive domain — athletics, chess, esports — use pre-performance rituals to establish a consistent mental state before high-stakes situations. The ritual's specific content matters less than its consistency: it is a reliable sequence that signals to your nervous system that you are moving into performance mode. For trivia, a simple three-part pre-match ritual serves this function. First, a thirty-second review of your knowledge strengths — not reciting facts but simply reminding yourself of the categories where you feel genuinely confident. Second, a brief physical settling — adjust your chair, take two slow breaths, feel the floor under your feet. Third, a conscious statement of your strategic intention for the match — "I'm going to buzz fast on history and science, take my time on everything else, and not chase uncertain answers in sports."</p>
+
+    <p>This takes less than ninety seconds in total. Done consistently before every match, it produces a mental state that is more focused, less reactive, and more strategically oriented than the default state of simply clicking "start" and hoping for the best.</p>
+
+    <h3>Positive Self-Talk Under Pressure</h3>
+    <p>The internal monologue running during a competitive trivia match is either an asset or a liability. Players who respond to a missed answer with "I knew that, why didn't I answer faster" are feeding a negative loop that degrades subsequent performance. Players who respond to the same miss with a neutral, forward-directed internal statement — "next question, same threshold" — maintain the focus and composure that competitive performance requires.</p>
+
+    <p>Specific self-talk scripts that experienced trivia players find useful: "I know this category" (before a favorable category appears), "eliminate and decide" (when facing a multiple-choice question without a clear immediate answer), "next play" (immediately after a wrong answer or missed buzz), and "same pace" (when a winning streak creates the temptation to rush). These are not affirmations — they're functional cues that direct attention toward specific behaviors rather than toward emotional state management.</p>
+
+    <h3>Between-Session Recovery</h3>
+    <p>How you treat the period immediately after a bad match — a significant loss, a category that went badly, a session where you felt outclassed — determines how quickly you recover your baseline performance level. Ruminating on a bad match extends its negative effects into subsequent sessions. Reviewing it dispassionately — "what category was the mismatch, what did I do well, what's one thing to adjust?" — converts the loss from a wound into information. Do the review once, within an hour of the match. Then put it away.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Speed Trivia Cognitive Science: Processing Speed vs. Recall</h2>
+
+    <p>Understanding why some people are faster at trivia than others — and what that difference actually is — requires a brief detour into cognitive science. Most people assume trivia speed is about how much you know: the more facts you carry, the faster you can retrieve them. This is partially true but substantially incomplete. Speed in competitive trivia is determined by two distinct cognitive processes that operate differently and improve through different training methods.</p>
+
+    <p><strong>Semantic recall</strong> is the process of retrieving a stored fact from long-term memory. When you hear "What is the capital of Australia?" and the word "Canberra" surfaces in your mind, that's semantic recall at work. The speed of recall depends on how well-consolidated the memory is: facts you've encountered many times, in many contexts, over a long period, retrieve faster than facts you've learned recently or encountered rarely. Spaced repetition practice primarily improves semantic recall.</p>
+
+    <p><strong>Processing speed</strong> is a different capacity entirely: the raw cognitive speed at which you can parse incoming information, identify its category, activate the relevant memory networks, and evaluate what you've retrieved. Two people might have equally well-consolidated knowledge of a given fact, but the faster processor identifies the relevant memory network sooner and retrieves the fact in less time. Processing speed is largely a stable trait but is significantly influenced by fatigue, stress, caffeine intake, and practice under pressure conditions.</p>
+
+    <h3>The Cognitive Load Diagram: High vs. Low Pressure Performance</h3>
+
+    <div class="cog-wrap">
+      <div class="cog-title">Cognitive Load States in Competitive Trivia</div>
+      <div class="cog-grid">
+        <div class="cog-panel high">
+          <div class="cog-panel-title">High Pressure State</div>
+          <div class="cog-item"><div class="cog-dot"></div><div class="cog-text">Opponent visible, clearly ready to buzz</div></div>
+          <div class="cog-item"><div class="cog-dot"></div><div class="cog-text">Stakes on the line (tokens wagered)</div></div>
+          <div class="cog-item"><div class="cog-dot"></div><div class="cog-text">On a losing streak — chasing recovery</div></div>
+          <div class="cog-item"><div class="cog-dot"></div><div class="cog-text">Novel question type or unfamiliar category</div></div>
+          <div class="cog-bar-section">
+            <div class="cog-bar-label">Processing capacity used by anxiety ↑</div>
+            <div class="cog-bar-track"><div class="cog-bar-fill" style="width:72%;background:rgba(201,162,39,0.6);"></div></div>
+          </div>
+          <div class="cog-bar-section">
+            <div class="cog-bar-label">Remaining capacity for recall ↓</div>
+            <div class="cog-bar-track"><div class="cog-bar-fill" style="width:28%;background:rgba(201,162,39,0.3);"></div></div>
+          </div>
+        </div>
+        <div class="cog-panel low">
+          <div class="cog-panel-title">Low Pressure State</div>
+          <div class="cog-item"><div class="cog-dot"></div><div class="cog-text">Comfortable lead — pressure is outward</div></div>
+          <div class="cog-item"><div class="cog-dot"></div><div class="cog-text">Familiar category — automatic retrieval</div></div>
+          <div class="cog-item"><div class="cog-dot"></div><div class="cog-text">Opponent seems slower — time available</div></div>
+          <div class="cog-item"><div class="cog-dot"></div><div class="cog-text">Rested, focused, stakes feel manageable</div></div>
+          <div class="cog-bar-section">
+            <div class="cog-bar-label">Processing capacity used by anxiety ↓</div>
+            <div class="cog-bar-track"><div class="cog-bar-fill" style="width:22%;background:rgba(232,224,208,0.2);"></div></div>
+          </div>
+          <div class="cog-bar-section">
+            <div class="cog-bar-label">Remaining capacity for recall ↑</div>
+            <div class="cog-bar-track"><div class="cog-bar-fill" style="width:78%;background:rgba(232,224,208,0.3);"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>The practical consequence of this distinction is that improving trivia speed requires two different training tracks. To improve <em>recall speed</em>, practice spaced repetition until your most important facts retrieve automatically — the category of knowledge you can access without conscious search. To improve <em>processing speed under pressure</em>, practice under artificial stress conditions: time your answers strictly, play against opponents who are clearly faster than you, and learn to tolerate the uncomfortable sensation of cognitive pressure without letting it collapse your performance. The second track is harder and less intuitive than the first, but it produces disproportionate competitive returns.</p>
+
+    <h3>The "Interference" Technique: Managing Nerves in the Hot Seat</h3>
+    <p>Competitive pressure in trivia — the moment when you know your opponent is poised to buzz and you feel your recall slowing under the stress — produces a neurological state called interference: anxiety-related neural activity that competes with memory retrieval for the same neural resources. The practical experience of interference is the "tip-of-tongue" state under pressure: you know you know the answer, but the more you try to access it, the further it recedes.</p>
+
+    <p>Managing interference is a trainable skill. The most effective techniques are counterintuitively indirect. <strong>Relax the search.</strong> When you feel yourself straining to retrieve an answer under pressure, deliberately release the effort — let your attention go slightly unfocused rather than bearing down harder. Paradoxically, this often allows the answer to surface, because the memory retrieval process is not purely effortful: it relies partly on associative spreading activation that pressure interrupts. <strong>Anchor to what you know.</strong> Instead of fixating on the missing answer, activate related information: what category is this? What time period? What region? These peripheral facts create a semantic neighborhood that makes the target answer more accessible. <strong>Accept and estimate.</strong> When a question is genuinely at the edge of your knowledge, accept that you're estimating and execute your best estimate with decision rather than indecision. Uncertain answers delivered with conviction are more often correct than hesitant ones.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Opponent Profiling: How to Read What Your Opponent Knows</h2>
+
+    <p>Every random trivia opponent carries a knowledge profile that you cannot see directly but can infer through their behavior across a match. Building this profile actively — rather than passively experiencing whatever they do — converts the social element of video chat trivia from a pleasant backdrop into a genuine strategic resource. The player who knows their opponent's category strengths and weaknesses by question ten is playing a fundamentally different game than the player who is just answering questions in sequence.</p>
+
+    <!-- Opponent Profiling Checklist Visual -->
+    <div class="prof-wrap">
+      <div class="prof-header">Opponent Profiling Signals — What to Watch For</div>
+      <div class="prof-row">
+        <div class="prof-icon">⚡</div>
+        <div>
+          <div class="prof-signal">Sub-second buzz response</div>
+          <div class="prof-meaning">Automatic retrieval — deep familiarity with this category. Treat as their home territory and deprioritize competing head-to-head here.</div>
+        </div>
+      </div>
+      <div class="prof-row">
+        <div class="prof-icon">⏱</div>
+        <div>
+          <div class="prof-signal">Slow or no response on consecutive questions in same category</div>
+          <div class="prof-meaning">Knowledge gap confirmed. Sharpen your own answers here; this is where your relative advantage is highest.</div>
+        </div>
+      </div>
+      <div class="prof-row">
+        <div class="prof-icon">😬</div>
+        <div>
+          <div class="prof-signal">Visible wince or look-away after wrong answer</div>
+          <div class="prof-meaning">High self-expectation. They feel their losses. Composure advantage is yours if the category stays unfavorable for them.</div>
+        </div>
+      </div>
+      <div class="prof-row">
+        <div class="prof-icon">🎯</div>
+        <div>
+          <div class="prof-signal">Confident wrong answer (buzzes fast, wrong)</div>
+          <div class="prof-meaning">Overconfident in this domain — they think they know more than they do here. Not a weakness in knowledge but in calibration.</div>
+        </div>
+      </div>
+      <div class="prof-row">
+        <div class="prof-icon">🤫</div>
+        <div>
+          <div class="prof-signal">Consistently neutral expression regardless of outcome</div>
+          <div class="prof-meaning">Experienced, composed player. Their tells are suppressed. Focus on timing data rather than facial expression to build your profile.</div>
+        </div>
+      </div>
+      <div class="prof-row">
+        <div class="prof-icon">📈</div>
+        <div>
+          <div class="prof-signal">Gets faster as match progresses in specific category</div>
+          <div class="prof-meaning">They're warming up — questions are activating a knowledge network they'd initially underestimated. Adjust your wager exposure in that category.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Building the Profile Progressively</h3>
+    <p>The profiling process is not a one-time assessment — it's a running update that continues throughout the match. The first two or three questions give you a rough starting model. Every subsequent question either confirms or revises it. By the midpoint of a typical match, you should have a reasonably accurate map of where your opponent is strong, where they're guessing, and how they handle the emotional swings of a competitive session.</p>
+
+    <p>The most useful condensed profile is a category heat map: for each major category that has appeared, rate your opponent's performance as strong (fast, consistently correct), moderate (inconsistent, some guessing), or weak (slow, frequently wrong). This map shapes your wagering decisions, your buzzer aggressiveness in each category, and your general match approach in the final third of the game.</p>
+
+    <h3>What Profiles Can't Tell You</h3>
+    <p>Opponent profiling has real limits. Variance exists: a category specialist can have a bad run in their strongest category. A player with a composed exterior may be tilting internally. Someone who appeared weak in history in questions one through five may have just been warming up and will dominate it from question six onward. Build your profile but hold it lightly — update it continuously rather than locking in an early impression and refusing to revise it when new data contradicts it.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Practice Drills to Improve Trivia Speed</h2>
+
+    <p>Raw knowledge is a necessary condition for trivia excellence but not a sufficient one. The player who knows a fact slowly, under pressure, with an opponent watching, is not playing the same game as the player who retrieves the same fact instantly and confidently. The gap between those two players is not primarily a knowledge gap — it's a retrieval-under-pressure gap, and it closes through specific practice, not through passive exposure alone.</p>
+
+    <h3>Drill 1: Timed Solo Flashcard Sessions</h3>
+    <p>Set a hard five-second response limit for every flashcard in your spaced repetition deck. Not "try to answer within five seconds" — actually discard cards you can't produce within five seconds as if they were wrong answers, regardless of whether you eventually retrieve the answer. This drill trains your brain to treat the five-second window as absolute rather than aspirational, which is the condition competitive trivia actually operates under. Cards you consistently fail under this constraint are facts that need more consolidation before they're tournament-ready.</p>
+
+    <h3>Drill 2: Multi-Category Speed Rounds</h3>
+    <p>Use a free online trivia tool (Sporcle, QuizUp, or any timed format) to run ten-question rounds across randomly mixed categories, with a timer that goes significantly faster than you're comfortable with. The goal is not to score well in the short term — it's to train your brain to categorize questions and activate memory networks faster than your current baseline. This drill is uncomfortable by design. The discomfort is the training signal.</p>
+
+    <h3>Drill 3: The Category Sprint</h3>
+    <p>Choose a single trivia category you want to improve — history, geography, science. Run fifty consecutive questions in that category at maximum speed, timing every response. Record your fastest responses, your slowest, and your wrong answers. After the session, review the wrong answers and add them to your spaced repetition deck. Repeat the sprint the following week. The combination of intensive exposure, immediate feedback, and spaced repetition follow-up is the most efficient path to category mastery.</p>
+
+    <h3>Visual: Your Knowledge Category Strength Profile</h3>
+    <div class="radar-wrap">
+      <div class="radar-title">Sample Category Strength Profile — Before vs. After 4 Weeks of Targeted Practice</div>
+      <div class="radar-row">
+        <div class="radar-label">History</div>
+        <div class="radar-track">
+          <div class="radar-fill" style="width:82%;--fill-color:rgba(201,162,39,0.8);"></div>
+        </div>
+        <div class="radar-pct">82%</div>
+      </div>
+      <div class="radar-row">
+        <div class="radar-label">Science &amp; Nature</div>
+        <div class="radar-track">
+          <div class="radar-fill" style="width:71%;--fill-color:rgba(201,162,39,0.7);"></div>
+        </div>
+        <div class="radar-pct">71%</div>
+      </div>
+      <div class="radar-row">
+        <div class="radar-label">Geography</div>
+        <div class="radar-track">
+          <div class="radar-fill" style="width:65%;--fill-color:rgba(201,162,39,0.6);"></div>
+        </div>
+        <div class="radar-pct">65%</div>
+      </div>
+      <div class="radar-row">
+        <div class="radar-label">Pop Culture</div>
+        <div class="radar-track">
+          <div class="radar-fill" style="width:88%;--fill-color:rgba(232,196,71,0.85);"></div>
+        </div>
+        <div class="radar-pct">88%</div>
+      </div>
+      <div class="radar-row">
+        <div class="radar-label">Sports</div>
+        <div class="radar-track">
+          <div class="radar-fill" style="width:44%;--fill-color:rgba(232,224,208,0.3);"></div>
+        </div>
+        <div class="radar-pct">44%</div>
+      </div>
+      <div class="radar-row">
+        <div class="radar-label">Food &amp; Drink</div>
+        <div class="radar-track">
+          <div class="radar-fill" style="width:58%;--fill-color:rgba(201,162,39,0.5);"></div>
+        </div>
+        <div class="radar-pct">58%</div>
+      </div>
+      <div class="radar-row">
+        <div class="radar-label">Literature</div>
+        <div class="radar-track">
+          <div class="radar-fill" style="width:37%;--fill-color:rgba(232,224,208,0.2);"></div>
+        </div>
+        <div class="radar-pct">37%</div>
+      </div>
+      <div class="radar-note">Build this profile for yourself using solo practice rounds. Categories at or above 70% are competitive strengths. Below 50% are knowledge gaps worth targeted investment.</div>
+    </div>
+
+    <h3>Drill 4: Pressure Simulation Sessions</h3>
+    <p>Play live trivia matches on Shitbox Shuffle or any competitive platform specifically for practice rather than outcome — meaning your goal is not to win but to observe your own cognitive performance under real conditions. Notice when you freeze. Notice when interference kicks in. Notice which categories degrade fastest under pressure. The metadata from a dozen practice-oriented sessions will tell you more about what actually needs improvement than any amount of solo flashcard review.</p>
+
+    <h3>Category Specialization: Going Deep vs. Going Broad</h3>
+    <p>The strategic question of how much to specialize versus how much to generalize has a defensible answer that depends on your current profile. If you have one or two categories where you're genuinely excellent — 80%+ accuracy under pressure — those categories are your competitive identity. Invest to protect and deepen them while building basic competence in the highest-frequency categories (history, science, geography) that you'll encounter regardless of what you'd prefer. Pure generalists compete everywhere at a moderate level. Specialists dominate in their categories and accept disadvantage in others. Both approaches win matches, but specialists tend to win more consistently because their advantages in strong categories are extreme rather than marginal.</p>
   </div>
 
   <!-- ══════════════════════════════════════════════════════ -->
@@ -562,6 +865,16 @@
     <div class="faq-item">
       <div class="faq-q">What are the most common trivia categories I should prepare for?</div>
       <div class="faq-a">The highest-frequency categories across most trivia formats are History, Science and Nature, Geography, Pop Culture, Sports, Literature, and Food and Drink. History and Science appear in virtually every format and have the clearest path to improvement through structured study. Building a working knowledge base in those two categories alone — world capitals, major historical events, basic science concepts — will meaningfully improve your performance against random opponents in any format.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What drills are most effective for improving trivia speed under pressure?</div>
+      <div class="faq-a">The highest-ROI drills are timed solo flashcard sessions with a hard five-second response limit (trains recall under time pressure rather than in comfort), multi-category speed rounds at faster-than-comfortable pace (trains processing speed and category switching), category sprints of 50 consecutive questions with wrong-answer review in spaced repetition, and live competitive practice sessions focused on observing your own performance rather than the outcome. The combination of spaced repetition for recall consolidation and timed competitive practice for pressure tolerance is the most complete preparation approach available without a dedicated trivia coach.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I stop tilting after a bad run of missed questions?</div>
+      <div class="faq-a">First diagnose: is this random variance in a category you know well, or a genuine knowledge gap? If variance, emotional patience is the correct response — the category will revert and changing strategy based on short-term noise makes things worse. If a genuine gap, accept it and adapt: lean on elimination, protect your wager exposure, focus on your strong categories. In both cases, the behavioral prescription is identical: maintain the same posture, expression, and answer threshold regardless of the recent streak. Treat each question as independent of the previous one. The mental phrase "next play" — used consistently — interrupts the rumination loop that extends bad runs.</div>
     </div>
   </div>
 

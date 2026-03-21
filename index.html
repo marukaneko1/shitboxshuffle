@@ -471,6 +471,8 @@ nav.scrolled {
 }
 
 /* ═══ HERO VIDEO FRAME ═══ */
+/* Outer shell: CSS-only positioning + vertical centering. GSAP must not touch this
+   or it overwrites translateY(-50%) and the frame jumps when scroll/ritual updates run. */
 .hero-frame-container {
   position: absolute;
   z-index: 10;
@@ -479,9 +481,15 @@ nav.scrolled {
   top: var(--hero-v-center);
   transform: translateY(-50%);
   transform-origin: center center;
-  will-change: transform;
   perspective: 1200px;
+}
+
+.hero-frame-move {
+  width: 100%;
+  position: relative;
   opacity: 0;
+  will-change: transform;
+  transform-origin: center center;
 }
 
 /* Background glow */
@@ -1107,9 +1115,9 @@ nav.scrolled {
 
 .rsc1 { text-align: right; left: 48px; top: 32%; transform: translate(0,-50%) translateX(-25px); }
 .rsc1.active { transform: translate(0,-50%) translateX(0); }
-.rsc2 { text-align: left; right: 48px; top: 34%; transform: translate(0,-50%) translateX(25px); }
+.rsc2 { text-align: left; right: 48px; top: 26%; max-width: min(300px, 27vw); transform: translate(0,-50%) translateX(25px); }
 .rsc2.active { transform: translate(0,-50%) translateX(0); }
-.rsc3 { text-align: left; right: 48px; top: 72%; transform: translate(0,-50%) translateX(25px); }
+.rsc3 { text-align: left; right: 48px; top: 72%; max-width: min(300px, 27vw); transform: translate(0,-50%) translateX(25px); }
 .rsc3.active { transform: translate(0,-50%) translateX(0); }
 .rsc4 { text-align: right; left: 48px; top: 70%; transform: translate(0,-50%) translateX(-25px); }
 .rsc4.active { transform: translate(0,-50%) translateX(0); }
@@ -2392,7 +2400,7 @@ footer {
   .ritual-intro-text { left: 48px; max-width: 420px; }
   .ritual-step-card { max-width: 280px; }
   .rsc1, .rsc4 { left: 24px; }
-  .rsc2, .rsc3 { right: 24px; }
+  .rsc2, .rsc3 { right: 24px; max-width: min(260px, 32vw); }
 }
 
 /* Compact laptops (13" MacBook ~1280–1440px): widen gutter + slightly smaller type — avoids headline + frame colliding */
@@ -3324,8 +3332,9 @@ footer.sticky-footer {
       </div>
     </div>
 
-    <!-- Right: Video Frame — this is THE panel that moves to center -->
-    <div class="hero-frame-container" id="heroFrameContainer">
+    <!-- Right: Video Frame — outer = layout + translateY(-50%); inner = GSAP x/y/scale -->
+    <div class="hero-frame-container">
+      <div class="hero-frame-move" id="heroFrameContainer">
       <div class="hero-frame-glow" id="heroFrameGlow"></div>
       <div class="hero-frame-corners" id="heroFrameCorners">
         <div class="frame-corner-bl"></div>
@@ -3366,6 +3375,7 @@ footer.sticky-footer {
         <div class="ritual-spotlight r-spot-games" id="rSpotGames"></div>
         <div class="ritual-spotlight r-spot-wager" id="rSpotWager"></div>
         <div class="ritual-vs-badge" id="rVsBadge">VS</div>
+      </div>
       </div>
     </div>
 
@@ -3813,7 +3823,11 @@ const heroConObs = new IntersectionObserver(([e]) => {
 }, { threshold: 0 });
 heroConObs.observe(document.getElementById('heroSection'));
 sizeCanvas(); initNodes(); drawConstellation();
-window.addEventListener('resize', () => { sizeCanvas(); initNodes(); });
+window.addEventListener('resize', () => {
+  sizeCanvas();
+  initNodes();
+  if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+});
 
 /* ═══════════════════════════════════════════════════════
    5. TEXT SCRAMBLE DECODE — "VIDEO · WAGER · REPEAT"
@@ -4096,9 +4110,9 @@ function rSmoothstep(t) { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2
 
 function rGetPositions() {
   const vw = window.innerWidth, vh = window.innerHeight;
-  const fw = rFrameWrap.offsetWidth, fh = rFrameWrap.offsetHeight;
   const rect = rFrameWrap.getBoundingClientRect();
-  // Use real layout position (works for 1440/1280/1180 breakpoints + stacked hero)
+  // Use visual size (includes scale) so centering math matches getBoundingClientRect during ritual
+  const fw = rect.width, fh = rect.height;
   const eCenterL = (vw - fw) / 2;
   const eCenterT = (vh - fh) / 2;
   return { dx: eCenterL - rect.left, dy: eCenterT - rect.top };
