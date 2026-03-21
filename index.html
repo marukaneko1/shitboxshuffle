@@ -3332,7 +3332,7 @@ footer.sticky-footer {
     </div>
 
     <!-- Right: Video Frame — outer = layout + translateY(-50%); inner = GSAP x/y/scale -->
-    <div class="hero-frame-container">
+    <div class="hero-frame-container" id="heroFrameShell">
       <div class="hero-frame-move" id="heroFrameContainer">
       <div class="hero-frame-glow" id="heroFrameGlow"></div>
       <div class="hero-frame-corners" id="heroFrameCorners">
@@ -4095,6 +4095,7 @@ ScrollTrigger.create({
    hero text/footer fade out, step cards appear around it
    ═══════════════════════════════════════════════════════ */
 const rFrameWrap = document.getElementById('heroFrameContainer');
+const rFrameShell = document.getElementById('heroFrameShell'); // outer, CSS-only, no GSAP
 const rHeroContent = document.getElementById('heroContent');
 const rHeroFooter = document.getElementById('heroFooter');
 const rHeroScroll = document.getElementById('heroScroll');
@@ -4109,12 +4110,14 @@ function rSmoothstep(t) { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2
 
 function rGetPositions() {
   const vw = window.innerWidth, vh = window.innerHeight;
-  const rect = rFrameWrap.getBoundingClientRect();
-  // Use visual size (includes scale) so centering math matches getBoundingClientRect during ritual
-  const fw = rect.width, fh = rect.height;
+  // Anchor to outer shell (no GSAP transforms) so position is stable across scroll updates.
+  // Using offsetWidth/offsetHeight (layout size) is correct for GSAP scale centering —
+  // scale keeps transform-origin at center so the layout left of a centered element is (vw-W)/2.
+  const shellRect = rFrameShell.getBoundingClientRect();
+  const fw = rFrameWrap.offsetWidth, fh = rFrameWrap.offsetHeight;
   const eCenterL = (vw - fw) / 2;
   const eCenterT = (vh - fh) / 2;
-  return { dx: eCenterL - rect.left, dy: eCenterT - rect.top };
+  return { dx: eCenterL - shellRect.left, dy: eCenterT - shellRect.top };
 }
 
 function rUpdateConnectors(step) {
