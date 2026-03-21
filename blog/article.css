@@ -7,7 +7,8 @@
 }
 html { background: var(--void); scroll-behavior: smooth; }
 body { font-family: 'Libre Baskerville', Georgia, serif; background: var(--void); color: var(--bone); min-height: 100vh; line-height: 1.75; }
-nav { display: flex; align-items: center; height: 70px; border-bottom: 1px solid var(--phantom); background: rgba(3,3,3,0.92); position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
+/* Only the site header — not <nav class="toc"> inside articles */
+body > nav { display: flex; align-items: center; height: 70px; border-bottom: 1px solid var(--phantom); background: rgba(3,3,3,0.92); position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
 /* Old-style nav (flat children) */
 .nav-logo { padding: 0 40px; text-decoration: none; }
 .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.2em; color: var(--bone); }

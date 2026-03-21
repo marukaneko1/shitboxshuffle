@@ -3325,6 +3325,8 @@ let localVideoTrack = null;
 let localAudioTrack = null;
 let agoraAppId      = null;
 let cameraOn        = false;
+let lastAgoraChannel = null;
+let roomAgoraBusy = false;
 
 // Game state
 let currentGameId    = null;
@@ -3465,9 +3467,9 @@ function connectSocket() {
       // Fallback: fetch peer name the old way
       fetchPeerName(peerId);
     }
-    // Init Agora video if token provided
-    if (data.video && agoraAppId) {
-      initAgora(agoraAppId, data.video.channelName, data.video.token);
+    // Init Agora (refetch app id if needed — avoids race with boot)
+    if (data.video && data.video.token && data.video.channelName) {
+      startAgoraFromSessionPayload(data.video).catch(() => {});
     }
     showGameSelect();
   });
@@ -3707,6 +3709,7 @@ function connectSocket() {
     roomData = data.room;
     isRoomHost = roomData.hostUserId === myUserId;
     initRoomUI();
+    tryStartRoomAgoraIfNeeded();
   });
 
   socket.on('room.userJoined', (data) => {
@@ -3714,6 +3717,7 @@ function connectSocket() {
     roomData = data.room;
     updateRoomParticipantCount();
     showToast('🎯 <span class="ta">Player joined!</span> ' + (roomData.participantCount || 0) + ' in room');
+    tryStartRoomAgoraIfNeeded();
   });
 
   socket.on('room.userLeft', (data) => {
@@ -4410,6 +4414,90 @@ async function submitReport() {
 }
 
 // ══════════════════════════════════════════
+//  AGORA — fetch app id, teardown, session vs room
+// ══════════════════════════════════════════
+async function fetchAgoraAppIdIfNeeded() {
+  if (agoraAppId) return;
+  try {
+    const r = await fetch(API_URL + '/api/video/app-id');
+    if (!r.ok) return;
+    const d = await r.json();
+    if (d.appId) agoraAppId = d.appId;
+  } catch (e) {}
+}
+
+async function teardownAgora() {
+  lastAgoraChannel = null;
+  if (localVideoTrack) {
+    try { localVideoTrack.stop(); localVideoTrack.close(); } catch (e) {}
+    localVideoTrack = null;
+  }
+  if (localAudioTrack) {
+    try { localAudioTrack.stop(); localAudioTrack.close(); } catch (e) {}
+    localAudioTrack = null;
+  }
+  if (agoraClient) {
+    try { await agoraClient.leave(); } catch (e) {}
+    try { agoraClient.removeAllListeners && agoraClient.removeAllListeners(); } catch (e) {}
+    agoraClient = null;
+  }
+  cameraOn = false;
+  syncMicToggleButton();
+  syncVideoToggleButton();
+}
+
+async function startAgoraFromSessionPayload(video) {
+  if (!video || !video.token || !video.channelName) return;
+  await fetchAgoraAppIdIfNeeded();
+  if (!agoraAppId) {
+    showToast('⚠️ Video needs <span class="ta">AGORA_APP_ID</span> on the API server.', 6500);
+    return;
+  }
+  const uid = myUserId != null ? String(myUserId) : '';
+  if (!uid) {
+    showToast('⚠️ Sign in again — user id missing for video.', 5000);
+    return;
+  }
+  try {
+    await teardownAgora();
+    await initAgora(agoraAppId, video.channelName, video.token);
+  } catch (e) {
+    console.warn('Agora session start failed:', e);
+    await teardownAgora();
+    showToast('⚠️ Video failed: ' + (e.message || 'unknown'), 6000);
+  }
+}
+
+async function tryStartRoomAgoraIfNeeded() {
+  if (!IS_ROOM_MODE || !ROOM_ID || !myToken || !roomData) return;
+  const n = roomData.participantCount || 0;
+  if (n < 2) return;
+  if (roomAgoraBusy) return;
+  if (agoraClient && lastAgoraChannel) return;
+  roomAgoraBusy = true;
+  try {
+    await fetchAgoraAppIdIfNeeded();
+    if (!agoraAppId) {
+      showToast('⚠️ Room video needs <span class="ta">AGORA_APP_ID</span> on the API.', 6000);
+      return;
+    }
+    const r = await fetch(API_URL + '/api/video/room-token?roomId=' + encodeURIComponent(ROOM_ID), {
+      headers: { Authorization: 'Bearer ' + myToken }
+    });
+    if (!r.ok) return;
+    const d = await r.json();
+    if (!d.token || !d.channelName) return;
+    await teardownAgora();
+    await initAgora(agoraAppId, d.channelName, d.token);
+  } catch (e) {
+    console.warn('Room Agora failed:', e);
+    await teardownAgora();
+  } finally {
+    roomAgoraBusy = false;
+  }
+}
+
+// ══════════════════════════════════════════
 //  CAMERA (local, fallback without Agora)
 // ══════════════════════════════════════════
 let localStream = null;
@@ -4494,43 +4582,47 @@ async function toggleCamera() {
 //  AGORA VIDEO
 // ══════════════════════════════════════════
 async function initAgora(appId, channelName, token) {
-  if (!AgoraRTC || !appId) return;
-  try {
-    AgoraRTC.setLogLevel(4); // Only errors
-    agoraClient = AgoraRTC.createClient({ mode:'rtc', codec:'vp8' });
-
-    agoraClient.on('user-published', async (user, mediaType) => {
-      await agoraClient.subscribe(user, mediaType);
-      if (mediaType === 'video') {
-        document.getElementById('remoteVideoContainer').innerHTML = '';
-        user.videoTrack.play('remoteVideoContainer');
-        document.getElementById('opponentPlaceholder').classList.add('hidden');
-      }
-      if (mediaType === 'audio') user.audioTrack.play();
-    });
-
-    agoraClient.on('user-unpublished', (user, mediaType) => {
-      if (mediaType === 'video') document.getElementById('opponentPlaceholder').classList.remove('hidden');
-    });
-
-    await agoraClient.join(appId, channelName, token, myUserId);
-
-    // Publish local video + audio
-    const [vTrack, aTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
-    localVideoTrack = vTrack;
-    localAudioTrack = aTrack;
-    localVideoTrack.play('localVideoContainer');
-    document.getElementById('selfPlaceholder').classList.add('hidden');
-    await agoraClient.publish([localVideoTrack, localAudioTrack]);
-    cameraOn = true;
-    syncMicToggleButton();
-    syncVideoToggleButton();
-  } catch(e) {
-    console.warn('Agora init failed:', e.message);
-    syncMicToggleButton();
-    syncVideoToggleButton();
-    // Graceful: just keep placeholder
+  if (!AgoraRTC || !appId || !channelName || !token) {
+    throw new Error('Missing Agora app, channel, or token');
   }
+  const uid = myUserId != null ? String(myUserId) : '';
+  if (!uid) throw new Error('Missing user id for Agora');
+
+  AgoraRTC.setLogLevel(4);
+  agoraClient = AgoraRTC.createClient({ mode:'rtc', codec:'vp8' });
+
+  agoraClient.on('user-published', async (user, mediaType) => {
+    await agoraClient.subscribe(user, mediaType);
+    if (mediaType === 'video') {
+      document.getElementById('remoteVideoContainer').innerHTML = '';
+      user.videoTrack.play('remoteVideoContainer');
+      document.getElementById('opponentPlaceholder').classList.add('hidden');
+    }
+    if (mediaType === 'audio' && user.audioTrack) {
+      try {
+        await user.audioTrack.play();
+      } catch (playErr) {
+        console.warn('Remote audio play:', playErr && playErr.message);
+      }
+    }
+  });
+
+  agoraClient.on('user-unpublished', (user, mediaType) => {
+    if (mediaType === 'video') document.getElementById('opponentPlaceholder').classList.remove('hidden');
+  });
+
+  await agoraClient.join(appId, channelName, token, uid);
+
+  const [vTrack, aTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+  localVideoTrack = vTrack;
+  localAudioTrack = aTrack;
+  localVideoTrack.play('localVideoContainer');
+  document.getElementById('selfPlaceholder').classList.add('hidden');
+  await agoraClient.publish([localVideoTrack, localAudioTrack]);
+  lastAgoraChannel = channelName;
+  cameraOn = true;
+  syncMicToggleButton();
+  syncVideoToggleButton();
 }
 
 // ══════════════════════════════════════════

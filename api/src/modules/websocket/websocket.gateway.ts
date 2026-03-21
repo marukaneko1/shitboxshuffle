@@ -180,6 +180,24 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
     }
   }
 
+  /** Normalize Nest HttpException / unknown errors for logging and string matching */
+  private formatErrorForLog(err: unknown): string {
+    if (err == null) return "";
+    if (typeof err === "string") return err;
+    const anyErr = err as Record<string, unknown>;
+    const parts: string[] = [];
+    if (typeof anyErr.message === "string") parts.push(anyErr.message);
+    const resp = anyErr.response;
+    if (typeof resp === "string") parts.push(resp);
+    else if (resp && typeof resp === "object") {
+      const r = resp as Record<string, unknown>;
+      const m = r.message;
+      if (typeof m === "string") parts.push(m);
+      else if (Array.isArray(m)) parts.push(m.map(String).join(" "));
+    }
+    return parts.join(" ").trim();
+  }
+
   /**
    * Clears all timer/interval entries associated with a specific gameId.
    * Safe to call even if no timers exist for the given gameId.
@@ -502,9 +520,10 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
         const token = this.videoService.buildToken(channelName, user.sub);
         videoToken = { channelName, token: token.token, expiresAt: token.expiresAt };
       } catch (error: any) {
+        const errText = this.formatErrorForLog(error);
         // If Agora is not configured, continue without video token
-        if (error.message?.includes("Agora") || error.message?.includes("AGORA")) {
-          this.logger.warn("⚠️ Agora credentials not configured - session ready without video token");
+        if (/agora|AGORA_APP|AGORA_APP_CERTIFICATE|credentials missing|not configured/i.test(errText)) {
+          this.logger.warn(`⚠️ Agora not available for session video: ${errText}`);
         } else {
           // For other errors, re-throw to be caught by outer catch
           throw error;
@@ -552,8 +571,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnM
       this.logger.log(`User ${user.sub} joined session ${body.sessionId}, peer: ${peerId}`);
     } catch (error: any) {
       this.logger.error("Error in session.join:", error);
+      const errText = this.formatErrorForLog(error);
       // Don't send Agora-related errors to client - they're non-critical
-      if (error.message?.includes("Agora") || error.message?.includes("AGORA")) {
+      if (/agora|AGORA_APP|AGORA_APP_CERTIFICATE|credentials missing|not configured/i.test(errText)) {
         this.logger.warn("⚠️ Agora error in session.join - sending session.ready without video");
         // Still send session.ready, just without video token (only if we have session data)
         if (session) {

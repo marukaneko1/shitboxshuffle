@@ -422,8 +422,10 @@ nav {
 .toast .toast-accent { color: var(--gold); font-weight: 500; }
 
 /* ── LOGIN MODAL ─────────────────────────── */
-.login-overlay { position:fixed;inset:0;z-index:10000;background:rgba(8,7,10,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s ease;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(20px,env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch;box-sizing:border-box; }
+/* Blur/dim on a separate layer — backdrop-filter on the flex overlay breaks hit-testing on inputs (clicks only register on part of the field) in WebKit/Firefox */
+.login-overlay { position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s ease;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(20px,env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch;box-sizing:border-box; }
 .login-overlay.active { opacity:1;pointer-events:auto; }
+.login-backdrop { position:absolute;inset:0;background:rgba(8,7,10,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:0;pointer-events:auto; }
 .login-card {
   width:420px;max-width:92vw;
   background:var(--surface-elevated);
@@ -432,7 +434,6 @@ nav {
   transform:translateY(28px) scale(0.96);
   transition:transform 0.4s cubic-bezier(0.23,1,0.32,1);
   margin:auto;flex-shrink:0;
-  /* Own stacking context so backdrop-filter on parent doesn’t eat clicks (Safari / some WebKit) */
   isolation:isolate;
   z-index:1;
   pointer-events:auto;
@@ -446,12 +447,12 @@ nav {
   background:linear-gradient(90deg,transparent,rgba(201,162,39,0.2),transparent);
   pointer-events:none;
 }
-.login-header { padding:32px 36px 20px;text-align:center; }
+.login-header { padding:32px 36px 20px;text-align:center;position:relative;z-index:0; }
 .login-eyebrow { font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);opacity:0.7;margin-bottom:8px; }
 .login-title { font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;font-style:italic;color:var(--ivory); }
 .login-title em { color:var(--gold); }
 .login-sub { font-size:12px;color:var(--ivory-40);margin-top:4px; }
-.login-body { padding:8px 32px 28px; position:relative; z-index:2; }
+.login-body { padding:8px 32px 28px; position:relative; z-index:1; }
 .login-error { background:rgba(212,69,58,0.08);border:1px solid rgba(212,69,58,0.25);border-radius:6px;padding:10px 14px;font-size:12px;color:#e86b62;margin-bottom:16px;display:none; }
 .login-error.show { display:block; }
 .login-google {
@@ -467,17 +468,19 @@ nav {
 .login-divider { display:flex;align-items:center;gap:14px;margin-bottom:20px; }
 .login-divider-line { flex:1;height:1px;background:var(--border); }
 .login-divider-text { font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ivory-20); }
-.login-field { margin-bottom:14px; }
-.login-field label { display:block;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ivory-40);margin-bottom:7px; }
-.pw-wrap { position:relative;display:block; }
-.pw-wrap input { padding-right:48px; position:relative; z-index:1; }
+.login-field { margin-bottom:14px; position:relative; isolation:isolate; }
+.login-field label { display:block;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ivory-40);margin-bottom:7px;pointer-events:none; }
+/* overflow:hidden clips the toggle so it can’t sprawl into rows below */
+.pw-wrap { position:relative;display:block;overflow:hidden;border-radius:6px; isolation:isolate; }
+.pw-wrap input { padding-right:48px; position:relative; z-index:2; pointer-events:auto; }
 .pw-toggle {
-  position:absolute;right:2px;top:50%;transform:translateY(-50%);
-  width:40px;height:calc(100% - 8px);min-height:36px;max-height:44px;
+  position:absolute;right:4px;top:50%;transform:translateY(-50%);
+  width:40px;height:40px;min-width:40px;min-height:40px;max-height:44px;
   display:flex;align-items:center;justify-content:center;
   background:transparent;border:none;color:var(--ivory-40);cursor:pointer;
-  transition:color 0.2s;pointer-events:auto;z-index:2;
+  transition:color 0.2s;pointer-events:auto;z-index:3;
   border-radius:4px;
+  box-sizing:border-box;
 }
 .pw-toggle:hover { color:var(--ivory); }
 .login-field input {
@@ -485,25 +488,35 @@ nav {
   border:1px solid var(--border);border-radius:6px;
   color:var(--ivory);font-size:14px;font-family:'IBM Plex Sans',sans-serif;
   outline:none;transition:border-color 0.25s;
-  position:relative;z-index:1;
+  position:relative;z-index:2;
   box-sizing:border-box;
+  pointer-events:auto;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(201,162,39,0.15);
 }
 .login-field input:focus { border-color:rgba(201,162,39,0.4);background:rgba(201,162,39,0.03); }
 .login-field input::placeholder { color:var(--ivory-20); }
+.login-field:focus-within { z-index:4; }
+.login-field input[type="date"] { max-width:100%; }
+#registerDobField { position:relative; border-radius:6px; }
+#loginForm { position:relative; z-index:1; }
 .login-submit {
   width:100%;padding:14px;border:none;border-radius:6px;
   background:var(--gold);color:var(--void);
   font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:0.12em;
   cursor:pointer;transition:all 0.25s;margin-top:4px;
+  position:relative; z-index:2;
+  pointer-events:auto;
+  touch-action:manipulation;
 }
 .login-submit:hover { background:var(--gold-light);box-shadow:0 0 30px rgba(201,162,39,0.25); }
 .login-submit:disabled { opacity:0.5;cursor:not-allowed; }
 .login-footer { text-align:center;margin-top:18px;font-size:12px;color:var(--ivory-40); }
 .login-footer a { color:var(--gold);text-decoration:none;transition:color 0.2s; }
 .login-footer a:hover { color:var(--gold-light); }
-.login-close { position:absolute;top:16px;right:18px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--ivory-40);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.25s;z-index:5;pointer-events:auto; }
+.login-close { position:absolute;top:16px;right:18px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--ivory-40);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.25s;z-index:40;pointer-events:auto; }
 .login-close:hover { border-color:var(--border-hover);color:var(--ivory);background:var(--ivory-05); }
-.login-tab-row { display:flex;border-bottom:1px solid var(--border);margin:0 32px 20px; }
+.login-tab-row { display:flex;border-bottom:1px solid var(--border);margin:0 32px 20px; position:relative; z-index:0; }
 .login-tab { flex:1;padding:10px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:0.12em;color:var(--ivory-40);cursor:pointer;border:none;border-bottom:2px solid transparent;background:transparent;outline:none;transition:color 0.2s,border-color 0.2s;margin-bottom:-1px;user-select:none; }
 .login-tab.active { color:var(--gold);border-bottom-color:var(--gold); }
 .login-tab:focus-visible { outline:1px solid rgba(201,162,39,0.4);outline-offset:2px; }
@@ -685,14 +698,19 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
 }
 
 /* ── PRELOADER ── */
+/* Must stay BELOW modals (.login-overlay 10000+, shop/settings 10200+). Old value 99999 sat on top and blocked clicks in WebKit. */
 #room-preloader {
-  position: fixed; inset: 0; z-index: 99999;
+  position: fixed; inset: 0; z-index: 9998;
   pointer-events: none; background: transparent;
   transition: opacity 0.3s ease;
 }
 /* Parent pointer-events:none does NOT disable tiles — children default to auto and steal all clicks until removed */
 #room-preloader * { pointer-events: none !important; }
-#room-preloader.done { opacity: 0; }
+#room-preloader.done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none !important;
+}
 .room-pre-tile {
   position: absolute;
   background: #08070a;
@@ -897,6 +915,7 @@ footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex;
 </div>
 
 <div class="login-overlay" id="loginOverlay">
+  <div class="login-backdrop" id="loginBackdrop" aria-hidden="true"></div>
   <div class="login-card">
     <button class="login-close" id="loginClose">✕</button>
     <div class="login-header">
@@ -1797,7 +1816,9 @@ function closeLoginModal(){
 }
 
 document.getElementById('loginClose').addEventListener('click', closeLoginModal);
-loginOverlay.addEventListener('click', e=>{ if(e.target===loginOverlay) closeLoginModal(); });
+loginOverlay.addEventListener('click', e=>{
+  if(e.target===loginOverlay || e.target.id==='loginBackdrop') closeLoginModal();
+});
 document.getElementById('tabLogin').addEventListener('click', ()=>switchTab('login'));
 document.getElementById('tabRegister').addEventListener('click', ()=>switchTab('register'));
 document.getElementById('footerSwitchLink').addEventListener('click', e=>{
