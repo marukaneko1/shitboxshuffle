@@ -3,67 +3,491 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How Tokens Work on Shitbox Shuffle (Wallet &amp; Play)</title>
-<meta name="description" content="Plain-language overview of tokens on Shitbox Shuffle: wallet, matches, and where to read binding rules. US 18+ only—not financial advice.">
+<title>How Tokens Work on Shitbox Shuffle: The Complete Guide</title>
+<meta name="description" content="Everything you need to know about Shitbox Shuffle tokens — how to get them, how wagering works step by step, token limits, session disconnects, and how they differ from sweepstakes coins on other platforms.">
 <link rel="canonical" href="https://shitboxshuffle.com/blog/how-tokens-work-shitbox-shuffle.html">
+<meta property="og:title" content="How Tokens Work on Shitbox Shuffle: The Complete Guide">
+<meta property="og:description" content="A complete guide to the Shitbox Shuffle token system — purchase, earning, wagering mechanics, safety, limits, and responsible use.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://shitboxshuffle.com/blog/how-tokens-work-shitbox-shuffle.html">
-<meta property="og:title" content="How Tokens Work on Shitbox Shuffle">
-<meta property="og:description" content="Support-style explainer; Terms always govern.">
-<meta property="og:image" content="https://shitboxshuffle.com/assets/og-default.svg">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://shitboxshuffle.com/assets/og-default.svg">
-<meta property="article:published_time" content="2026-03-20">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400;1,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="article.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"How Tokens Work on Shitbox Shuffle","url":"https://shitboxshuffle.com/blog/how-tokens-work-shitbox-shuffle.html","datePublished":"2026-03-20","dateModified":"2026-03-20","author":{"@type":"Organization","name":"Shitbox Shuffle"},"publisher":{"@type":"Organization","name":"Shitbox Shuffle","url":"https://shitboxshuffle.com/"}}
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "https://shitboxshuffle.com/blog/how-tokens-work-shitbox-shuffle.html#article",
+      "headline": "How Tokens Work on Shitbox Shuffle: The Complete Guide",
+      "description": "Everything you need to know about Shitbox Shuffle tokens — how to get them, wagering mechanics, session limits, and responsible use.",
+      "datePublished": "2026-03-20",
+      "dateModified": "2026-03-20",
+      "author": {"@type": "Organization", "name": "Shitbox Shuffle"},
+      "publisher": {"@type": "Organization", "name": "Shitbox Shuffle", "url": "https://shitboxshuffle.com"},
+      "mainEntityOfPage": "https://shitboxshuffle.com/blog/how-tokens-work-shitbox-shuffle.html",
+      "keywords": ["shitbox shuffle tokens", "how do tokens work", "video chat token wagering"]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://shitboxshuffle.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://shitboxshuffle.com/blog/"},
+        {"@type": "ListItem", "position": 3, "name": "How Tokens Work on Shitbox Shuffle", "item": "https://shitboxshuffle.com/blog/how-tokens-work-shitbox-shuffle.html"}
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are Shitbox Shuffle tokens the same as real money?",
+          "acceptedAnswer": {"@type": "Answer", "text": "No. Tokens are a virtual entertainment currency used within the Shitbox Shuffle platform. They cannot be withdrawn as cash, transferred to other users, or used outside the platform. They represent entertainment value, not monetary value."}
+        },
+        {
+          "@type": "Question",
+          "name": "What happens to tokens if a session disconnects?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Shitbox Shuffle has a disconnect protection system. If a session drops mid-game, the platform records the game state at the point of disconnection and applies a fair resolution — typically returning wagered tokens to both players. Repeated intentional disconnects to avoid losing are detected and can result in account action."}
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a daily token limit?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Yes. Shitbox Shuffle enforces daily token limits as part of its responsible play framework. Limits vary by account tier and can be adjusted downward by users in their account settings. The platform cannot increase limits beyond the tier maximum without a cooling-off period."}
+        },
+        {
+          "@type": "Question",
+          "name": "How do I get tokens on Shitbox Shuffle?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Tokens can be obtained through: (1) a welcome bonus allocation when you create a new verified account, (2) purchasing token bundles through the platform's checkout, and (3) winning tokens in wagered game matches against other players."}
+        },
+        {
+          "@type": "Question",
+          "name": "Do tokens expire?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Purchased tokens do not expire as long as the account remains active. Welcome bonus tokens may carry an expiry window to encourage initial engagement. Accounts that are dormant for an extended period may see bonus token balances lapse — check the platform's current terms for specifics."}
+        },
+        {
+          "@type": "Question",
+          "name": "How are Shitbox Shuffle tokens different from sweepstakes coins on other platforms?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Sweepstakes coins on other social casino platforms are tied to a dual-currency model where a parallel 'premium' currency can theoretically be redeemed for prizes. Shitbox Shuffle tokens are single-currency and not redeemable for cash or prizes — they exist purely as an entertainment wagering unit within the platform ecosystem."}
+        }
+      ]
+    }
+  ]
+}
 </script>
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-  {"@type":"Question","name":"Where are the official token rules?","acceptedAnswer":{"@type":"Answer","text":"The Terms of Service and in-product disclosures define balances, wagers, fees, and disputes. This article is a friendly overview only."}}
-]}
-</script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{--void:#030303;--smoke:#1c1a17;--ink:#141210;--ember:#c9a227;--flame:#e8c547;--bone:#e8e0d0;--chalk:#f5f0e6;--dust:rgba(232,224,208,0.75);--ash:rgba(232,224,208,0.45);--ghost:rgba(232,224,208,0.15);--phantom:rgba(232,224,208,0.08);}
+html{background:var(--void);scroll-behavior:smooth;}
+body{font-family:'Libre Baskerville',Georgia,serif;background:var(--void);color:var(--bone);min-height:100vh;line-height:1.8;}
+nav{display:flex;align-items:center;height:70px;border-bottom:1px solid var(--phantom);background:rgba(3,3,3,0.95);position:fixed;top:0;left:0;right:0;z-index:50;}
+.nav-logo{padding:0 40px;text-decoration:none;}
+.logo-text{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:0.2em;color:var(--bone);}
+.logo-text .amp{color:var(--ember);font-family:'Playfair Display',serif;font-style:italic;}
+.nav-spacer{flex:1;}
+.nav-blog-link{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);text-decoration:none;padding:0 28px;height:70px;display:flex;align-items:center;border-left:1px solid var(--phantom);}
+.nav-enter{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:0.18em;color:var(--void);background:var(--ember);text-decoration:none;padding:0 40px;height:70px;display:flex;align-items:center;}
+.page-wrap{max-width:720px;margin:0 auto;padding:120px 28px 100px;}
+h1{font-family:'Playfair Display',serif;font-size:clamp(26px,4.5vw,44px);font-weight:900;line-height:1.15;color:var(--chalk);margin-bottom:16px;}
+.section{margin-bottom:48px;}
+.section h2{font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,28px);font-weight:900;color:var(--chalk);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--phantom);padding-top:16px;}
+.section h3{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ember);margin:32px 0 12px;}
+.section p{font-size:16px;color:var(--dust);margin-bottom:18px;line-height:1.85;}
+.section p:first-of-type{font-size:17px;color:var(--bone);}
+.section a{color:var(--ember);text-decoration:underline;}
+.section strong{color:var(--chalk);}
+.section ul,.section ol{padding-left:24px;margin-bottom:18px;color:var(--dust);font-size:16px;}
+.section li{margin-bottom:10px;line-height:1.75;}
+.section li::marker{color:var(--ember);}
+.callout{border-left:3px solid var(--ember);padding:18px 22px;margin:28px 0;background:rgba(201,162,39,0.06);font-size:15px;color:var(--dust);}
+.cta-block{background:linear-gradient(135deg,var(--smoke),var(--ink));border:1px solid var(--ember);border-radius:4px;padding:48px 40px;margin:64px 0 0;text-align:center;}
+.cta-headline{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,32px);font-weight:900;color:var(--chalk);margin-bottom:16px;}
+.cta-body{font-size:16px;color:var(--dust);margin-bottom:28px;max-width:460px;margin-left:auto;margin-right:auto;}
+.cta-btn{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--void);background:var(--ember);padding:16px 44px;text-decoration:none;border-radius:2px;}
+.cta-fine{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);}
+.faq-item{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--phantom);}
+.faq-q{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--chalk);margin-bottom:10px;}
+.faq-a{font-size:15px;color:var(--dust);line-height:1.8;}
+footer{margin-top:72px;padding:40px 0;border-top:1px solid var(--phantom);display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;}
+.footer-wordmark{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.2em;color:var(--ash);}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap;}
+.footer-links a{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);text-decoration:none;}
+.footer-copy{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(232,224,208,0.25);flex-basis:100%;}
+@media(max-width:640px){.nav-blog-link{display:none;}.nav-enter{padding:0 20px;font-size:11px;}.cta-block{padding:36px 24px;}}
+
+/* Article meta */
+.article-meta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:40px;}
+.meta-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ember);background:rgba(201,162,39,0.1);padding:4px 12px;border-radius:2px;}
+.meta-date{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--ash);}
+
+/* === CSS VISUAL 1: Token Flow Diagram === */
+.flow-diagram{margin:40px 0;padding:32px 24px;background:var(--smoke);border:1px solid var(--phantom);border-radius:4px;}
+.flow-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ash);text-align:center;margin-bottom:28px;}
+.flow-track{display:flex;flex-direction:column;align-items:center;gap:0;}
+.flow-row{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;}
+.flow-box{background:var(--ink);border:1px solid var(--phantom);border-radius:3px;padding:12px 20px;text-align:center;min-width:140px;max-width:180px;}
+.flow-box.highlight{border-color:var(--ember);background:rgba(201,162,39,0.08);}
+.flow-box-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:4px;}
+.flow-box-value{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--chalk);}
+.flow-box.highlight .flow-box-value{color:var(--ember);}
+.flow-arrow{font-size:20px;color:var(--ember);line-height:1;padding:4px 0;text-align:center;}
+.flow-branch{display:flex;align-items:flex-start;justify-content:center;gap:16px;width:100%;margin-top:0;}
+.flow-branch-arm{display:flex;flex-direction:column;align-items:center;gap:0;flex:1;max-width:220px;}
+.flow-branch-arrow{font-size:14px;color:var(--ash);padding:4px 0;text-align:center;}
+.flow-box.win{border-color:#5cb87a;background:rgba(92,184,122,0.07);}
+.flow-box.win .flow-box-value{color:#5cb87a;}
+.flow-box.lose{border-color:#c96b6b;background:rgba(201,107,107,0.07);}
+.flow-box.lose .flow-box-value{color:#c96b6b;}
+.flow-branch-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;}
+
+/* === CSS VISUAL 2: Token Stack Chips === */
+.chip-stack-wrap{margin:40px 0;display:flex;flex-direction:column;align-items:center;gap:0;padding:32px 24px;background:var(--smoke);border:1px solid var(--phantom);border-radius:4px;}
+.chip-stack-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ash);margin-bottom:32px;}
+.chip-tier{display:flex;align-items:center;gap:28px;margin-bottom:20px;width:100%;max-width:480px;}
+.chip-tier:last-child{margin-bottom:0;}
+.chip-circle{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;}
+.chip-circle::after{content:'';position:absolute;inset:5px;border-radius:50%;border:2px dashed rgba(255,255,255,0.15);}
+.chip-t1{background:radial-gradient(circle at 35% 35%,#8a8a8a,#4a4a4a);border:3px solid #6a6a6a;}
+.chip-t2{background:radial-gradient(circle at 35% 35%,#7abcf5,#2d7ab8);border:3px solid #4d9ed4;}
+.chip-t3{background:radial-gradient(circle at 35% 35%,#e8884a,#b84d1a);border:3px solid #d46830;}
+.chip-t4{background:radial-gradient(circle at 35% 35%,#f0d060,#c9a227);border:3px solid var(--ember);}
+.chip-icon{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:0.1em;color:rgba(255,255,255,0.85);position:relative;z-index:1;}
+.chip-info{flex:1;}
+.chip-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--chalk);margin-bottom:3px;}
+.chip-t4-name{color:var(--ember);}
+.chip-range{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--ash);margin-bottom:5px;}
+.chip-bar-wrap{height:4px;background:var(--phantom);border-radius:2px;overflow:hidden;}
+.chip-bar{height:100%;border-radius:2px;}
+.chip-bar-t1{width:20%;background:#6a6a6a;}
+.chip-bar-t2{width:45%;background:#4d9ed4;}
+.chip-bar-t3{width:70%;background:#d46830;}
+.chip-bar-t4{width:100%;background:var(--ember);}
+</style>
 </head>
 <body>
+
 <nav>
-  <a href="../index.html" class="nav-logo" aria-label="Shitbox Shuffle home"><span class="logo-text">SHITBOX <span class="amp">&amp;</span> SHUFFLE</span></a>
+  <a href="https://shitboxshuffle.com/" class="nav-logo">
+    <span class="logo-text">Shitbox <span class="amp">&</span> Shuffle</span>
+  </a>
   <div class="nav-spacer"></div>
-  <a href="../shitboxshuffle.html" class="nav-enter">ENTER THE ROOM</a>
+  <a href="https://shitboxshuffle.com/blog/" class="nav-blog-link">Blog</a>
+  <a href="https://shitboxshuffle.com/lobby.html" class="nav-enter">Enter</a>
 </nav>
+
 <div class="page-wrap">
-  <div class="page-overline">Guides · Product</div>
-  <h1>How tokens work on Shitbox Shuffle</h1>
-  <p class="meta">March 2026 · Overview only — <a href="../terms.html">Terms</a> win if anything differs</p>
 
-  <div class="callout"><strong>Not financial or legal advice.</strong> Entertainment software for US adults 18+. Read <a href="../responsible-gaming.html">Responsible Gaming</a>.</div>
-
-  <div class="content-section">
-    <h2>Wallet</h2>
-    <p>Your account holds a <strong>token balance</strong> used inside the product for eligible matches, games, or purchases the UI presents. Funding, bonuses, and withdrawals—if offered—follow the flows and limits in Terms and account settings.</p>
-  </div>
-  <div class="content-section">
-    <h2>Matches &amp; games</h2>
-    <p>When you opt into a wagered or tokenized session, the product should show amounts and fees <strong>before</strong> play locks. Outcomes credit or debit per published rules; disputes follow the platform process in Terms.</p>
-  </div>
-  <div class="content-section">
-    <h2>Where to learn more</h2>
-    <p><a href="../support.html">Support</a> for account help · <a href="../terms.html">Terms</a> § wagering / wallet · <a href="play-games-while-video-chatting.html">Why we pair video + games</a>.</p>
+  <div class="article-meta">
+    <span class="meta-tag">Tokens</span>
+    <span class="meta-tag">How It Works</span>
+    <span class="meta-date">March 2026</span>
   </div>
 
-  <div class="faq-section">
-    <h2>FAQ</h2>
-    <div class="faq-item"><h3>Where are the official token rules?</h3><p>In the <a href="../terms.html">Terms of Service</a> and on-screen disclosures at match start.</p></div>
+  <h1>How Tokens Work on Shitbox Shuffle: The Complete Guide</h1>
+
+  <div class="section">
+    <p>Tokens are the fuel that makes the Shitbox Shuffle experience run. They're what you wager when you propose a blackjack hand, what you win when you beat an opponent at trivia, and what defines your stake in every match you play. Understanding them thoroughly — what they are, what they aren't, how to get more of them, how the wagering mechanic actually works at each step — is the difference between approaching the platform with confidence and fumbling through your first few sessions unsure of what's happening.</p>
+    <p>This is the complete guide. We're going to walk through everything: the nature of tokens as a virtual currency, the mechanics of getting and spending them, how a wager works from the moment you propose it to the moment the outcome is settled, what happens when things go wrong, and how to think about tokens as part of a responsible entertainment budget. If you've got a question about the token system, this article answers it.</p>
   </div>
+
+  <div class="section">
+    <h2>What Tokens Are — and What They Aren't</h2>
+    <p>The first thing to understand clearly is what tokens actually represent. Tokens on Shitbox Shuffle are a virtual entertainment currency. They exist only within the platform ecosystem. They have no dollar value that can be redeemed. They cannot be transferred to your bank account, sent to another user as a gift, or exchanged for goods outside the platform. They are not cryptocurrency. They are not an investment. They are not a financial instrument of any kind.</p>
+    <p>The right mental model is an arcade token, or a casino chip at a venue where the chips themselves have no cash-out value. The token's value is entirely in what it enables within the experience: the ability to wager on game outcomes against another real person, and the satisfaction of winning more of them than you started with.</p>
+    <p>This distinction matters for two reasons. First, it establishes the correct emotional relationship with your token balance. A token is a unit of entertainment, not a unit of money. Losing tokens in a match means you had an exciting game that didn't go your way — it does not mean you suffered a financial loss in any regulated or taxable sense. Second, it defines the legal structure the platform operates within. Because tokens are not redeemable for cash, the wagering system is structured differently from real-money gambling, and operates under a different legal framework that makes Shitbox Shuffle available to verified US adults without the regulatory complexity of a licensed casino.</p>
+
+    <h3>The Single-Currency Design</h3>
+    <p>Shitbox Shuffle uses a single-token system. There is one type of token. You have a balance of it. You wager it. You win it or lose it. This simplicity is intentional. Many competing platforms — particularly social casino apps — use dual-currency systems where you have both a free "fun" currency and a premium "real" currency, and the premium currency may be redeemable for prizes under sweepstakes law. Shitbox Shuffle does not operate on that model. There is no sweepstakes redeemable currency alongside your token balance. Tokens are tokens. Full stop.</p>
+    <p>This means the experience is simpler, more transparent, and less confusing — but it also means tokens are purely an entertainment cost center. You should budget for them the way you would budget for any entertainment expense: a movie ticket, a round at a bar, a night at a bowling alley. Decide in advance how much entertainment spending you're comfortable with. That's your session budget. When that budget is spent, the session is over.</p>
+  </div>
+
+  <div class="section">
+    <h2>How to Get Tokens</h2>
+    <p>There are three ways to add tokens to your Shitbox Shuffle balance: the welcome allocation for new accounts, purchasing token bundles directly, and winning tokens through gameplay. Understanding all three is important because they each have slightly different characteristics and implications.</p>
+
+    <h3>The Welcome Allocation</h3>
+    <p>Every new Shitbox Shuffle account that completes identity verification receives a welcome token allocation. This is a starter balance designed to let you experience the full platform — enter the lobby, get matched, propose and play a wagered game — without making any purchase first. The welcome allocation is real. You can use it in genuine wagered sessions. If you win with your welcome tokens, your balance grows. If you lose, your balance decreases toward zero.</p>
+    <p>The welcome allocation is not "fake money" that exists only to show you the interface. It is real platform currency that behaves identically to purchased tokens in every respect. The practical difference is that welcome tokens do not represent a cash outlay on your part, so they represent the lowest-risk way to get your bearings in the system before deciding how much, if anything, you want to purchase.</p>
+    <p>Welcome tokens may carry an expiry window — typically a few weeks — to encourage engagement rather than indefinite banking. Check the platform's current terms for the specific expiry condition on your account's welcome allocation.</p>
+
+    <h3>Purchasing Token Bundles</h3>
+    <p>Token bundles are the primary mechanism for adding tokens to your balance beyond the welcome allocation. Bundles are available in multiple sizes — smaller bundles for casual players who want to test the waters, larger bundles for regular players who have found a rhythm and want enough tokens to sustain extended sessions without repeatedly returning to the checkout page.</p>
+    <p>Larger bundles offer more tokens per dollar spent. The economics are straightforward and clearly presented at checkout — you see exactly how many tokens you receive for each bundle price before confirming any purchase. There are no hidden fees, no subscription that auto-renews without your knowledge, and no upsell mechanics built into the checkout flow. You buy tokens. They appear in your balance. You play.</p>
+    <p>Purchases are processed through standard secure payment infrastructure. The platform does not store full card details after a transaction. Refund requests on token purchases go through the platform's support process — tokens that have been wagered in sessions are generally not eligible for refund, since the entertainment value has been consumed.</p>
+
+    <h3>Winning Tokens Through Gameplay</h3>
+    <p>The third and most satisfying way to grow your token balance is to win them from opponents in wagered sessions. When you propose a 100-token wager in a blackjack match and win, 100 tokens move from your opponent's balance to yours. The mechanic is zero-sum within a given wager: every token won was previously held by the player who lost it. The platform does not take a cut of the wager in the way that a traditional casino takes a rake or house edge. The full wager amount transfers to the winner.</p>
+    <p>This means it is genuinely possible to play for extended periods — even indefinitely — without making additional token purchases if you are winning more matches than you are losing. Consistent winning requires skill, a genuine understanding of the games available, and the discipline to play at wager levels that match your current balance. The skill element is not cosmetic: games like blackjack and poker reward correct strategy over time, and players who study basic strategy will outperform those who play by instinct alone.</p>
+  </div>
+
+  <div class="section">
+    <h2>Token Value: How to Think About What They're Worth</h2>
+    <p>The question "what is a token worth?" has a specific and honest answer: tokens are worth exactly what they enable within the Shitbox Shuffle experience, and nothing beyond that. But for budgeting purposes, it is useful to think about the relationship between the cost of a token bundle and the entertainment time that bundle represents at different wager levels.</p>
+    <p>Consider a player with a 500-token balance who plays matches with a 50-token wager per game. At a neutral win rate over the long term, that player can expect to play approximately ten games before their balance reaches zero — but with realistic variance, they may play far more (if they run well) or somewhat fewer (if they run badly). The entertainment value of ten matches, each involving twenty minutes of competitive play with another verified adult, is substantially more than the purchase price of the token bundle that funded them.</p>
+    <p>The correct framing is: what does an evening of Shitbox Shuffle entertainment cost you, averaged across your win rate and variance? For most casual players, the answer compares favorably to other discretionary evening entertainment. The sessions are engaging, the competition is real, and wins feel earned because they are.</p>
+    <div class="callout">Think of your token balance as an entertainment budget, not a financial account. The goal is not to maximize the dollar value of your token holdings — it is to have competitive, engaging sessions and manage your budget in a way that keeps the experience fun over time. That framing changes how you approach wager sizing, session length, and when to stop.</div>
+  </div>
+
+  <div class="section">
+    <h2>Where Tokens Can Be Used: Games and the Lobby</h2>
+    <p>Tokens can only be used in one place: Shitbox Shuffle's wagered game sessions. You cannot spend tokens on cosmetic items, profile upgrades, filtering your match preferences, or any feature outside of the actual in-session wagering mechanic. The token system is purpose-built for one thing — putting stakes on a game between two real people in a live video session — and it does not expand beyond that.</p>
+
+    <h3>Available Games</h3>
+    <p>The game catalogue on Shitbox Shuffle spans several categories, each suited to different skill sets and session dynamics. Card games like blackjack and poker variants are the flagship offerings — they have well-understood strategy, clear outcomes, and enough complexity to reward skill without being inaccessible to beginners. Word games and trivia offer a different kind of competitive edge, favouring vocabulary, general knowledge, and quick thinking over card-game strategy. The catalogue continues to expand as the platform adds new formats.</p>
+    <p>Each game within a wagered session has a fixed token wager agreed to before play begins. Once a wager is accepted, it is locked in. You cannot modify the wager mid-game. Both players play to the same rules, on the same interface, with the same information state — there is no house advantage built into the game mechanics.</p>
+
+    <h3>The Lobby Mechanic</h3>
+    <p>The lobby is where you wait to be matched with another player who is ready to play. When you enter the lobby, you set your availability status and the system begins finding you a compatible match. Compatibility is based on active player availability — the system prioritizes connecting players whose session preferences are broadly aligned. Once matched, both players enter a live video session together and the game proposal mechanic becomes available.</p>
+    <p>Your token balance is visible throughout your lobby and in-session experience. You see it before proposing a wager, so you always know exactly what you have available and can make informed decisions about wager sizing.</p>
+  </div>
+
+  <div class="section">
+    <h2>The Wagering Mechanic: Step by Step</h2>
+    <p>Understanding how a wager actually works — from the moment you propose it through to the moment tokens move — demystifies the core interaction of the platform. Here is the full sequence.</p>
+
+    <!-- CSS VISUAL 1: Token Flow Diagram -->
+    <div class="flow-diagram">
+      <div class="flow-title">Token Flow: From Lobby to Outcome</div>
+      <div class="flow-track">
+        <div class="flow-row">
+          <div class="flow-box highlight">
+            <div class="flow-box-label">Step 1</div>
+            <div class="flow-box-value">Get Tokens</div>
+          </div>
+        </div>
+        <div class="flow-arrow">&#8595;</div>
+        <div class="flow-row">
+          <div class="flow-box">
+            <div class="flow-box-label">Step 2</div>
+            <div class="flow-box-value">Enter Lobby</div>
+          </div>
+        </div>
+        <div class="flow-arrow">&#8595;</div>
+        <div class="flow-row">
+          <div class="flow-box">
+            <div class="flow-box-label">Step 3</div>
+            <div class="flow-box-value">Get Matched</div>
+          </div>
+        </div>
+        <div class="flow-arrow">&#8595;</div>
+        <div class="flow-row">
+          <div class="flow-box highlight">
+            <div class="flow-box-label">Step 4</div>
+            <div class="flow-box-value">Propose Wager</div>
+          </div>
+        </div>
+        <div class="flow-arrow">&#8595;</div>
+        <div class="flow-row">
+          <div class="flow-box">
+            <div class="flow-box-label">Step 5</div>
+            <div class="flow-box-value">Play the Game</div>
+          </div>
+        </div>
+        <div class="flow-arrow">&#8595;</div>
+        <div style="width:100%;text-align:center;padding:4px 0;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ash);">Outcome</div>
+        </div>
+        <div class="flow-branch">
+          <div class="flow-branch-arm">
+            <div class="flow-branch-label">Win</div>
+            <div class="flow-box win">
+              <div class="flow-box-label">Tokens Added</div>
+              <div class="flow-box-value">+Wager Amount</div>
+            </div>
+          </div>
+          <div class="flow-branch-arm">
+            <div class="flow-branch-label">Lose</div>
+            <div class="flow-box lose">
+              <div class="flow-box-label">Tokens Deducted</div>
+              <div class="flow-box-value">&minus;Wager Amount</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Step 1: Wager Proposal</h3>
+    <p>Once you are in a live video session with a matched opponent, either player can initiate a game by using the in-session game propose button. You select the game you want to play and the token amount you want to wager. The wager must be within your current balance — you cannot propose a wager you cannot cover. The proposal is sent to your opponent as a visible prompt in their session interface.</p>
+
+    <h3>Step 2: Wager Acceptance</h3>
+    <p>Your opponent sees the game proposal and the wager amount. They can accept or decline. If they decline, the session continues without a wager — you can propose a different game, a different wager size, or simply continue the conversation. There is no penalty for declining a wager proposal. If they accept, both players' balances are checked at the moment of acceptance to confirm both can cover the agreed wager. If either balance is insufficient, the wager is cancelled and both players are notified.</p>
+
+    <h3>Step 3: Token Escrow</h3>
+    <p>At the moment both players accept a wager, the wagered tokens are moved from both players' live balances into escrow. This means you cannot spend those tokens on another wager while the game is in progress. Your visible balance shows your available-to-wager tokens, which will be reduced by the escrowed amount. This prevents double-wagering and ensures the outcome can always be settled regardless of what happens during gameplay.</p>
+
+    <h3>Step 4: Gameplay</h3>
+    <p>The game proceeds according to its rules. Both players are playing simultaneously on the shared game interface, with the full video session running throughout. The game interface appears within the session without replacing the video — you can see your opponent reacting to the same game state in real time. This is what makes the wagering mechanic feel meaningfully different from playing a game alone: the human stakes are visible and present throughout.</p>
+
+    <h3>Step 5: Outcome and Settlement</h3>
+    <p>When the game concludes, the platform determines the outcome based on the game's rules and final state. The outcome is not subject to dispute in the normal case because it is determined by the game engine, not by either player's claims. Once the outcome is recorded, the escrowed tokens are released: the winning player receives both the escrowed amounts (their own returned plus their opponent's, minus nothing — no platform rake), and the losing player's balance reflects the deduction. The whole settlement process happens automatically and immediately at game conclusion.</p>
+  </div>
+
+  <div class="section">
+    <h2>Token Safety: Disconnects and Disputes</h2>
+    <p>What happens if your internet drops in the middle of a wagered game? What if your opponent claims the outcome was wrong? These are reasonable concerns and the platform has considered both carefully.</p>
+
+    <h3>Disconnect Protection</h3>
+    <p>Shitbox Shuffle maintains a continuous server-side record of the game state throughout any wagered session. If either player disconnects mid-game — due to internet issues, browser crashes, power outages, or anything else — the game state is preserved at the point of disconnection. The platform does not immediately award tokens to the connected player on the assumption of an intentional disconnect. Instead, a brief reconnection window opens. If the disconnected player reconnects within the window, the game resumes from the recorded state. If they cannot reconnect within the window, the platform applies a fair resolution based on the game state at the point of disconnection.</p>
+    <p>For games with an objectively clear leader at the point of disconnection, the leading player is typically awarded the wager. For games where the state is genuinely ambiguous, the platform may return the escrowed tokens to both players. The specific resolution logic varies by game type and is documented in the platform's support materials.</p>
+
+    <h3>Intentional Disconnects</h3>
+    <p>Deliberately disconnecting to avoid a loss is detected by the platform's behavioral systems. A pattern of disconnects that correlate with losing game states triggers review. Users found to be systematically exploiting disconnects to avoid token losses face escalating consequences including session limits, token holds, and permanent account bans. Because accounts are identity-verified, ban evasion requires a new identity — a genuine deterrent that keeps this kind of cheating at a low frequency relative to unverified platforms.</p>
+
+    <h3>Outcome Disputes</h3>
+    <p>In the rare case where a player believes a game outcome was recorded incorrectly, the support process allows for review of the server-side game log. Because the outcome is determined by the game engine rather than by either player's reporting, disputes of this kind are typically resolved by log review within 24 to 48 hours. Token balances are adjusted if a confirmed engine error is found. Players disputing correct outcomes — attempting to claim a loss was a win through social pressure or repeated support tickets — are handled according to the platform's abuse policy.</p>
+  </div>
+
+  <div class="section">
+    <h2>Token Limits: Session Limits and Daily Guardrails</h2>
+    <p>Shitbox Shuffle operates with a set of token limits designed to support responsible play. These limits are structural — they cannot be talked around by contacting support and asking for an increase in the moment — and they exist because the platform takes the "entertainment budget" model of token use seriously.</p>
+
+    <h3>Daily Token Limits</h3>
+    <p>Each account tier has an associated daily token spending limit. This is the maximum amount you can wager across all sessions in a single calendar day. Once you reach the daily limit, wagered sessions are unavailable until the next calendar day resets your limit. The daily limit applies to tokens wagered, not to tokens purchased — purchasing a large bundle does not increase your daily wagering limit. The limit is calibrated to ensure that even a consistently losing player cannot exhaust a large balance in a single session without hitting a guardrail.</p>
+
+    <h3>Session Limits</h3>
+    <p>Individual wagered sessions also carry a maximum wager size that is a function of your account's current tier and your available balance. You cannot wager more than your balance in a single game, and you cannot wager more than the session maximum even if your balance exceeds it. This prevents high-variance single sessions where a large portion of a player's total balance is at risk in one game.</p>
+
+    <h3>Self-Set Limits</h3>
+    <p>In addition to the platform's built-in limits, users can set their own lower limits in their account settings. You can set a daily spending cap below the platform maximum. You can set a session duration reminder that prompts you with a notification after a certain amount of play time. You can set a "cooling off" period that restricts wagered sessions for a defined time window. These tools are available without restriction and take effect immediately when set. Increases to self-set limits carry a mandatory waiting period before they take effect — this prevents impulsive limit increases during a session when the decision-making environment is least reliable.</p>
+  </div>
+
+  <div class="section">
+    <h2>How Tokens Differ from Sweepstakes Coins on Other Platforms</h2>
+    <p>If you've spent time on social casino platforms, you've encountered the dual-currency sweepstakes model: free "Gold Coins" for casual play, and premium "Sweeps Coins" (or equivalent) that can be redeemed for real prizes under sweepstakes law. This model is prevalent across dozens of social casino apps and is sometimes described as a legal workaround that allows these platforms to operate in US states without a traditional gambling license.</p>
+    <p>Shitbox Shuffle does not use this model. There is no dual currency. There are no sweepstakes coins that can be redeemed for cash prizes. Shitbox Shuffle tokens are a single-currency entertainment system with no redemption path to real money or prizes. This is not a gap in the product — it is a deliberate architectural choice that reflects a different philosophy about what the platform is for.</p>
+    <p>The sweepstakes model is frequently criticized for blurring the line between entertainment gaming and real-money gambling in ways that can be confusing or harmful to users who may not fully understand that "sweeps coins" won in a game are effectively a form of real money. By operating as a pure entertainment token system with no redemption path, Shitbox Shuffle avoids this ambiguity entirely. What you see is what it is. Tokens are fun. They are not funds.</p>
+    <p>The trade-off is that the theoretical upside is lower: you cannot "win" in a Shitbox Shuffle session the way you can theoretically win redeemable value on a sweepstakes platform. But the floor is also clearer: you know exactly what you're getting into, and there's no mechanism for the platform to imply financial stakes that don't legally exist. Many users find the transparency of the single-currency model more comfortable than the complexity of dual-currency sweepstakes systems.</p>
+  </div>
+
+  <div class="section">
+    <h2>The Legal Context: Why the Token System Is Structured This Way</h2>
+    <p>The decision to build Shitbox Shuffle around a non-redeemable virtual token system rather than a real-money or sweepstakes model is not arbitrary — it reflects the legal and regulatory landscape for skill-based wagering platforms in the United States, and a deliberate choice about which side of several regulatory lines the platform wants to be on.</p>
+    <p>Real-money online gambling in the US is legal only in specific states that have explicitly authorized it, under license frameworks administered by state gaming commissions. A platform that accepted real money wagers on card games and issued real money payouts would need to obtain gaming licenses in every state where it operated — an enormous and expensive regulatory undertaking. Shitbox Shuffle is not that platform.</p>
+    <p>The sweepstakes model exists in a different legal space: by giving away sweepstakes entries for free (alongside the option to purchase) and allowing winners to receive prizes, platforms can structure themselves as promotional sweepstakes rather than gambling operations. This model works legally but requires careful structural compliance and introduces the dual-currency complexity described above. Shitbox Shuffle is not that platform either.</p>
+    <p>Shitbox Shuffle operates as a skill-based entertainment platform where players wager a virtual currency that has no cash value and cannot be redeemed. The platform is US-only and restricted to verified adults in part because the responsible operation of any wagering-adjacent product — even one using non-redeemable virtual currency — requires knowing who your users are. The structure is built for honesty, compliance, and long-term operational stability rather than for finding the most aggressive possible regulatory edge.</p>
+  </div>
+
+  <div class="section">
+    <h2>Token Balance Tiers and What They Mean for Your Session</h2>
+    <p>While tokens are a single currency with no functional distinction between one token and another, it is useful to think about your balance in tiers that correspond to different approaches to session management and wager sizing.</p>
+
+    <!-- CSS VISUAL 2: Token Stack Chips -->
+    <div class="chip-stack-wrap">
+      <div class="chip-stack-title">Token Balance Tiers — How to Think About Your Stack</div>
+      <div class="chip-tier">
+        <div class="chip-circle chip-t1"><span class="chip-icon">T1</span></div>
+        <div class="chip-info">
+          <div class="chip-name">Starter</div>
+          <div class="chip-range">Low balance — welcome allocation or building back up</div>
+          <div class="chip-bar-wrap"><div class="chip-bar chip-bar-t1"></div></div>
+        </div>
+      </div>
+      <div class="chip-tier">
+        <div class="chip-circle chip-t2"><span class="chip-icon">T2</span></div>
+        <div class="chip-info">
+          <div class="chip-name">Player</div>
+          <div class="chip-range">Comfortable balance — enough for a solid evening of play</div>
+          <div class="chip-bar-wrap"><div class="chip-bar chip-bar-t2"></div></div>
+        </div>
+      </div>
+      <div class="chip-tier">
+        <div class="chip-circle chip-t3"><span class="chip-icon">T3</span></div>
+        <div class="chip-info">
+          <div class="chip-name">Regular</div>
+          <div class="chip-range">Strong balance — supports multiple sessions and larger wagers</div>
+          <div class="chip-bar-wrap"><div class="chip-bar chip-bar-t3"></div></div>
+        </div>
+      </div>
+      <div class="chip-tier">
+        <div class="chip-circle chip-t4"><span class="chip-icon">T4</span></div>
+        <div class="chip-info">
+          <div class="chip-name chip-t4-name">High Roller</div>
+          <div class="chip-range">Large balance — built through consistent winning or larger bundles</div>
+          <div class="chip-bar-wrap"><div class="chip-bar chip-bar-t4"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <p>The Starter tier is where every player begins: with a welcome allocation or after rebuilding from a low balance. At this level, the right approach is lower-stakes wagers — enough to make the game feel meaningful without a single loss threatening the entire balance. Think of the Starter tier as the phase where you're learning the games and finding your competitive range.</p>
+    <p>The Player tier represents a comfortable working balance for a casual session. You have enough to lose a few games without ending the evening early, and enough to give wagers real weight without overextending. Most casual players operate in this zone for most of their sessions.</p>
+    <p>The Regular tier is where players who've been winning consistently, or who prefer deeper sessions with larger wagers, tend to operate. The higher balance supports both larger individual wagers and longer sessions, giving you the runway to play through variance without being knocked out by a run of bad luck at a moderate wager size.</p>
+    <p>The High Roller tier is a large accumulated balance, built either through extended consistent winning or through larger token bundle purchases. At this balance level, wager sizing discipline matters most — the temptation to make oversized single wagers that put a large portion of the balance at risk in one game is where large balances most often erode quickly. High Roller tier players who maintain discipline enjoy long, competitive sessions. Those who swing for the fence on single wagers tend to regress toward the mean quickly.</p>
+  </div>
+
+  <div class="section">
+    <h2>Responsible Use: Tokens as an Entertainment Budget</h2>
+    <p>The platform is built to be enjoyed, and enjoyment requires staying in control of your spending. The following principles are worth internalizing regardless of your balance tier or experience level.</p>
+
+    <h3>Decide Your Budget Before You Play</h3>
+    <p>The single most effective responsible play habit is deciding what you are comfortable spending before you open the lobby. Not after your first loss, not after you've been playing for an hour — before you start. Your session budget is the amount you would be comfortable spending on any discretionary entertainment activity. When that budget is spent in tokens (either through losses or through the welcome allocation running out), the session ends. This decision made in advance, when your thinking is clear, is more reliable than any in-the-moment judgment call.</p>
+
+    <h3>Wager Proportionate to Your Balance</h3>
+    <p>A useful rule of thumb: never wager more than five to ten percent of your total balance on a single game. This gives you the runway to absorb variance without a single unlucky hand ending your session. A player with 500 tokens who wagers 50 per game can survive ten consecutive losses before running out — statistically unlikely, and recoverable within a session if they win more than they lose overall. A player with 500 tokens who wagers 200 per game can be wiped out in three unlucky matches, with no runway to recover.</p>
+
+    <h3>Wins Don't Change the Budget</h3>
+    <p>One of the most common patterns in any wagering context — whether casino, sportsbook, or virtual platform — is using winnings as justification for extending the session beyond the original budget. "I'm up, so I can afford to keep going." The psychology behind this is understandable but reliably leads to worse outcomes over time. Your session budget is your session budget. Ending a session up is a good session. It does not require reinvestment.</p>
+
+    <h3>Use the Platform's Tools</h3>
+    <p>Shitbox Shuffle provides session duration reminders, daily limit settings, and cooling-off periods precisely because they work. Setting a daily token limit in your account settings is not an admission that you can't control yourself — it is a rational decision made by a clear-headed person to constrain a future version of yourself who might be making decisions in a less clear-headed state. Use the tools. They're there for you.</p>
+
+    <div class="callout">If your token spending has started to feel less like entertainment and more like a compulsion, that is worth paying attention to. Shitbox Shuffle's <a href="https://shitboxshuffle.com/responsible-gaming.html">Responsible Gaming</a> page has resources and self-exclusion options. The platform exists to be enjoyed. It should feel like fun. When it stops feeling that way, stop playing.</div>
+  </div>
+
+  <div class="section">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">Are Shitbox Shuffle tokens the same as real money?</div>
+      <div class="faq-a">No. Tokens are a virtual entertainment currency used within the Shitbox Shuffle platform. They cannot be withdrawn as cash, transferred to other users, or used outside the platform. They represent entertainment value — the ability to wager on game outcomes in sessions — and nothing beyond that.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What happens to tokens if a session disconnects mid-game?</div>
+      <div class="faq-a">Shitbox Shuffle maintains a server-side record of game state throughout every wagered session. If a disconnect occurs, a reconnection window opens. If the player reconnects in time, the game resumes from the recorded state. If not, the platform applies a fair resolution based on the game state at the point of disconnection — returning escrowed tokens to both players if the state was ambiguous, or awarding them to the leading player if the state was clear. Intentional disconnect patterns to avoid losses are detected and result in account action.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is there a daily token limit on Shitbox Shuffle?</div>
+      <div class="faq-a">Yes. Daily token wagering limits are enforced at the account tier level as part of the platform's responsible play framework. Users can also set personal lower limits in their account settings. Limit increases require a cooling-off period and cannot be applied instantly during an active session.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I get tokens on Shitbox Shuffle?</div>
+      <div class="faq-a">Tokens are available three ways: a welcome allocation when you create and verify a new account, purchasing token bundles through the platform's secure checkout, and winning tokens from opponents in wagered game sessions. Purchased tokens are credited instantly after payment confirmation.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Do tokens expire?</div>
+      <div class="faq-a">Purchased tokens do not expire on active accounts. Welcome bonus tokens may carry an expiry window — typically a few weeks — to encourage initial engagement rather than indefinite banking. Accounts dormant for extended periods may see bonus token balances lapse. Check the platform's current terms for specifics on your account's token conditions.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How are Shitbox Shuffle tokens different from sweepstakes coins?</div>
+      <div class="faq-a">Sweepstakes coins on social casino platforms exist within a dual-currency model where a premium currency can be redeemed for real prizes under sweepstakes law. Shitbox Shuffle uses a single-currency system with no redemption path — tokens cannot be converted to cash or prizes under any circumstance. This makes the system simpler and more transparent, while avoiding the regulatory complexity and potential consumer confusion of the dual-currency sweepstakes model.</div>
+    </div>
+  </div>
+
+  <!-- CTA Block -->
+  <div class="cta-block">
+    <div class="cta-headline">Put Your Tokens to Work</div>
+    <div class="cta-body">You've got the full picture on how the system works. Now use it. Create your verified account, claim your welcome allocation, and get into a session with a real opponent. US adults 18+ only.</div>
+    <a href="https://shitboxshuffle.com/lobby.html" class="cta-btn">Start Playing</a>
+    <div class="cta-fine">Tokens are virtual entertainment currency only &bull; 18+ US residents &bull; Play responsibly</div>
+  </div>
+
+  <footer>
+    <span class="footer-wordmark">Shitbox &amp; Shuffle</span>
+    <div class="footer-links">
+      <a href="https://shitboxshuffle.com/">Home</a>
+      <a href="https://shitboxshuffle.com/blog/">Blog</a>
+      <a href="https://shitboxshuffle.com/terms.html">Terms</a>
+      <a href="https://shitboxshuffle.com/privacy.html">Privacy</a>
+      <a href="https://shitboxshuffle.com/responsible-gaming.html">Responsible Gaming</a>
+      <a href="https://shitboxshuffle.com/support.html">Support</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 Shitbox Shuffle. Tokens are virtual entertainment currency with no cash value. US adults 18+ only. Play responsibly.</div>
+  </footer>
+
 </div>
-<footer>
-  <div class="footer-wordmark">SHITBOX SHUFFLE</div>
-  <div class="footer-links">
-    <a href="index.html">All guides</a><a href="../support.html">Support</a><a href="../terms.html">Terms</a>
-  </div>
-  <span class="footer-copy">© 2026 Shitbox Shuffle</span>
-</footer>
 </body>
 </html>

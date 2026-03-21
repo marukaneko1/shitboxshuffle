@@ -3,239 +3,652 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Poker Hand Rankings & Texas Hold'em Primer | Shitbox Shuffle</title>
-  <meta name="description" content="The 10 poker hands ranked, Texas Hold'em basics, pre-flop starting hands, pot odds simplified, and how to play strangers on video." />
+  <title>Poker Hand Rankings & Texas Hold'em Primer for Video Chat Play</title>
+  <meta name="description" content="Complete poker hand rankings and Texas Hold'em rules for video chat play. Position strategy, starting hands, pot odds, bluffing on camera, and bankroll management for token games." />
   <link rel="canonical" href="https://shitboxshuffle.com/blog/poker-hand-rankings-texas-holdem-primer.html" />
-  <meta property="og:title" content="Poker Hand Rankings & Texas Hold'em Primer" />
-  <meta property="og:description" content="All 10 poker hands ranked, starting hand tiers, pot odds, and bluffing strangers on video." />
+  <meta property="og:title" content="Poker Hand Rankings & Texas Hold'em Primer for Video Chat Play" />
+  <meta property="og:description" content="Complete poker hand rankings and Texas Hold'em rules for video chat play. Position strategy, starting hands, pot odds, bluffing on camera, and bankroll management for token games." />
   <meta property="og:url" content="https://shitboxshuffle.com/blog/poker-hand-rankings-texas-holdem-primer.html" />
-  <meta property="og:image" content="https://shitboxshuffle.com/assets/og-default.svg" />
   <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="Shitbox Shuffle" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Poker Hand Rankings & Texas Hold'em Primer" />
-  <meta name="twitter:description" content="All 10 hands ranked + starting hands, pot odds, and bluffing on video." />
-  <meta name="twitter:image" content="https://shitboxshuffle.com/assets/og-default.svg" />
-  <link rel="stylesheet" href="article.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root { --void:#030303; --smoke:#1c1a17; --ink:#141210; --ember:#c9a227; --flame:#e8c547; --bone:#e8e0d0; --chalk:#f5f0e6; --dust:rgba(232,224,208,0.75); --ash:rgba(232,224,208,0.45); --ghost:rgba(232,224,208,0.15); --phantom:rgba(232,224,208,0.08); }
+    html { background:var(--void); scroll-behavior:smooth; }
+    body { font-family:'Libre Baskerville',Georgia,serif; background:var(--void); color:var(--bone); min-height:100vh; line-height:1.8; overflow-x:hidden; }
+    nav { display:flex; align-items:center; height:70px; border-bottom:1px solid var(--phantom); background:rgba(3,3,3,0.95); position:fixed; top:0; left:0; right:0; z-index:50; }
+    .nav-logo { padding:0 40px; text-decoration:none; }
+    .logo-text { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:0.2em; color:var(--bone); }
+    .logo-text .amp { font-family:'Playfair Display',serif; font-style:italic; color:var(--ember); }
+    .nav-spacer { flex:1; }
+    .nav-blog-link { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ash); text-decoration:none; padding:0 28px; height:70px; display:flex; align-items:center; border-left:1px solid var(--phantom); }
+    .nav-enter { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:0.18em; color:var(--void); background:var(--ember); text-decoration:none; padding:0 40px; height:70px; display:flex; align-items:center; }
+    .page-wrap { max-width:720px; margin:0 auto; padding:120px 28px 100px; }
+    h1 { font-family:'Playfair Display',serif; font-size:clamp(26px,4.5vw,44px); font-weight:900; line-height:1.15; color:var(--chalk); margin-bottom:16px; }
+    .section { margin-bottom:48px; }
+    .section h2 { font-family:'Playfair Display',serif; font-size:clamp(20px,3vw,28px); font-weight:900; color:var(--chalk); margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--phantom); padding-top:16px; }
+    .section h3 { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ember); margin:32px 0 12px; }
+    .section p { font-size:16px; color:var(--dust); margin-bottom:18px; line-height:1.85; }
+    .section p:first-of-type { font-size:17px; color:var(--bone); }
+    .section a { color:var(--ember); text-decoration:underline; }
+    .section strong { color:var(--chalk); }
+    .section ul, .section ol { padding-left:24px; margin-bottom:18px; color:var(--dust); font-size:16px; }
+    .section li { margin-bottom:10px; line-height:1.75; }
+    .section li::marker { color:var(--ember); }
+    .callout { border-left:3px solid var(--ember); padding:18px 22px; margin:28px 0; background:rgba(201,162,39,0.06); font-size:15px; color:var(--dust); }
+    .pull-quote { border-left:3px solid var(--ghost); margin:36px 0; padding:16px 24px; background:rgba(232,224,208,0.03); }
+    .pull-quote p { font-size:18px!important; font-style:italic; color:var(--bone)!important; margin:0!important; }
+    .cta-block { background:linear-gradient(135deg,var(--smoke),var(--ink)); border:1px solid var(--ember); border-radius:4px; padding:48px 40px; margin:64px 0 0; text-align:center; }
+    .cta-eyebrow { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--ember); margin-bottom:16px; }
+    .cta-headline { font-family:'Playfair Display',serif; font-size:clamp(22px,4vw,34px); font-weight:900; color:var(--chalk); margin-bottom:16px; }
+    .cta-body { font-size:16px; color:var(--dust); margin-bottom:28px; max-width:460px; margin-left:auto; margin-right:auto; }
+    .cta-btn { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--void); background:var(--ember); padding:16px 44px; text-decoration:none; border-radius:2px; }
+    .cta-fine { margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ash); }
+    .faq-item { margin-bottom:28px; padding-bottom:28px; border-bottom:1px solid var(--phantom); }
+    .faq-q { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--chalk); margin-bottom:10px; }
+    .faq-a { font-size:15px; color:var(--dust); line-height:1.8; }
+    footer { margin-top:72px; padding:40px 0; border-top:1px solid var(--phantom); display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:space-between; }
+    .footer-wordmark { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.2em; color:var(--ash); }
+    .footer-links { display:flex; gap:24px; flex-wrap:wrap; }
+    .footer-links a { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--ash); text-decoration:none; }
+    .footer-copy { font-family:'JetBrains Mono',monospace; font-size:10px; color:rgba(232,224,208,0.25); flex-basis:100%; }
+    @media(max-width:640px) { .nav-blog-link{display:none;} .nav-enter{padding:0 20px;font-size:11px;} .cta-block{padding:36px 24px;} }
+
+    /* ── VISUAL 1: Hand Rankings ── */
+    .hand-rankings { display:flex; flex-direction:column; gap:6px; margin:32px 0; }
+    .hand-rank-row { display:flex; align-items:center; gap:14px; padding:12px 16px; border:1px solid var(--phantom); border-radius:3px; background:rgba(232,224,208,0.03); transition:background 0.15s; }
+    .hand-rank-row.top-hand { border-color:rgba(201,162,39,0.4); background:rgba(201,162,39,0.07); }
+    .rank-number { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--ember); min-width:28px; line-height:1; }
+    .rank-number.dim { color:var(--ash); }
+    .rank-info { flex:1; }
+    .rank-name { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.12em; color:var(--chalk); line-height:1.2; }
+    .rank-example { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ember); letter-spacing:0.08em; margin-top:3px; }
+    .rank-desc { font-size:12px; color:var(--ash); margin-top:3px; line-height:1.4; }
+    .rank-bar-wrap { width:90px; flex-shrink:0; }
+    .rank-bar { height:6px; border-radius:3px; background:var(--phantom); overflow:hidden; }
+    .rank-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg, var(--ember), var(--flame)); }
+
+    /* ── VISUAL 2: Position Diagram ── */
+    .position-diagram { position:relative; width:100%; max-width:420px; margin:36px auto; aspect-ratio:1.4/1; }
+    .table-felt { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:65%; height:58%; background:rgba(20,30,15,0.85); border:2px solid rgba(201,162,39,0.25); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .table-felt-text { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:0.2em; color:rgba(201,162,39,0.4); }
+    .pos-dot { position:absolute; display:flex; flex-direction:column; align-items:center; gap:5px; transform:translate(-50%,-50%); }
+    .pos-circle { width:34px; height:34px; border-radius:50%; border:1px solid var(--ghost); background:rgba(232,224,208,0.06); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--ash); letter-spacing:0.05em; }
+    .pos-circle.active { border-color:var(--ember); background:rgba(201,162,39,0.18); color:var(--ember); font-weight:700; }
+    .pos-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ash); white-space:nowrap; }
+    .pos-label.active { color:var(--ember); }
+    /* positions around oval: top, top-right, right, bottom-right, bottom, bottom-left, left, top-left */
+    .pos-utg    { top:10%;  left:28%; }
+    .pos-utg1   { top:10%;  left:55%; }
+    .pos-mp     { top:28%;  left:80%; }
+    .pos-co     { top:62%;  left:82%; }
+    .pos-btn    { top:82%;  left:62%; }
+    .pos-sb     { top:82%;  left:36%; }
+    .pos-bb     { top:62%;  left:16%; }
+    .pos-ep2    { top:28%;  left:18%; }
+    .pos-legend { margin-top:16px; display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+    .pos-legend-item { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ash); }
+    .pos-legend-item .hl { color:var(--ember); }
+
+    /* Breadcrumb + meta */
+    .breadcrumb { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; color:var(--ash); margin-bottom:24px; }
+    .breadcrumb a { color:var(--ash); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--ember); }
+    .breadcrumb span { color:var(--phantom); margin:0 7px; }
+    .article-meta { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ash); margin-bottom:40px; display:flex; gap:16px; flex-wrap:wrap; }
+    .meta-sep { color:var(--ember); }
+  </style>
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "Poker Hand Rankings & Texas Hold'em Primer",
-    "description": "The 10 poker hands ranked, pre-flop starting hand strategy, pot odds simplified, and bluffing strangers in video match play.",
-    "url": "https://shitboxshuffle.com/blog/poker-hand-rankings-texas-holdem-primer.html",
-    "datePublished": "2026-03-19",
-    "dateModified": "2026-03-19",
-    "author": { "@type": "Organization", "name": "Shitbox Shuffle" },
-    "publisher": { "@type": "Organization", "name": "Shitbox Shuffle", "url": "https://shitboxshuffle.com" }
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
+    "@graph": [
       {
-        "@type": "Question",
-        "name": "What beats what in poker?",
-        "acceptedAnswer": { "@type": "Answer", "text": "From highest to lowest: Royal Flush, Straight Flush, Four of a Kind, Full House, Flush, Straight, Three of a Kind, Two Pair, One Pair, High Card. A higher-ranked hand always beats a lower-ranked hand." }
+        "@type": "Article",
+        "@id": "https://shitboxshuffle.com/blog/poker-hand-rankings-texas-holdem-primer.html#article",
+        "headline": "Poker Hand Rankings & Texas Hold'em Primer for Video Chat Play",
+        "description": "Complete poker hand rankings and Texas Hold'em rules explained for video chat play. Covers position, starting hands, pot odds, bluffing on camera, bet sizing, and bankroll management.",
+        "url": "https://shitboxshuffle.com/blog/poker-hand-rankings-texas-holdem-primer.html",
+        "datePublished": "2026-03-20",
+        "dateModified": "2026-03-20",
+        "author": { "@type": "Organization", "name": "Shitbox Shuffle" },
+        "publisher": { "@type": "Organization", "name": "Shitbox Shuffle", "url": "https://shitboxshuffle.com" },
+        "mainEntityOfPage": "https://shitboxshuffle.com/blog/poker-hand-rankings-texas-holdem-primer.html",
+        "keywords": ["poker hand rankings", "texas holdem rules", "how to play poker", "poker strategy", "texas holdem primer"]
       },
       {
-        "@type": "Question",
-        "name": "What are the best starting hands in Texas Hold'em?",
-        "acceptedAnswer": { "@type": "Answer", "text": "The strongest starting hands are pocket Aces (AA), pocket Kings (KK), pocket Queens (QQ), Ace-King suited (AKs), and pocket Jacks (JJ). These are considered premium hands and should almost always be played." }
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://shitboxshuffle.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://shitboxshuffle.com/blog/" },
+          { "@type": "ListItem", "position": 3, "name": "Poker Hand Rankings & Texas Hold'em Primer", "item": "https://shitboxshuffle.com/blog/poker-hand-rankings-texas-holdem-primer.html" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What beats what in poker hand rankings?",
+            "acceptedAnswer": { "@type": "Answer", "text": "From highest to lowest: Royal Flush, Straight Flush, Four of a Kind, Full House, Flush, Straight, Three of a Kind, Two Pair, One Pair, High Card. A higher-ranked hand always beats a lower one, and within the same hand type, higher card values win." }
+          },
+          {
+            "@type": "Question",
+            "name": "How does Texas Hold'em work?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Each player receives two private hole cards. Five community cards are dealt in three stages: the flop (3 cards), the turn (1 card), and the river (1 card). Players make the best five-card hand from any combination of their two hole cards and the five community cards. Betting rounds occur before the flop, after the flop, after the turn, and after the river." }
+          },
+          {
+            "@type": "Question",
+            "name": "What is position in poker and why does it matter?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Position refers to where you sit relative to the dealer button, which determines the order of betting. Acting last (late position, especially the button) is a major advantage because you see every other player's decision before making your own. The button is the most profitable position at the table over time." }
+          },
+          {
+            "@type": "Question",
+            "name": "What are the best starting hands in Texas Hold'em?",
+            "acceptedAnswer": { "@type": "Answer", "text": "The premium starting hands are pocket Aces, pocket Kings, pocket Queens, Ace-King suited, and pocket Jacks. These hands should be played aggressively from any position. Hands like pocket Tens, Ace-King offsuit, Ace-Queen suited, and pocket Nines are strong but require more careful situational play." }
+          },
+          {
+            "@type": "Question",
+            "name": "What are pot odds and how do I use them?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Pot odds are the ratio of the current pot size to the cost of a call. If the pot is 100 tokens and you must call 25, your pot odds are 4:1, meaning you need to win at least 20% of the time to break even. Compare this to your hand's equity (estimated win probability) to decide whether calling is profitable." }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I bluff effectively on video chat?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Effective video chat bluffing requires consistent body language across bluffs and value bets — your posture, pace, and mannerisms should look the same whether you're bluffing or betting for value. The bigger factor is narrative: your bluff should tell a coherent story about a hand you could plausibly hold, supported by the board texture and your prior betting." }
+          },
+          {
+            "@type": "Question",
+            "name": "How much should I bet on the flop?",
+            "acceptedAnswer": { "@type": "Answer", "text": "A standard continuation bet on the flop is 50–75% of the pot. Smaller bets (33–40%) work well on dry boards where you want cheap information. Larger bets (75–100%+) are appropriate on wet boards with many draws, where you want to make it expensive for drawing hands to continue. Consistent sizing across hand types is important so your bet size doesn't reveal hand strength." }
+          }
+        ]
       }
     ]
   }
   </script>
 </head>
 <body>
-<nav class="nav">
-  <div class="nav-inner">
-    <a class="nav-logo" href="../index.html">Shitbox Shuffle</a>
-    <div class="nav-actions">
-      <a class="btn-nav" href="../shitboxshuffle.html">Play Now</a>
-    </div>
-  </div>
+
+<nav>
+  <a href="https://shitboxshuffle.com/" class="nav-logo">
+    <div class="logo-text">Shitbox <span class="amp">&</span> Shuffle</div>
+  </a>
+  <div class="nav-spacer"></div>
+  <a href="https://shitboxshuffle.com/blog/" class="nav-blog-link">Blog</a>
+  <a href="https://shitboxshuffle.com/" class="nav-enter">Enter the Room</a>
 </nav>
 
 <div class="page-wrap">
-  <article class="content-section article-body">
-    <header class="article-header">
-      <div class="article-meta"><span class="tag">Game Strategy</span> <time datetime="2026-03-19">March 19, 2026</time></div>
-      <h1>Poker Hand Rankings &amp; Texas Hold'em Primer</h1>
-      <p class="article-lede">Whether you're brand new to poker or just need a quick refresher before a video match, this guide covers everything: hand rankings, starting hand tiers, pot odds in plain English, and how bluffing works when your opponent can see your face.</p>
-    </header>
 
-    <div class="callout callout-warning">
-      <strong>Responsible play notice:</strong> This is strategy education for entertainment purposes. Token wagering on Shitbox Shuffle is for US adults 18+ only. Play within your means. <a href="../responsible-gaming.html">Responsible Gaming</a> | <a href="../terms.html">Terms</a>.
+  <div class="breadcrumb">
+    <a href="https://shitboxshuffle.com/">Home</a><span>›</span>
+    <a href="https://shitboxshuffle.com/blog/">Blog</a><span>›</span>
+    Poker Hand Rankings &amp; Hold'em Primer
+  </div>
+
+  <h1>Poker Hand Rankings &amp; Texas Hold'em Primer for Video Chat Play</h1>
+
+  <div class="article-meta">
+    <span>Strategy Guide</span>
+    <span class="meta-sep">·</span>
+    <span>March 2026</span>
+    <span class="meta-sep">·</span>
+    <span>18+ Only · US Only</span>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Why Poker on Video Chat Is a Different Game Entirely</h2>
+
+    <p>Poker is the only game in the world where the cards are almost secondary. Chess has the board. Blackjack has the chart. But poker — particularly Texas Hold'em — is a game of incomplete information played against incomplete human beings, and the human element is where the game lives. When you add a live camera to that equation, you get something genuinely rare: a competition where your face, your timing, your micro-expressions, and your composure are all live data points that your opponent can read in real time.</p>
+
+    <p>That's a very different context from an online poker room where you're a username behind a digital chip stack. On Shitbox Shuffle, when you raise preflop, the person who has to decide whether to call or fold can see your face while they think. They can watch you watching them. The psychological depth that makes poker fascinating in person translates to the video format more faithfully than any other card game, because poker's core challenge has never been about the cards — it's always been about the people.</p>
+
+    <p>This guide covers everything you need to engage competently with Texas Hold'em on video: the complete hand rankings from high card to royal flush, the full rule structure from preflop through the river, positional theory, starting hand selection, pot odds, bluffing in a live-camera context, bet sizing, and bankroll management for token play. Whether you're new to the game or returning after years away, the goal is to give you a foundation solid enough to play with genuine intent — and to understand what you're up against when you're matched with someone who has done the same work.</p>
+
+    <p>Poker rewards study faster than almost any other skill game. The foundational concepts are graspable in hours. The application of those concepts under live pressure — the actual playing — takes longer. But the gap between a player who has read this material and one who hasn't is enormous and shows up immediately in every single hand.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>The 10 Hand Rankings: Royal Flush to High Card</h2>
+
+    <p>Before anything else about strategy matters, you need to know what beats what. Hand rankings in poker are fixed and universal — they don't change by game type, position, or table. A flush always beats a straight. A full house always beats a flush. These relationships are the grammar of every hand you'll ever play.</p>
+
+    <h3>Visual: Hand Rankings by Strength</h3>
+
+    <div class="hand-rankings">
+
+      <div class="hand-rank-row top-hand">
+        <div class="rank-number">1</div>
+        <div class="rank-info">
+          <div class="rank-name">Royal Flush</div>
+          <div class="rank-example">A♠ K♠ Q♠ J♠ 10♠</div>
+          <div class="rank-desc">Ace-high straight flush. The best possible hand. Unbeatable.</div>
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar"><div class="rank-bar-fill" style="width:100%"></div></div></div>
+      </div>
+
+      <div class="hand-rank-row top-hand">
+        <div class="rank-number">2</div>
+        <div class="rank-info">
+          <div class="rank-name">Straight Flush</div>
+          <div class="rank-example">9♥ 8♥ 7♥ 6♥ 5♥</div>
+          <div class="rank-desc">Five consecutive cards, same suit. Higher top card wins ties.</div>
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar"><div class="rank-bar-fill" style="width:93%"></div></div></div>
+      </div>
+
+      <div class="hand-rank-row">
+        <div class="rank-number">3</div>
+        <div class="rank-info">
+          <div class="rank-name">Four of a Kind</div>
+          <div class="rank-example">K♠ K♥ K♦ K♣ 7♠</div>
+          <div class="rank-desc">All four cards of one rank. Higher quad wins; kicker breaks ties.</div>
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar"><div class="rank-bar-fill" style="width:85%"></div></div></div>
+      </div>
+
+      <div class="hand-rank-row">
+        <div class="rank-number">4</div>
+        <div class="rank-info">
+          <div class="rank-name">Full House</div>
+          <div class="rank-example">J♠ J♥ J♦ 4♣ 4♠</div>
+          <div class="rank-desc">Three of a kind plus a pair. Higher three-of-a-kind value wins.</div>
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar"><div class="rank-bar-fill" style="width:76%"></div></div></div>
+      </div>
+
+      <div class="hand-rank-row">
+        <div class="rank-number">5</div>
+        <div class="rank-info">
+          <div class="rank-name">Flush</div>
+          <div class="rank-example">A♦ 10♦ 7♦ 4♦ 2♦</div>
+          <div class="rank-desc">Five cards of the same suit. Compared card by card from highest down.</div>
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar"><div class="rank-bar-fill" style="width:67%"></div></div></div>
+      </div>
+
+      <div class="hand-rank-row">
+        <div class="rank-number">6</div>
+        <div class="rank-info">
+          <div class="rank-name">Straight</div>
+          <div class="rank-example">8♠ 7♥ 6♦ 5♣ 4♠</div>
+          <div class="rank-desc">Five consecutive ranks, mixed suits. Higher top card wins. Ace can play low (A-2-3-4-5).</div>
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar"><div class="rank-bar-fill" style="width:58%"></div></div></div>
+      </div>
+
+      <div class="hand-rank-row">
+        <div class="rank-number">7</div>
+        <div class="rank-info">
+          <div class="rank-name">Three of a Kind</div>
+          <div class="rank-example">Q♠ Q♥ Q♦ 9♣ 3♠</div>
+          <div class="rank-desc">Three cards of the same rank. Higher set wins; kickers break ties.</div>
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar"><div class="rank-bar-fill" style="width:49%"></div></div></div>
+      </div>
+
+      <div class="hand-rank-row">
+        <div class="rank-number">8</div>
+        <div class="rank-info">
+          <div class="rank-name">Two Pair</div>
+          <div class="rank-example">A♠ A♥ 8♦ 8♣ K♠</div>
+          <div class="rank-desc">Two separate pairs. Higher top pair wins; second pair, then kicker break ties.</div>
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar"><div class="rank-bar-fill" style="width:40%"></div></div></div>
+      </div>
+
+      <div class="hand-rank-row">
+        <div class="rank-number" style="color:var(--ash);">9</div>
+        <div class="rank-info">
+          <div class="rank-name">One Pair</div>
+          <div class="rank-example">7♠ 7♥ A♦ J♣ 3♠</div>
+          <div class="rank-desc">Two cards of the same rank. Higher pair wins; three kickers break ties.</div>
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar"><div class="rank-bar-fill" style="width:28%"></div></div></div>
+      </div>
+
+      <div class="hand-rank-row">
+        <div class="rank-number dim">10</div>
+        <div class="rank-info">
+          <div class="rank-name">High Card</div>
+          <div class="rank-example">A♠ Q♥ 9♦ 6♣ 2♠</div>
+          <div class="rank-desc">No combination. The best single card (then second, etc.) determines the winner.</div>
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar"><div class="rank-bar-fill" style="width:12%"></div></div></div>
+      </div>
+
     </div>
 
-    <nav class="toc" aria-label="Contents">
-      <strong>In this article</strong>
-      <ol>
-        <li><a href="#hands">The 10 hands ranked</a></li>
-        <li><a href="#starting-hands">Pre-flop starting hand tiers</a></li>
-        <li><a href="#reading-board">Reading the board</a></li>
-        <li><a href="#pot-odds">Pot odds simplified</a></li>
-        <li><a href="#bluffing">Bluffing strangers on video</a></li>
-        <li><a href="#tokens">Token play context</a></li>
-        <li><a href="#faq">FAQ</a></li>
-      </ol>
-    </nav>
+    <h3>Critical Ranking Nuances</h3>
+    <p>Several ranking relationships trip up new players. Flushes beat straights — five of the same suit is rarer than five in sequence. Full houses beat flushes — having three of a kind plus a pair is a stronger combination than all five cards sharing a suit. And within ranks, ties are broken hierarchically: two players with two pair compare their top pairs first, then bottom pairs, then the fifth card (kicker) if needed.</p>
 
-    <section id="hands">
-      <h2>The 10 poker hands ranked (highest to lowest)</h2>
-      <ol>
-        <li><strong>Royal Flush:</strong> A, K, Q, J, 10 of the same suit. Rarest hand in the game. Unbeatable.</li>
-        <li><strong>Straight Flush:</strong> Five consecutive cards of the same suit (e.g. 7-8-9-10-J of hearts).</li>
-        <li><strong>Four of a Kind (Quads):</strong> Four cards of the same rank (e.g. four Queens).</li>
-        <li><strong>Full House:</strong> Three of a kind + a pair (e.g. three Kings + two 4s). Ranked by the three-of-a-kind first.</li>
-        <li><strong>Flush:</strong> Any five cards of the same suit, non-sequential. Ranked by highest card.</li>
-        <li><strong>Straight:</strong> Five consecutive cards of mixed suits. Ace can be high (A-K-Q-J-10) or low (A-2-3-4-5).</li>
-        <li><strong>Three of a Kind (Trips/Set):</strong> Three cards of the same rank.</li>
-        <li><strong>Two Pair:</strong> Two separate pairs (e.g. two Aces + two 8s).</li>
-        <li><strong>One Pair:</strong> Two cards of the same rank.</li>
-        <li><strong>High Card:</strong> No combination made. Highest card in hand plays.</li>
-      </ol>
-      <p><em>Ties are broken by the highest card(s) in the winning combination, then kickers (remaining cards).</em></p>
-    </section>
+    <p>The ace plays a unique role in straights: it can be the highest card (10-J-Q-K-A) or the lowest (A-2-3-4-5, called a "wheel" or "bicycle"). It cannot wrap around — Q-K-A-2-3 is not a valid straight. In Hold'em, the kicker is often decisive — a player with A-K and a player with A-Q on an A-J-7 board both have top pair top kicker versus top pair second kicker, and the K beats the Q in a showdown.</p>
 
-    <section id="starting-hands">
-      <h2>Pre-flop starting hand tiers</h2>
-      <p>In Texas Hold'em, you're dealt two hole cards before any community cards are shown. Your decision whether to fold, call, or raise before the flop is one of the most important in the hand. Here's a rough tier system:</p>
+    <p>In Texas Hold'em, you always use the best possible five-card hand from the seven available (two hole cards plus five community cards). You are never required to use both hole cards — you can use both, one, or technically neither (though playing the board is rare and usually not a winning proposition).</p>
+  </div>
 
-      <h3>Tier 1 — Premium hands (almost always play)</h3>
-      <ul>
-        <li>AA, KK, QQ (pocket pairs)</li>
-        <li>AK suited (AKs)</li>
-        <li>JJ</li>
-      </ul>
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Texas Hold'em Rules: Preflop to River</h2>
 
-      <h3>Tier 2 — Strong hands (usually play)</h3>
-      <ul>
-        <li>TT, 99, 88</li>
-        <li>AQ suited, AK offsuit, AJ suited</li>
-        <li>KQ suited</li>
-      </ul>
+    <p>Texas Hold'em is structurally simple. The complexity emerges from the decisions, not the mechanics. A complete hand moves through four distinct stages, each with a betting round, and each stage revealing more information that changes what any given hand is worth.</p>
 
-      <h3>Tier 3 — Playable (position and context dependent)</h3>
-      <ul>
-        <li>77, 66, 55</li>
-        <li>AQ offsuit, AJ offsuit, KQ offsuit</li>
-        <li>Suited connectors (78s, 89s, 9Ts) — best in later position</li>
-      </ul>
+    <h3>The Setup: Blinds and the Button</h3>
+    <p>Before any cards are dealt, two players post forced bets called blinds. The player immediately to the left of the dealer button posts the small blind (typically half the minimum bet), and the player two to the left posts the big blind (the full minimum bet). These forced bets create a starting pot that incentivizes play — without them, every player could simply fold until they receive a premium hand.</p>
 
-      <h3>Tier 4 — Marginal (fold in most situations)</h3>
-      <ul>
-        <li>Low pocket pairs (22–44) without a clear edge</li>
-        <li>Hands like K8 offsuit, Q7 suited—too many better hands exist</li>
-      </ul>
+    <p>The dealer button rotates clockwise after every hand, ensuring that all players post blinds over time and that positional advantages cycle through the table. In a heads-up (two-player) game, the button is also the small blind and acts first preflop but last on all subsequent streets.</p>
 
-      <p>Position matters enormously in Hold'em. The later you act (closer to the dealer button), the more information you have when making decisions. Hands that aren't worth playing in early position become playable in late position.</p>
-    </section>
+    <h3>Preflop</h3>
+    <p>Each player receives two private cards (hole cards) dealt face-down. The player to the left of the big blind acts first — they can call the big blind amount, raise to a higher amount, or fold. Action moves clockwise. The small blind and big blind act last, with the big blind having the option to raise even if no one else has raised (this is called the "big blind option").</p>
 
-    <section id="reading-board">
-      <h2>Reading the board</h2>
-      <p>The five community cards (flop, turn, river) interact with your hole cards to make the best possible 5-card hand. Novice players often miss board texture—what the community cards say about what other players might have.</p>
-      <p>Key board-reading habits:</p>
-      <ul>
-        <li><strong>Flush draws:</strong> If three or more cards on the board share a suit, any player holding two cards of that suit has a flush. Bet or call accordingly.</li>
-        <li><strong>Straight draws:</strong> Connected board cards (e.g. 6-7-8) make straights possible for multiple holdings. Be aware of what completes them on the turn and river.</li>
-        <li><strong>Paired boards:</strong> If the board shows a pair (e.g. K-K-7), full houses and quads become possible. Strong hands get stronger, but trips and two pairs that seemed good become vulnerable.</li>
-        <li><strong>Dry boards:</strong> Disconnected, low-card boards (e.g. 2-7-Q offsuit) are good for continuation-betting because few opponents will have hit anything meaningful.</li>
-      </ul>
-    </section>
+    <p>Preflop decisions are based entirely on your two hole cards and your position relative to the button. This is the moment to apply starting hand selection — which hands are worth playing, from which positions, and at what bet sizing. We'll cover that in detail in the starting hands section.</p>
 
-    <section id="pot-odds">
-      <h2>Pot odds simplified</h2>
-      <p>Pot odds tell you whether calling a bet is mathematically profitable given your probability of winning. The short version:</p>
-      <p><strong>Pot odds = amount to call ÷ (pot size + amount to call)</strong></p>
-      <p>If the pot is 100 and you need to call 25, your pot odds are 25/125 = 20%. If your probability of making your winning hand is greater than 20%, calling is profitable. If it's less, fold.</p>
-      <p>Common drawing probabilities to remember:</p>
-      <ul>
-        <li>Open-ended straight draw (8 outs) on the turn: ~17%</li>
-        <li>Flush draw (9 outs) on the turn: ~19%</li>
-        <li>Flush draw with both turn and river to come: ~35%</li>
-        <li>One pair against overcards: ~55% favourite</li>
-      </ul>
-      <p>You don't need exact math at the table—rough approximations are enough. "Outs × 2 = % probability on the turn" is a reliable shortcut.</p>
-    </section>
+    <h3>The Flop</h3>
+    <p>After preflop betting, three community cards are dealt face-up in the center of the table — this is the flop. These three cards are shared by all remaining players and are used in combination with hole cards to form hands. A second betting round occurs. The player closest to the left of the button who is still in the hand acts first — this order (first to act is earliest remaining position) holds for all post-flop streets.</p>
 
-    <section id="bluffing">
-      <h2>Bluffing strangers on video</h2>
-      <p>Poker on Shitbox Shuffle includes the video element—your opponent can see you. This changes the bluffing dynamic from online-only poker:</p>
-      <p><strong>What works against video opponents:</strong></p>
-      <ul>
-        <li><strong>Semi-bluffs:</strong> Bluffing when you have a draw that can improve to the best hand. You have two ways to win (opponent folds, or you hit your draw). This is more profitable than pure bluffs.</li>
-        <li><strong>Consistent behavior:</strong> If you're naturally expressive, don't try to suppress it. Consistency is harder to read than suppression—opponents looking for tells expect tension, not naturalness.</li>
-        <li><strong>Game-based banter:</strong> The social layer of video can be used to distract or disarm. Friendly chat mid-hand doesn't reveal your hand, but it does break an opponent's concentration.</li>
-      </ul>
-      <p><strong>What video adds for defence:</strong></p>
-      <ul>
-        <li>You can watch for hesitation before a big bet (suggests a draw or weak hand).</li>
-        <li>Expressions after a community card hits often reveal whether it helped them.</li>
-        <li>Overconfident behaviour when the card hits the board can indicate they made their draw.</li>
-      </ul>
-    </section>
+    <p>The flop dramatically narrows the range of possible winning hands. After the flop, you have seen five of the seven cards that will determine your best hand (two hole cards plus three community cards). The fundamental questions at the flop are: do I have a made hand, a drawing hand, or air (nothing)? And how does my hand range interact with this board?</p>
 
-    <section id="tokens">
-      <h2>Token play context on Shitbox Shuffle</h2>
-      <p>When playing poker with tokens on Shitbox Shuffle, the strategic principles above apply directly. A few additional considerations:</p>
-      <ul>
-        <li>Set a session token limit before you start. Poker variance is real—even with strong play, sessions go badly. Limits protect you from chasing losses.</li>
-        <li>Short-stack play (having fewer tokens than the other player) requires more aggressive strategy—your fold equity matters more.</li>
-        <li>Check our <a href="smart-wagering-habits-adults-only.html">smart wagering habits guide</a> and <a href="skill-vs-luck-games-wagering-what-to-know.html">skill vs luck breakdown</a> before playing for significant tokens.</li>
-      </ul>
+    <h3>The Turn</h3>
+    <p>A fourth community card is dealt face-up — the turn. A third betting round follows. The turn often increases the size of bets, especially in limit Hold'em formats where bet sizes double on the turn. In no-limit and pot-limit formats, the practical effect is psychological — the pot is larger, so the stakes of each decision are higher. Drawing hands get closer to completing or failing: with one card to come, you can calculate your exact probability of hitting your draw.</p>
 
-      <div class="callout callout-info">
-        <strong>18+ US adults only.</strong> Token wagering is for entertainment. Play within your limits. <a href="../responsible-gaming.html">Responsible Gaming</a>.
+    <h3>The River</h3>
+    <p>The fifth and final community card — the river — is dealt face-up. The final betting round occurs. There are no more cards to come, no more draws to consider. The only questions remaining are: what is my best five-card hand, what does my opponent likely hold, and is this situation one to bet, call, raise, or fold?</p>
+
+    <p>If multiple players remain after river betting, a showdown occurs — all remaining players reveal their hands and the best five-card combination wins the pot. In many hands, showdowns never happen because one player's bet causes all opponents to fold. Winning without showdown — by making your opponents fold — is a core element of poker strategy and where bluffing lives.</p>
+
+    <h3>Betting Actions</h3>
+    <p>At each betting round, the available actions are: <strong>Fold</strong> (discard your hand, lose any chips invested), <strong>Check</strong> (pass the action to the next player, available only when no bet has been made yet in the round), <strong>Call</strong> (match the current bet), <strong>Bet</strong> (place the first bet of the round), and <strong>Raise</strong> (increase the current bet). In no-limit Hold'em, bets and raises can be any amount up to your entire stack — this is the feature that makes the game so psychologically complex.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Position: The Invisible Advantage</h2>
+
+    <p>Position is the most underappreciated concept in Texas Hold'em for new players, and the most consistently important concept for experienced ones. Position refers to where you sit relative to the dealer button, which determines when you act in each betting round. Acting last — having already seen what every other player does before you decide — is a fundamental structural advantage that never goes away.</p>
+
+    <h3>Visual: Positions Around the Table</h3>
+
+    <div class="position-diagram">
+      <div class="table-felt"><span class="table-felt-text">COMMUNITY CARDS</span></div>
+
+      <!-- Top row -->
+      <div class="pos-dot pos-utg">
+        <div class="pos-circle">UTG</div>
+        <div class="pos-label">Under the Gun</div>
       </div>
-    </section>
+      <div class="pos-dot pos-utg1">
+        <div class="pos-circle">UTG+1</div>
+        <div class="pos-label">Early</div>
+      </div>
 
-    <section id="faq">
-      <h2>FAQ</h2>
-      <div class="faq-item">
-        <h3>Does a flush beat a straight?</h3>
-        <p>Yes. A flush (five cards of the same suit) ranks above a straight (five consecutive cards) in standard poker hand rankings.</p>
+      <!-- Right side -->
+      <div class="pos-dot pos-mp">
+        <div class="pos-circle">MP</div>
+        <div class="pos-label">Middle</div>
       </div>
-      <div class="faq-item">
-        <h3>What's the most important skill in poker?</h3>
-        <p>Folding. Most beginner losses come from playing too many hands and not recognising when you're beaten. Strong starting hand selection and the discipline to fold are more valuable than reading tells or making elaborate bluffs.</p>
+      <div class="pos-dot pos-co">
+        <div class="pos-circle">CO</div>
+        <div class="pos-label">Cutoff</div>
       </div>
-      <div class="faq-item">
-        <h3>How many players are in a standard Texas Hold'em game?</h3>
-        <p>Texas Hold'em can be played with 2–10 players. Head-to-head (2-player, or "heads up") is a common format on Shitbox Shuffle because it's fast-paced and naturally suited to the 1-on-1 video match format.</p>
-      </div>
-    </section>
 
-    <div class="article-cta">
-      <p>Test your poker strategy. <a href="../shitboxshuffle.html" class="btn-primary">Play on Shitbox Shuffle — 18+ US only</a></p>
+      <!-- Bottom -->
+      <div class="pos-dot pos-btn">
+        <div class="pos-circle active">BTN</div>
+        <div class="pos-label active">Button ★</div>
+      </div>
+
+      <!-- Left side -->
+      <div class="pos-dot pos-sb">
+        <div class="pos-circle">SB</div>
+        <div class="pos-label">Small Blind</div>
+      </div>
+      <div class="pos-dot pos-bb">
+        <div class="pos-circle">BB</div>
+        <div class="pos-label">Big Blind</div>
+      </div>
+      <div class="pos-dot pos-ep2">
+        <div class="pos-circle">EP</div>
+        <div class="pos-label">Early</div>
+      </div>
     </div>
 
-    <nav class="article-nav-links" aria-label="Related articles">
-      <h3>Related reading</h3>
-      <ul>
-        <li><a href="blackjack-basic-strategy-video-matches.html">Blackjack basic strategy guide</a></li>
-        <li><a href="skill-vs-luck-games-wagering-what-to-know.html">Skill vs luck in wagering games</a></li>
-        <li><a href="smart-wagering-habits-adults-only.html">Smart wagering habits</a></li>
-        <li><a href="how-tokens-work-shitbox-shuffle.html">How tokens work</a></li>
-      </ul>
-    </nav>
-  </article>
+    <div class="pos-legend">
+      <div class="pos-legend-item"><span class="hl">BTN</span> = Button (acts last post-flop — most profitable seat)</div>
+      <div class="pos-legend-item">CO = Cutoff (second best position)</div>
+      <div class="pos-legend-item">UTG = Under the Gun (acts first preflop — least information)</div>
+      <div class="pos-legend-item">SB/BB = Blinds (act last preflop, first post-flop — positional disadvantage)</div>
+    </div>
+
+    <h3>Why Position Changes Everything</h3>
+    <p>When you act last on the flop, turn, and river, you possess a stream of information your opponents don't have: you already know what every player before you chose to do. A check from the player to your right tells you something about their hand strength — it eliminates many strong made hands from their range. A bet tells you something else. You process all of this before you decide, giving you a structural advantage on every single street regardless of your cards.</p>
+
+    <p>This information advantage translates directly to money over time. The dealer button is the most profitable seat at any poker table, measured in big blinds won per hundred hands. Early position (UTG and UTG+1) is consistently the least profitable because you act first with the least information. This is why starting hand requirements are tighter from early position — you're committing chips with no information about how anyone else will play the hand.</p>
+
+    <p>In late position (button and cutoff), you can profitably play a wider range of hands because your positional advantage compensates for moderate hand strength. A hand like 7-8 suited is borderline from UTG but genuinely playable from the button, where its implied odds (the potential to extract large bets when you hit your draw) are much higher because you control the action on every street.</p>
+
+    <p>Position also makes bluffing dramatically more feasible. A bet from the button after all other players check is a credible story — you've seen everyone pass on aggression, suggesting weak holdings across the board. A bet from UTG into multiple unchecked players tells a much weaker story because you don't know yet whether anyone behind you is trapping with a strong hand.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Starting Hand Tiers: What to Play and What to Fold</h2>
+
+    <p>One of the most consequential decisions in Texas Hold'em happens before you see a single community card: choosing which starting hands to play. Not every two-card combination is worth putting chips into the pot. Understanding hand tiers — which hands are premium, which are playable in certain conditions, and which are trash regardless of circumstances — is the foundation of preflop strategy.</p>
+
+    <h3>Premium Hands: Play From Anywhere</h3>
+    <p>These hands are strong enough to raise from any position at the table and to continue aggressively through most board textures.</p>
+    <ul>
+      <li><strong>Pocket Aces (A-A)</strong> — the best starting hand in Hold'em. Wins roughly 85% of the time heads-up preflop. Raise aggressively, reraise with confidence, and play strongly post-flop unless the board is genuinely threatening (possible straights or flushes with action suggesting your opponent has connected).</li>
+      <li><strong>Pocket Kings (K-K)</strong> — wins roughly 82% preflop heads-up. The only hand that makes you nervous is seeing an Ace on the flop when you're against an unknown opponent, because any Ace-x holding now has you beat. Play aggressively preflop; reassess post-flop with caution on ace-high boards against heavy resistance.</li>
+      <li><strong>Pocket Queens (Q-Q)</strong> — strong but requires careful navigation on boards containing Kings or Aces. Raise preflop from any position. Be cautious on overcarded boards against continued aggression.</li>
+      <li><strong>Ace-King Suited (AKs)</strong> — the strongest drawing hand. Has significant equity as a combination hand (flush draws, straight draws) plus high-card strength. Treat it as a strong raise preflop; note that it's a draw, not a made hand, and adjust accordingly on missed flops.</li>
+      <li><strong>Pocket Jacks (J-J)</strong> — strong enough to raise from any position, but one of the psychologically trickiest hands. Overcards (Q, K, A) appear on the flop more than 50% of the time, and navigating heavy action on overcarded boards requires experience.</li>
+    </ul>
+
+    <h3>Playable Hands: Situational and Positional</h3>
+    <p>These hands are profitable to play in the right conditions — primarily with position advantage, or against opponents who play too loose and will pay off strong hands.</p>
+    <ul>
+      <li><strong>Pocket Tens (T-T)</strong> — a strong pair that benefits from position. Raise preflop, call three-bets in position with caution. Overcards are a concern but not an automatic fold.</li>
+      <li><strong>Ace-King Offsuit (AKo)</strong> — strong preflop equity but no flush draw potential. Play it like AKs minus the implied odds of flush-completing scenarios.</li>
+      <li><strong>Ace-Queen Suited (AQs), Ace-Jack Suited (AJs)</strong> — good hands from middle to late position. Be cautious about playing too aggressively out of position against unknown opponents.</li>
+      <li><strong>Suited Connectors (9-8s, 8-7s, 7-6s)</strong> — hands that can make straights and flushes but have little high-card value. Play them profitably from late position in multi-way pots where implied odds are high. Fold them early position.</li>
+      <li><strong>Pocket pairs 2-2 through 9-9</strong> — small and medium pairs play best in position, with the goal of hitting a set (three of a kind) on the flop. A set occurs roughly 12% of the time, but the implied odds when you do hit are enormous. Call preflop raises cheaply; don't overcommit without improvement.</li>
+    </ul>
+
+    <h3>Trash Hands: The Discipline to Fold</h3>
+    <p>Most starting hands in Hold'em are losing hands on average. Hands like 7-2 offsuit, 8-3 offsuit, Q-4 offsuit — combinations with no connected value, no flush potential, and no high-card strength — should be folded preflop in virtually all situations. The discipline to fold unremarkable hands is what separates recreational players from competent ones. Tight preflop play is not boring — it's the foundation that makes every subsequent decision cleaner.</p>
+
+    <div class="callout">
+      <strong>The Most Important Preflop Rule:</strong> When in doubt, tighter is almost always better. Entering pots with marginal hands out of position is the most common and most expensive leak in beginner play. Every hand you fold is one fewer situation where you'll be making decisions with incomplete information and weak equity.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Pot Odds: The Math That Makes Calls Profitable</h2>
+
+    <p>Pot odds are the ratio between the size of the pot and the cost of a call. They're the tool that tells you whether calling a bet is mathematically profitable based on your estimated probability of winning the hand. Understanding pot odds doesn't require complex math — it requires a simple comparison of two numbers.</p>
+
+    <p>Here's the calculation: if the pot contains 100 tokens and your opponent bets 50, the total pot you'd be winning is 150 tokens, and your call costs 50. Your pot odds are 150:50, or 3:1. To break even on this call, you need to win at least 1 in every 4 times you're in this situation — 25% of the time. If your hand or draw wins more than 25% of the time, calling is profitable. If it wins less, folding is correct.</p>
+
+    <p>Your "equity" — the probability of your hand winning — comes from estimating your outs. An out is any card that completes your drawing hand. If you have four cards to a flush, you have nine outs (13 cards of that suit minus four you've seen). A quick estimation rule: multiply your outs by 4 on the flop (for two cards remaining) or by 2 on the turn (for one card remaining) to get your approximate equity percentage. Nine flush outs on the flop gives you roughly 36% equity — a profitable call in many pot odds situations.</p>
+
+    <p>Applied examples: facing a 50% pot bet when you have a flush draw gives you about 2:1 pot odds (need to win 33%) against roughly 36% equity on the flop — a profitable call. Facing a pot-sized bet with the same flush draw gives you 2:1 odds (need 33%) against 36% equity — still marginally profitable, but only barely. Facing a two-times-pot overbet against a flush draw gives you 1.5:1 odds (need 40%) against 36% equity — now it's a fold.</p>
+
+    <p>Pot odds thinking becomes more sophisticated when you incorporate implied odds — the additional chips you can expect to win on later streets if you hit your draw. A flush draw against a deep-stacked opponent who has shown strength is worth calling even with slightly unfavorable direct pot odds, because hitting the flush will likely produce a large additional bet or call on the next street. Implied odds justify looser calls in position; they justify tighter calls out of position where you're less likely to extract value when you hit.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Bluffing on Video Chat: Reading Tells Through a Screen</h2>
+
+    <p>Bluffing in poker is not deception in the ordinary sense — it is a rational strategy in a game defined by incomplete information. When the math says your hand is beaten, the only way to win is to make your opponent believe otherwise. The credibility of your bluff depends on two things: the story your betting tells about the hand you're representing, and the consistency of your behavior across bluffing and value-betting situations.</p>
+
+    <p>Video chat poker is a uniquely interesting bluffing environment because both players are visible. Every micro-expression, posture shift, and timing pattern is potentially observable — and potentially observable to you in your opponent as well. This creates a game of mutual observation that doesn't exist in online poker rooms.</p>
+
+    <h3>Controlling Your Own Tells</h3>
+    <p>The most important part of bluffing on video is managing your own observable behavior. Common tells in live poker — averting eye contact, swallowing, touching the face, changing breathing rate, speeding up or slowing down decision timing — translate directly to a video camera. If you bet quickly when bluffing and slowly when value-betting (or vice versa), a perceptive opponent will eventually notice the pattern.</p>
+
+    <p>The practical prescription is behavioral consistency: make all your decisions in roughly the same timeframe regardless of hand strength. Before betting or raising, take a consistent deliberation pause — two to three seconds of apparent thought — whether you have the nuts or nothing. This flattens the timing tells that observant opponents exploit. Your facial expression should aim for neutral engagement — not blank and robotic, which reads as studied performance, but the ordinary focused expression of someone thinking about a math problem.</p>
+
+    <p>What you want to avoid is the two extremes: performing confidence (the false bravado of a weak bluffer) and performing anxiety (the visible discomfort of someone doing something they're unsure of). Genuine confidence comes from knowing why you're making the play — bluffing because the board texture supports the story you're telling, your betting has been consistent, and you've identified a situation where your opponent is likely to fold the range of hands they're holding.</p>
+
+    <h3>Reading Your Opponent on Video</h3>
+    <p>In the other direction, you have a continuous stream of information from your opponent's camera. The key is not to focus on individual physical tells — which can be misleading and is a skill that takes considerable live play to develop — but on patterns of behavior over multiple hands.</p>
+
+    <p>Timing tells are the most reliable because they're hard to suppress consistently. A player who takes significantly longer to call than to fold, or who acts very quickly when they're strong and deliberates when they're weak, is broadcasting information in both directions. If you notice an opponent consistently delays before big river bets, the delay itself may be meaningful. Equally, a player who acts at roughly the same speed regardless of hand strength is harder to read and likely more experienced.</p>
+
+    <p>Verbal behavior is also available in video chat and genuinely informative. Players who talk more when they're bluffing and go quiet when they're strong (or the reverse) are patterning in ways you can track. The specific content of what people say is less important than the correlation between verbosity and hand strength — once you notice a pattern, it has predictive value.</p>
+
+    <div class="pull-quote">
+      <p>"The best bluff doesn't require reading anyone's face. It tells a story so coherent, so consistent with everything that came before, that folding is the only logical response."</p>
+    </div>
+
+    <h3>Bluff Selection: When Bluffing Makes Sense</h3>
+    <p>Effective bluffing is not a willingness to bet with nothing — it's a disciplined selection of situations where betting with nothing has a higher expected value than checking and folding. Those situations share common characteristics: your opponent has a range full of hands that can't call a bet (missed draws, weak pairs, overcards with no pair), the board texture favors your perceived range (e.g., you raised preflop and the board came K-K-2, which connects with hands like A-K that you'd raise with), and the pot size makes the bluff economically sensible relative to your stack and theirs.</p>
+
+    <p>Semi-bluffs — bets made with drawing hands that aren't currently the best but could improve — are generally preferable to pure bluffs because you have equity as a backup. A flush draw bluff that gets called still wins 36% of the time. A pure air bluff that gets called has zero equity. Semi-bluffing correctly is one of the highest-frequency profitable plays available in Texas Hold'em.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Bet Sizing: Why It Matters and Simple Rules</h2>
+
+    <p>Bet sizing in no-limit Hold'em is a form of communication. Every bet size tells your opponent something about your range of hands — or, if you're skilled, it tells them something deliberately misleading. Getting bet sizing right serves two goals: extracting maximum value from strong hands and minimizing losses with weak or drawing hands, while maintaining enough ambiguity that your bet size doesn't immediately reveal your hand category.</p>
+
+    <h3>Preflop Sizing</h3>
+    <p>A standard preflop open raise is 2.5 to 3 times the big blind from late position, increasing slightly to 3–4x from early position to compensate for the positional disadvantage. Re-raises (three-bets) are typically 3 times the initial raiser's bet, or 2.5 times if you're in position. These sizings are common enough that they don't give away hand information while still building a pot proportionate to hand strength.</p>
+
+    <p>One of the biggest preflop mistakes is raising larger with strong hands (trying to "protect" them) and smaller with weak or bluffing hands. This makes your sizing a direct tell. Your open-raise with pocket aces should look identical to your open-raise with 7-8 suited from the button. Balanced sizing across your range is more important than any individual hand-optimal sizing.</p>
+
+    <h3>Post-Flop Sizing</h3>
+    <p>Three sizing zones serve most post-flop situations well. A small bet of 25–40% of the pot works on dry boards (boards with few draws, like K-7-2 rainbow) where you want cheap information or want to keep in hands that have little equity against you. A medium bet of 50–70% of the pot is the default continuation bet — large enough to put pressure on drawing hands and hands with no pair, small enough to not overcommit on boards that might have hit your opponent. A large bet of 80–100%+ is appropriate on wet boards with many draws, where you want to price out flush and straight draws and signal genuine strength.</p>
+
+    <p>On the river, where no more cards are coming and there are no draws remaining, sizing shifts. Larger river bets (75–125% of pot) are appropriate both for maximum value with strong hands and for bluffs on boards where draws missed — in both cases you want the bet to be large enough to produce a decision with real consequences. Small river bets often look like blocking bets from players with medium-strength hands who don't want to face a raise.</p>
+
+    <p>The principle underlying all sizing decisions: your bet should accomplish a goal. Value bets want calls from worse hands. Bluffs want folds. Protection bets want to charge draws. Know your goal before you size, and let the goal determine the size — not the size of the pot or the magnitude of your hand in isolation.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Playing on a Budget: Bankroll Management for Token Games</h2>
+
+    <p>Poker variance is substantial — more so than blackjack — because the skill advantage needs many hands to express itself, and in any individual session, even a significant skill edge can be erased by bad luck in a few key hands. Managing your token bankroll intelligently is not optional — it's part of competent play.</p>
+
+    <p>The standard bankroll guidance for cash game poker is 20 to 30 buy-ins for your chosen stake level. A buy-in is typically 100 big blinds. If you're playing in a 10-token big blind game, a full buy-in is 1,000 tokens, and a responsible session bankroll to sustain that stake level comfortably would be 20,000 to 30,000 tokens. This cushion allows you to absorb losing sessions — which are inevitable — without being forced to move down in stakes or quit the game entirely.</p>
+
+    <p>For casual token wagering on Shitbox Shuffle, where the social and entertainment context differs from a grinding poker session, a more modest framing is appropriate: bring 5 to 10 buy-ins to any stake level you choose, and set a session loss limit of 2–3 buy-ins. If you lose that in a session, the cards aren't running in your favor today. Stopping prevents the emotional escalation that often accompanies continued play after a bad run.</p>
+
+    <h3>Avoid the Tilted All-In</h3>
+    <p>The most bankroll-destructive single action in poker is the emotional all-in — going all-in not because the math supports it but because you're frustrated, because you want to recover losses quickly, or because the session has been running bad and you want to "let it ride." This decision-making pattern turns manageable losses into catastrophic ones. No individual hand is worth your entire stack unless the math — stack depths, pot odds, equity — genuinely supports it.</p>
+
+    <p>Recognizing tilt is easier said than done in a live video context, because the social pressure of being on camera creates additional emotion. If you catch yourself making decisions for emotional rather than strategic reasons — calling a big bet because folding "looks weak," bluffing off chips because you've lost three hands in a row and want to assert control — stop the session. The tokens will be there tomorrow.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Common Beginner Mistakes in Texas Hold'em</h2>
+
+    <p>Most beginner mistakes share a root cause: playing too many hands, in too many positions, with too little regard for relative hand strength. The corrections below address the most costly specific patterns.</p>
+
+    <ul>
+      <li><strong>Playing too loose preflop.</strong> The most prevalent beginner error. Entering pots with weak holdings — J-4 offsuit, K-6 offsuit, any ace — leads to consistently difficult post-flop situations where your hand has low equity and you're playing guesswork. Tighten significantly preflop and your post-flop decisions become dramatically cleaner.</li>
+      <li><strong>Calling too much, raising too little.</strong> "Calling stations" — players who call bets frequently but rarely raise — give opponents free information and free cards. Raise with strong hands, fold or raise with marginal ones. Passive calling is usually worse than either aggressive action or folding.</li>
+      <li><strong>Overvaluing top pair.</strong> Top pair is a strong hand on the flop in a heads-up pot. It's a medium-strength hand in a multi-way pot with multiple callers and a wet board. Beginner players frequently commit their entire stack with top pair against heavy resistance in situations where experienced opponents are representing much stronger hands.</li>
+      <li><strong>Bluffing into too many players.</strong> Bluffs are most effective heads-up or in small pots against one other player. Bluffing into four or five callers multiplies the chance that someone has connected with the board enough to call. Multi-way bluffs fail at much higher rates than heads-up bluffs and are rarely mathematically justified.</li>
+      <li><strong>Ignoring pot odds on draws.</strong> Calling large bets with weak draws — chasing a gutshot straight draw that has only four outs — is a losing play even if the draw occasionally hits. Calculate whether the pot odds support the call before committing chips to a draw.</li>
+      <li><strong>Playing out of position without adjustment.</strong> The same hand played from the blinds versus from the button should be played very differently. Beginners frequently play small and medium pairs, suited connectors, and mid-range hands the same way regardless of position. Position is one of the two or three most important variables in any post-flop decision.</li>
+    </ul>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>Poker Reveals Character Faster Than Any Conversation</h2>
+
+    <p>There is a reason poker has been played for money between strangers for over two hundred years, and it has very little to do with the money. Poker is an unusually accurate character test. The pressures of the game — uncertainty, variance, loss, the temptation to deceive, the discipline required to fold — expose patterns of behavior that normal social interaction carefully conceals.</p>
+
+    <p>In a one-hour poker session with a stranger, you will learn more about how they handle adversity than you would learn in a week of casual conversation. You'll see whether they maintain composure under sustained pressure or whether they chase and escalate. You'll see whether they respect their own analysis or whether they abandon it the moment it becomes emotionally inconvenient. You'll see whether they're gracious or resentful when the cards go against them.</p>
+
+    <p>This is what makes video chat poker uniquely compelling. The camera captures the person, not just the player. When your opponent takes a bad beat — the kind of loss where the math was in their favor and luck intervened — their reaction in the seconds afterward tells you something true. Not performed, not curated, just real. And you're watching it on screen, in real time, knowing that they're watching you just as closely.</p>
+
+    <p>Playing well in this context means playing the person as much as the cards. Reading their behavioral patterns across hands, calibrating the credibility of their bets against how they've played before, and understanding that their decision-making process is as much an emotional journey as a strategic one. The best video chat poker players are good at poker, yes — but they're also genuinely curious about the person on the other side of the screen. That curiosity gives them information. Information gives them edge.</p>
+
+    <div class="callout">
+      <strong>The Etiquette Note:</strong> Win gracefully. Lose without bitterness. Neither excessive celebration nor visible frustration serves you in repeated matches. The player who can keep a steady, engaged demeanor across all outcomes is both more pleasant to play against and harder to read — which makes them, ultimately, a more dangerous opponent.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="cta-block">
+    <div class="cta-eyebrow">Ready to Play</div>
+    <div class="cta-headline">Find Out What the Cards Reveal</div>
+    <div class="cta-body">Match with real players on video, wager tokens, and play Texas Hold'em against someone who's watching every move you make. The hand rankings are easy. The rest is all you.</div>
+    <a href="https://shitboxshuffle.com/" class="cta-btn">Enter the Room</a>
+    <div class="cta-fine">18+ Only &nbsp;·&nbsp; US Only &nbsp;·&nbsp; Play Responsibly &nbsp;·&nbsp; 1-800-522-4700</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section" style="margin-top:64px;">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">What beats what in poker hand rankings?</div>
+      <div class="faq-a">From highest to lowest: Royal Flush, Straight Flush, Four of a Kind, Full House, Flush, Straight, Three of a Kind, Two Pair, One Pair, High Card. A higher-ranked hand always beats a lower one. Within the same hand type, higher card values win — a flush with an ace high beats a flush with a king high, for example. Ties are broken by comparing relevant cards from highest to lowest.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How does Texas Hold'em work?</div>
+      <div class="faq-a">Each player receives two private hole cards. Five community cards are then dealt in stages — three on the flop, one on the turn, one on the river — with a betting round after each stage. Players use any combination of their two hole cards and the five community cards to make the best five-card poker hand. The player with the best hand at showdown wins, or a player can win by making all opponents fold through betting at any point in the hand.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What is position in poker and why does it matter?</div>
+      <div class="faq-a">Position refers to where you sit relative to the dealer button, which determines the order you act in each betting round. Acting last — in late position, especially on the dealer button — is a major structural advantage because you see every other player's decision before making your own. This informational edge makes late position consistently the most profitable seat at any poker table. The dealer button is the best position; the blinds (forced to act first post-flop) are the worst.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What are the best starting hands in Texas Hold'em?</div>
+      <div class="faq-a">The premium starting hands are pocket Aces (A-A), pocket Kings (K-K), pocket Queens (Q-Q), Ace-King suited (AKs), and pocket Jacks (J-J). These should be raised aggressively from any position. Strong secondary hands include pocket Tens, Ace-King offsuit, Ace-Queen suited, and suited connectors played from late position. The vast majority of starting hand combinations are unprofitable to play from early position and should be folded.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What are pot odds and how do I use them?</div>
+      <div class="faq-a">Pot odds are the ratio of the current pot to the cost of a call, telling you the minimum win rate your hand needs to make the call profitable. If the pot is 100 tokens and you face a 50-token call, pot odds are 3:1 — you need to win at least 25% of the time. Compare this to your estimated equity (multiply outs by 4 on the flop or by 2 on the turn for a quick percentage). If your equity exceeds the pot odds requirement, calling is profitable; if not, fold.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I bluff effectively on video chat?</div>
+      <div class="faq-a">Effective video chat bluffing requires two things: consistent behavior across bluffs and value bets so your timing and manner don't signal hand strength, and a coherent narrative — your bluff should represent a hand you could plausibly hold based on your preflop action, board texture, and prior betting. The bet size should be consistent with value bets in the same situation. Target spots where your opponent has shown weakness and the board supports the hand you're representing.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How much should I bet on the flop?</div>
+      <div class="faq-a">A standard continuation bet is 50–70% of the pot on most boards. Use smaller bets (25–40%) on dry boards where you want cheap information without building a large pot. Use larger bets (75–100%+) on wet boards with many draws present, where you want to charge drawing hands a high price to continue. Keep your sizing consistent across strong hands and bluffs so that bet size alone doesn't reveal whether you're value-betting or bluffing.</div>
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<div style="max-width:720px; margin:0 auto; padding:0 28px;">
+  <footer>
+    <div class="footer-wordmark">Shitbox &amp; Shuffle</div>
+    <div class="footer-links">
+      <a href="https://shitboxshuffle.com/blog/">All Guides</a>
+      <a href="https://shitboxshuffle.com/">Home</a>
+      <a href="https://shitboxshuffle.com/press.html">Press</a>
+      <a href="https://shitboxshuffle.com/terms.html">Terms</a>
+      <a href="https://shitboxshuffle.com/privacy.html">Privacy</a>
+      <a href="https://shitboxshuffle.com/support.html">Support</a>
+      <a href="https://shitboxshuffle.com/responsible-gaming.html">Responsible Gaming</a>
+    </div>
+    <div class="footer-copy">© 2026 Shitbox Shuffle. 18+ only. US only. Play responsibly. If you or someone you know has a gambling problem, call 1-800-522-4700.</div>
+  </footer>
 </div>
 
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-links footer-links-row">
-      <a href="../terms.html">Terms</a>
-      <a href="../privacy.html">Privacy</a>
-      <a href="../responsible-gaming.html">Responsible Gaming</a>
-      <a href="../support.html">Support</a>
-      <a href="index.html">Blog</a>
-    </div>
-    <p class="footer-copy">© 2025 Shitbox Shuffle. For entertainment. US adults 18+ only.</p>
-  </div>
-</footer>
 </body>
 </html>

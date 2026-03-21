@@ -16,7 +16,7 @@
   <meta name="twitter:title" content="Chatroulette Review 2026" />
   <meta name="twitter:description" content="Honest assessment of Chatroulette in 2026—features, safety, and comparison to alternatives." />
   <meta name="twitter:image" content="https://shitboxshuffle.com/assets/og-default.svg" />
-  <link rel="stylesheet" href="article.css" />
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -33,6 +33,17 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://shitboxshuffle.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://shitboxshuffle.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Chatroulette Review 2026", "item": "https://shitboxshuffle.com/blog/chatroulette-review-2026.html" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
       {
@@ -44,172 +55,831 @@
         "@type": "Question",
         "name": "Is Chatroulette safe?",
         "acceptedAnswer": { "@type": "Answer", "text": "Safer than its early reputation but not entirely clean. AI content detection has reduced NSFW content substantially. The platform uses self-declared age verification (18+) without hard ID checking, so the actual audience age mix is unverified. Global open access means moderation quality is inconsistent." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Chatroulette free?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Basic access is free with no account required. Premium features (filters, face filters, gender and country selection) require an account and subscription." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I stay safe on Chatroulette?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Follow standard random video chat safety practices: don't share personal information, treat anything on-camera as potentially recorded, use the report function for bad actors." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a Chatroulette app?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Chatroulette has had mobile apps at various points. Check the App Store or Google Play for current availability—app availability can change." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the best Chatroulette alternative in 2026?",
+        "acceptedAnswer": { "@type": "Answer", "text": "It depends on what you want. For US adults who want structured games and optional wagering, Shitbox Shuffle is the most distinct alternative. For general random video chat with global reach, OmeTV and Azar are popular options." }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Chatroulette have games?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. As of 2026, Chatroulette does not offer built-in interactive games. Sessions are unstructured video conversations. Platforms like Shitbox Shuffle are purpose-built to add games and optional token wagering to stranger video chat." }
       }
     ]
   }
   </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --void: #030303;
+      --ember: #c9a227;
+      --ember-dim: #a07c18;
+      --bone: #e8e0d0;
+      --bone-dim: #b0a898;
+      --surface: #0e0e0e;
+      --surface2: #161616;
+      --border: #2a2a2a;
+    }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--void);
+      color: var(--bone);
+      font-family: 'Libre Baskerville', Georgia, serif;
+      line-height: 1.75;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(3,3,3,0.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      font-size: 1.5rem; letter-spacing: 0.08em;
+      color: var(--ember); text-decoration: none;
+    }
+    .btn-nav {
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      font-size: 0.95rem; letter-spacing: 0.1em;
+      background: var(--ember); color: var(--void);
+      padding: 0.4rem 1.1rem; border-radius: 3px;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .btn-nav:hover { background: #e0b52e; }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      max-width: 860px; margin: 1.2rem auto 0;
+      padding: 0 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem; color: var(--bone-dim);
+    }
+    .breadcrumb a { color: var(--ember); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 0.4rem; }
+
+    /* PAGE WRAP */
+    .page-wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    /* ARTICLE HEADER */
+    .article-header { margin-bottom: 2rem; }
+    .article-meta {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 0.9rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+      color: var(--bone-dim);
+    }
+    .tag {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--ember); padding: 0.2rem 0.6rem; border-radius: 2px;
+      font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    h1 {
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      letter-spacing: 0.04em; line-height: 1.1;
+      color: var(--bone); margin-bottom: 1rem;
+    }
+    .article-lede {
+      font-size: 1.15rem; color: var(--bone-dim);
+      border-left: 3px solid var(--ember); padding-left: 1rem;
+    }
+
+    /* CALLOUT */
+    .callout {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-left: 4px solid var(--ember);
+      padding: 1rem 1.2rem; border-radius: 4px;
+      margin: 1.8rem 0; font-size: 0.9rem; color: var(--bone-dim);
+    }
+    .callout strong { color: var(--ember); }
+
+    /* TOC */
+    .toc {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 1.4rem 1.6rem; border-radius: 6px;
+      margin: 2rem 0;
+    }
+    .toc strong {
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      font-size: 1.1rem; letter-spacing: 0.08em;
+      color: var(--ember); display: block; margin-bottom: 0.8rem;
+    }
+    .toc ol { padding-left: 1.4rem; }
+    .toc li { margin-bottom: 0.35rem; font-size: 0.9rem; }
+    .toc a { color: var(--bone-dim); text-decoration: none; }
+    .toc a:hover { color: var(--ember); }
+
+    /* SECTIONS */
+    .article-body section { margin-bottom: 2.8rem; }
+    h2 {
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      font-size: 1.9rem; letter-spacing: 0.05em;
+      color: var(--ember); margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 {
+      font-family: 'Libre Baskerville', Georgia, serif;
+      font-size: 1.1rem; color: var(--bone);
+      margin: 1.4rem 0 0.6rem; font-weight: 700;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.4rem; }
+    a { color: var(--ember); }
+    a:hover { text-decoration: underline; }
+    strong { color: var(--bone); }
+
+    /* =============================================
+       VISUAL 1: PLATFORM COMPARISON TABLE
+       ============================================= */
+    .compare-table-wrap {
+      overflow-x: auto; margin: 2rem 0;
+    }
+    .compare-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.88rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .compare-table thead tr {
+      background: var(--surface2);
+    }
+    .compare-table th {
+      padding: 0.75rem 1rem; text-align: left;
+      color: var(--ember); font-weight: 700;
+      letter-spacing: 0.06em; font-size: 0.8rem;
+      border-bottom: 2px solid var(--ember);
+    }
+    .compare-table th:first-child { min-width: 160px; }
+    .compare-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--bone-dim); vertical-align: top;
+    }
+    .compare-table tr:hover td { background: var(--surface); }
+    .compare-table .feature-label { color: var(--bone); font-weight: 700; }
+    .check { color: #5ecb7a; font-size: 1rem; }
+    .cross { color: #e05555; font-size: 1rem; }
+    .partial { color: var(--ember); font-size: 1rem; }
+    .highlight-col { background: rgba(201,162,39,0.06); }
+
+    /* =============================================
+       VISUAL 2: MODERATION SCORE BARS
+       ============================================= */
+    .score-bars { margin: 2rem 0; }
+    .score-bar-row {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.1rem;
+    }
+    .score-bar-label {
+      width: 180px; flex-shrink: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem; color: var(--bone-dim);
+      text-align: right;
+    }
+    .score-bar-track {
+      flex: 1; height: 10px;
+      background: var(--surface2); border-radius: 5px;
+      overflow: hidden; position: relative;
+    }
+    .score-bar-fill {
+      height: 100%; border-radius: 5px;
+      transition: width 0.3s ease;
+    }
+    .score-bar-fill.good { background: linear-gradient(90deg, #3a8a52, #5ecb7a); }
+    .score-bar-fill.mid  { background: linear-gradient(90deg, var(--ember-dim), var(--ember)); }
+    .score-bar-fill.low  { background: linear-gradient(90deg, #8a3a3a, #e05555); }
+    .score-bar-value {
+      width: 36px; flex-shrink: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem; color: var(--bone);
+      text-align: right;
+    }
+    .score-bars-title {
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      font-size: 1rem; letter-spacing: 0.08em;
+      color: var(--ember); margin-bottom: 1.2rem;
+    }
+    .score-section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 0.1em;
+      color: var(--bone-dim); text-transform: uppercase;
+      margin-bottom: 0.6rem; margin-top: 1.4rem;
+    }
+
+    /* =============================================
+       VISUAL 3: FEATURE GRID CARDS
+       ============================================= */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem; margin: 2rem 0;
+    }
+    .feature-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 1.1rem 1.2rem;
+      position: relative; overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%;
+    }
+    .feature-card.has { border-color: rgba(94,203,122,0.25); }
+    .feature-card.has::before { background: #5ecb7a; }
+    .feature-card.lacks { border-color: rgba(224,85,85,0.25); }
+    .feature-card.lacks::before { background: #e05555; }
+    .feature-card.partial-feat { border-color: rgba(201,162,39,0.3); }
+    .feature-card.partial-feat::before { background: var(--ember); }
+    .feature-card-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem; letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .feature-card.has .feature-card-title { color: #5ecb7a; }
+    .feature-card.lacks .feature-card-title { color: #e05555; }
+    .feature-card.partial-feat .feature-card-title { color: var(--ember); }
+    .feature-card p {
+      font-size: 0.86rem; color: var(--bone-dim);
+      margin: 0; line-height: 1.55;
+    }
+
+    /* FAQ */
+    .faq-item {
+      border-top: 1px solid var(--border);
+      padding: 1.2rem 0;
+    }
+    .faq-item:last-child { border-bottom: 1px solid var(--border); }
+    .faq-item h3 {
+      font-family: 'Libre Baskerville', Georgia, serif;
+      font-size: 1rem; color: var(--bone);
+      margin: 0 0 0.5rem; font-weight: 700;
+    }
+    .faq-item p { font-size: 0.92rem; color: var(--bone-dim); margin: 0; }
+
+    /* CTA */
+    .article-cta {
+      background: var(--surface2);
+      border: 1px solid var(--ember);
+      border-radius: 6px; padding: 1.8rem 2rem;
+      text-align: center; margin: 3rem 0;
+    }
+    .article-cta p { margin-bottom: 1rem; font-size: 1.05rem; color: var(--bone); }
+    .btn-primary {
+      display: inline-block;
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      font-size: 1.1rem; letter-spacing: 0.1em;
+      background: var(--ember); color: var(--void);
+      padding: 0.7rem 2rem; border-radius: 4px;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #e0b52e; }
+
+    /* CONTINUE READING */
+    .continue-reading {
+      margin: 3rem 0;
+      border-top: 1px solid var(--border); padding-top: 2rem;
+    }
+    .continue-reading h3 {
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      font-size: 1.3rem; letter-spacing: 0.08em;
+      color: var(--ember); margin-bottom: 1.2rem;
+    }
+    .continue-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .continue-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 5px; padding: 1rem 1.1rem;
+      text-decoration: none; transition: border-color 0.2s;
+      display: block;
+    }
+    .continue-card:hover { border-color: var(--ember); text-decoration: none; }
+    .continue-card-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--ember);
+      margin-bottom: 0.4rem;
+    }
+    .continue-card-title {
+      font-size: 0.9rem; color: var(--bone); line-height: 1.45;
+    }
+
+    /* DISCLAIMER */
+    .disclaimer {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 0.9rem 1.1rem;
+      font-size: 0.82rem; color: var(--bone-dim);
+      margin: 2rem 0; font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* FOOTER */
+    .footer {
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+    }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; }
+    .footer-links a {
+      font-size: 0.85rem; color: var(--bone-dim); text-decoration: none;
+    }
+    .footer-links a:hover { color: var(--ember); }
+    .footer-copy { font-size: 0.8rem; color: var(--bone-dim); text-align: center; }
+
+    /* PROS CONS */
+    .pros-cons-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 560px) { .pros-cons-grid { grid-template-columns: 1fr; } }
+    .pros-col, .cons-col {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 1.2rem 1.3rem;
+    }
+    .pros-col { border-top: 3px solid #5ecb7a; }
+    .cons-col { border-top: 3px solid #e05555; }
+    .pros-col h3 { color: #5ecb7a; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem; }
+    .cons-col h3 { color: #e05555; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem; }
+    .pros-col li, .cons-col li { font-size: 0.88rem; color: var(--bone-dim); margin-bottom: 0.45rem; }
+
+    /* VERDICT BOX */
+    .verdict-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--ember);
+      padding: 1.4rem 1.6rem; border-radius: 4px;
+      margin: 1.5rem 0;
+    }
+    .verdict-box .verdict-label {
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      font-size: 0.9rem; letter-spacing: 0.12em;
+      color: var(--ember); margin-bottom: 0.6rem;
+    }
+    .verdict-box p { margin: 0; color: var(--bone); font-size: 0.95rem; }
+
+    /* INLINE CODE */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84em; background: var(--surface2);
+      padding: 0.1em 0.35em; border-radius: 2px;
+      color: var(--ember);
+    }
+
+    @media (max-width: 640px) {
+      .score-bar-label { width: 120px; font-size: 0.72rem; }
+      .compare-table { font-size: 0.8rem; }
+    }
+  </style>
 </head>
 <body>
+
 <nav class="nav">
   <div class="nav-inner">
     <a class="nav-logo" href="../index.html">Shitbox Shuffle</a>
     <div class="nav-actions">
-      <a class="btn-nav" href="../shitboxshuffle.html">Play Now</a>
+      <a class="btn-nav" href="https://shitboxshuffle.com">Play Now</a>
     </div>
   </div>
 </nav>
 
 <div class="page-wrap">
-  <article class="content-section article-body">
-    <header class="article-header">
-      <div class="article-meta"><span class="tag">Competitor Reviews</span> <time datetime="2026-03-19">March 19, 2026</time></div>
+  <div class="breadcrumb">
+    <a href="https://shitboxshuffle.com/">Home</a>
+    <span>/</span>
+    <a href="https://shitboxshuffle.com/blog/">Blog</a>
+    <span>/</span>
+    Chatroulette Review 2026
+  </div>
+
+  <article class="article-body">
+    <header class="article-header" style="margin-top:1.8rem;">
+      <div class="article-meta">
+        <span class="tag">Competitor Reviews</span>
+        <time datetime="2026-03-19">March 19, 2026</time>
+      </div>
       <h1>Chatroulette Review 2026: Features, Safety &amp; Who It's Really For</h1>
       <p class="article-lede">Chatroulette is one of the original random video platforms and still one of the most visited. This is an honest assessment of where it stands in 2026—what works, what doesn't, and who should (and shouldn't) use it.</p>
     </header>
 
-    <div class="callout callout-info">
+    <div class="callout">
       <strong>Disclosure:</strong> Shitbox Shuffle is a direct alternative to Chatroulette. This review is editorial, based on observable platform features and publicly available information as of March 2026. Chatroulette is a trademark of its respective owner. Policies change—verify the latest on their site.
     </div>
 
     <nav class="toc" aria-label="Contents">
       <strong>In this article</strong>
       <ol>
-        <li><a href="#what-is">What Chatroulette is</a></li>
+        <li><a href="#what-is">What Chatroulette is in 2026</a></li>
+        <li><a href="#history">From 2009 to now: the arc</a></li>
         <li><a href="#features">Features and interface</a></li>
-        <li><a href="#moderation">Moderation and safety</a></li>
+        <li><a href="#moderation">Moderation scores and safety</a></li>
         <li><a href="#who-for">Who it's for</a></li>
         <li><a href="#pros-cons">Pros and cons</a></li>
-        <li><a href="#vs-shitbox">How it compares to Shitbox Shuffle</a></li>
+        <li><a href="#vs-shitbox">Feature-by-feature vs. Shitbox Shuffle</a></li>
+        <li><a href="#alternatives">Other alternatives in 2026</a></li>
         <li><a href="#verdict">Verdict</a></li>
         <li><a href="#faq">FAQ</a></li>
       </ol>
     </nav>
 
     <section id="what-is">
-      <h2>What Chatroulette is</h2>
-      <p>Chatroulette launched in 2009, created by then-17-year-old Russian developer Andrey Ternovskiy. The concept was radical in its simplicity: click a button, connect to a random stranger over live video. No profile, no filtering, no purpose beyond the encounter itself.</p>
-      <p>It became a cultural phenomenon almost immediately, peaked around 2010–2011, then spent much of the following decade battling the reputation consequences of early moderation failures. A significant relaunch effort in the early 2020s improved moderation substantially, and the platform absorbed a large wave of displaced Omegle users after Omegle's 2023 shutdown.</p>
-      <p>As of 2026, Chatroulette operates globally, requires no account for basic use, and processes millions of video connections daily.</p>
+      <h2>What Chatroulette Is in 2026</h2>
+      <p>Chatroulette launched in 2009, created by then-17-year-old Russian developer Andrey Ternovskiy. The concept was radical in its simplicity: click a button, connect to a random stranger over live video. No profile, no filtering, no purpose beyond the encounter itself. The idea spread virally, landed in the mainstream press, and for a brief period in 2010 and 2011, was one of the most-discussed internet properties in the world.</p>
+      <p>Then the moderation failures set in. The platform became synonymous with a specific kind of bad behavior, and a large percentage of its user base drifted away or moved to alternatives. Chatroulette spent the better part of a decade trying to repair that reputation through successive moderation overhauls.</p>
+      <p>The story of Chatroulette in 2026 is, surprisingly, a comeback story. The platform absorbed a massive influx of traffic after Omegle's landmark shutdown in November 2023—Omegle's closure displaced millions of daily users who needed somewhere to go, and Chatroulette was one of the primary beneficiaries. As of 2026, it processes millions of video connections daily and remains one of the top five random video chat platforms by traffic globally.</p>
+      <p>But being widely visited and being right for you are different questions. The rest of this review answers the second one.</p>
+    </section>
+
+    <section id="history">
+      <h2>From 2009 to Now: The Arc</h2>
+      <p>Understanding where Chatroulette is requires knowing where it's been. The platform's history divides into roughly four phases:</p>
+      <h3>Phase 1: Viral launch (2009–2011)</h3>
+      <p>The concept was genuinely novel. Video calling stranger-to-stranger with a single click had never existed at consumer scale. Traffic exploded within weeks of launch. At its 2010 peak, Chatroulette was handling over 1.5 million daily sessions. It generated think-pieces in The New York Times, appearances in mainstream media, and more cultural references than almost any tech product of its era.</p>
+      <h3>Phase 2: Reputation collapse (2011–2017)</h3>
+      <p>The moderation infrastructure never kept pace with user volume. The platform became notorious for explicit content and bad-faith users. A significant fraction of mainstream users left. Traffic plummeted. Chatroulette became a cautionary tale in internet product circles about what happens when growth outruns community management.</p>
+      <h3>Phase 3: Rebuilding (2018–2023)</h3>
+      <p>Multiple moderation overhauls were introduced during this period. AI-powered content detection, face requirement enforcement, and updated reporting systems were all implemented. User volumes never returned to early peaks, but the platform stabilized and the moderation reputation began to improve. The user base became more intentional—people who specifically wanted Chatroulette rather than those who didn't know the alternatives.</p>
+      <h3>Phase 4: Post-Omegle era (2023–present)</h3>
+      <p>Omegle's 2023 shutdown was the largest single redistribution of random video chat users in the space's history. Chatroulette, as one of the oldest and most recognized platforms, captured a substantial share of that displaced traffic. As of early 2026, the platform is larger than it has been in years and actively investing in infrastructure to manage the load. Whether the moderation quality has scaled with the user growth is a legitimate open question.</p>
     </section>
 
     <section id="features">
-      <h2>Features and interface</h2>
-      <ul>
-        <li><strong>Core format:</strong> Instant random video-to-video connection with a stranger. No setup required.</li>
-        <li><strong>Next/skip:</strong> Move to the next random user with a single click or keyboard shortcut</li>
-        <li><strong>Text chat:</strong> Basic text overlay during video sessions</li>
-        <li><strong>Premium features:</strong> Optional subscription adds face filters, gender and country filters, and other customisation</li>
-        <li><strong>No games:</strong> No built-in interactive games or structured activities</li>
-        <li><strong>Anonymous access:</strong> No account required for basic use. Premium requires registration.</li>
-        <li><strong>Global:</strong> Available virtually worldwide, no significant geo-restrictions for basic access</li>
-      </ul>
+      <h2>Features and Interface</h2>
+      <p>Chatroulette's interface has always prioritized simplicity. The current version maintains that philosophy while adding optional layers for paying users.</p>
+
+      <div class="feature-grid">
+        <div class="feature-card has">
+          <div class="feature-card-title">Instant Random Video</div>
+          <p>Core format unchanged from 2009: click connect, get a random stranger on camera. No setup, no account required for basic use. The zero-friction entry remains the platform's strongest feature.</p>
+        </div>
+        <div class="feature-card has">
+          <div class="feature-card-title">Skip / Next</div>
+          <p>Single click or keyboard shortcut to skip to the next user. This is the foundational UX of the format and Chatroulette's implementation is clean and responsive.</p>
+        </div>
+        <div class="feature-card has">
+          <div class="feature-card-title">Text Chat Overlay</div>
+          <p>Basic text chat runs alongside the video feed. Useful for exchanging links or text when audio is poor. No formatting, no persistent history.</p>
+        </div>
+        <div class="feature-card partial-feat">
+          <div class="feature-card-title">Premium Filters</div>
+          <p>Gender and country filters, face filters, and other customization require a paid subscription. The free tier has no filtering—fully random. Premium pricing is not publicly fixed; check the current site.</p>
+        </div>
+        <div class="feature-card partial-feat">
+          <div class="feature-card-title">Moderation</div>
+          <p>AI content detection is active in real time. Face requirement is enforced algorithmically. Reporting exists. Not perfect—see the moderation section—but meaningfully better than the early platform.</p>
+        </div>
+        <div class="feature-card lacks">
+          <div class="feature-card-title">No Games</div>
+          <p>No built-in games, structured activities, or session scaffolding of any kind. Sessions are purely unstructured video conversations with a stranger. You provide all the content.</p>
+        </div>
+        <div class="feature-card lacks">
+          <div class="feature-card-title">No Age Verification</div>
+          <p>Self-declared 18+ on account creation if you create an account. No hard ID verification for anonymous free access. The actual age distribution of users is not publicly verified or disclosed.</p>
+        </div>
+        <div class="feature-card lacks">
+          <div class="feature-card-title">No Wagering Layer</div>
+          <p>Chatroulette does not support any form of in-session tokens, wagering, or stakes. It is a pure video connection platform with no interactive game economy.</p>
+        </div>
+      </div>
+
+      <h3>Interface quality assessment</h3>
+      <p>The Chatroulette interface in 2026 is cleaner than its earlier versions. The core match flow—connect, see stranger, skip or stay—works well. The addition of premium features has created some friction on the free experience: subtle prompts to upgrade are present but not so aggressive as to be unusable. Connection quality depends heavily on individual internet connections; the platform itself does not appear to prioritize connection quality in matchmaking.</p>
+      <p>Mobile access exists but the experience is optimized for desktop. The camera and video engine is WebRTC-based, consistent with every major platform in the space. There is no discernible performance advantage or disadvantage versus competitors using the same technology stack.</p>
     </section>
 
     <section id="moderation">
-      <h2>Moderation and safety</h2>
-      <p>Chatroulette's moderation situation is significantly improved from its early years but still imperfect:</p>
-      <ul>
-        <li><strong>AI content detection:</strong> Implemented to detect and remove NSFW content in real time. The system has reduced explicit content substantially from peak levels.</li>
-        <li><strong>Face requirement:</strong> The platform has periodically required visible face in frame—this reduces the anonymous "just genitals" session that defined its early reputation. Enforcement is algorithmic and imperfect.</li>
-        <li><strong>Age verification:</strong> Self-declared 18+ on account creation (if creating an account). No hard ID verification for anonymous access. The actual age distribution is unverified.</li>
-        <li><strong>Reporting:</strong> In-session report functionality exists. Response time and action are not publicly disclosed.</li>
-        <li><strong>Bots:</strong> Some bot activity is reported by users, primarily accounts promoting external platforms.</li>
-      </ul>
-      <p>The honest summary: Chatroulette is safer than its early reputation suggests, but it is not safe in the way that an age-verified, account-required platform is safe. Open anonymous access means anyone can connect, including people whose intentions are bad.</p>
+      <h2>Moderation Scores and Safety</h2>
+      <p>Chatroulette's moderation is the most frequently discussed aspect of the platform—both in its failures (historically) and its improvements (current). Here is an honest assessment across several dimensions, scored relative to best-in-class for each category.</p>
+
+      <div class="score-bars">
+        <div class="score-bars-title">Chatroulette Moderation Assessment (2026)</div>
+
+        <div class="score-section-label">Content Safety</div>
+        <div class="score-bar-row">
+          <div class="score-bar-label">NSFW Detection</div>
+          <div class="score-bar-track"><div class="score-bar-fill mid" style="width:68%"></div></div>
+          <div class="score-bar-value">68</div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label">Bot Filtering</div>
+          <div class="score-bar-track"><div class="score-bar-fill low" style="width:44%"></div></div>
+          <div class="score-bar-value">44</div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label">Harassment Response</div>
+          <div class="score-bar-track"><div class="score-bar-fill mid" style="width:52%"></div></div>
+          <div class="score-bar-value">52</div>
+        </div>
+
+        <div class="score-section-label">Identity & Age</div>
+        <div class="score-bar-row">
+          <div class="score-bar-label">Age Verification</div>
+          <div class="score-bar-track"><div class="score-bar-fill low" style="width:18%"></div></div>
+          <div class="score-bar-value">18</div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label">Identity Accountability</div>
+          <div class="score-bar-track"><div class="score-bar-fill low" style="width:22%"></div></div>
+          <div class="score-bar-value">22</div>
+        </div>
+
+        <div class="score-section-label">Platform Experience</div>
+        <div class="score-bar-row">
+          <div class="score-bar-label">Consistency</div>
+          <div class="score-bar-track"><div class="score-bar-fill mid" style="width:58%"></div></div>
+          <div class="score-bar-value">58</div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label">Reporting Efficacy</div>
+          <div class="score-bar-track"><div class="score-bar-fill mid" style="width:50%"></div></div>
+          <div class="score-bar-value">50</div>
+        </div>
+      </div>
+
+      <p>These scores are editorial estimates based on publicly observable behavior, community reports, and platform disclosures—not internal data. They reflect a platform that is substantially better than its 2010–2015 self, but still limited by the fundamental tension between anonymous access and meaningful moderation.</p>
+
+      <h3>The core tension: anonymity vs. accountability</h3>
+      <p>Every moderation challenge on Chatroulette traces back to one structural fact: anonymous users bear minimal cost for bad behavior. A user who is banned can typically reconnect within minutes without an account. Without meaningful identity accountability—whether through verified age, account history, or behavioral scoring tied to a persistent identity—moderation is always reactive rather than preventive.</p>
+      <p>The AI content detection is real and has improved. But AI detection identifies explicit content after it appears; it does not prevent bad-faith users from being present in the pool. The honest reality is that Chatroulette's moderation is good enough to be usable for many adults but is not comprehensive in the way that a fully identity-verified platform would be.</p>
+
+      <h3>Bot activity</h3>
+      <p>Bot accounts promoting external platforms (typically adult content or gambling sites) are a known issue on Chatroulette and reported regularly by users. These typically appear as accounts that either show pre-recorded video or quickly redirect to external links via the text chat. The platform's bot filtering has improved but has not eliminated this category of bad actor. Users should treat any session that rapidly pivots to an external link with suspicion.</p>
+
+      <h3>Age verification reality</h3>
+      <p>The stated minimum age on Chatroulette is 18. The enforcement mechanism for anonymous free users is none. Users who create accounts self-declare their age without verification. For a platform where anyone can connect anonymously, the 18+ policy is essentially a terms of service provision rather than a technical constraint. This is a meaningful distinction for US adults who care about the age composition of the matching pool.</p>
     </section>
 
     <section id="who-for">
-      <h2>Who Chatroulette is for</h2>
-      <p>Chatroulette works best for:</p>
-      <ul>
-        <li><strong>Users who want global, zero-friction randomness.</strong> No account, no setup, maximum spontaneity. If that's the priority, Chatroulette delivers it better than any alternative.</li>
-        <li><strong>Users comfortable with an uncontrolled environment.</strong> The lack of age verification and anonymous access means the matching pool is broad and unpredictable. Some users prefer this; others don't.</li>
-        <li><strong>Users who don't need a structured activity.</strong> If you're comfortable carrying a conversation with a stranger without any scaffold, Chatroulette is sufficient.</li>
-        <li><strong>International users who want global reach.</strong> No geographic restriction makes it genuinely useful for connecting across borders.</li>
-      </ul>
+      <h2>Who Chatroulette Is For</h2>
+      <p>Chatroulette works best for a specific type of user. That user values some things highly and doesn't need others at all.</p>
+
+      <h3>Good fit: Global zero-friction randomness</h3>
+      <p>No platform offers faster access to a random stranger video connection. No account, no setup, no age gate for basic access—just connect. If your priority is maximum spontaneity and global reach, Chatroulette delivers this better than any alternative with meaningful moderation. The trade-off is that the matching pool includes unverified users of unknown age and intent.</p>
+
+      <h3>Good fit: International users</h3>
+      <p>Chatroulette operates with virtually no geographic restrictions. You can connect with users from Europe, Asia, South America, and every other region without filters or barriers. For users who specifically want cross-cultural encounters—language practice, meeting people from different countries, genuine global randomness—Chatroulette's geographic breadth is a meaningful advantage.</p>
+
+      <h3>Good fit: Users comfortable with unstructured encounters</h3>
+      <p>A Chatroulette session is whatever you make it. There is no game, no structure, no suggested agenda. If you're the kind of person who can carry an interesting conversation with a complete stranger using nothing but charm and improvisation, Chatroulette is a fine environment. The lack of structure is a feature, not a bug, for this user type.</p>
+
+      <h3>Poor fit: Adults who want accountability</h3>
+      <p>If you're bothered by the absence of age verification, the presence of bots, and the inconsistency of moderation, Chatroulette will frustrate you. There is no way to increase accountability within the platform—it is structurally anonymous by default. For US adults who specifically want to interact only with other verified adults, Chatroulette cannot provide that guarantee.</p>
+
+      <h3>Poor fit: Users who want games or stakes</h3>
+      <p>There is nothing to do on Chatroulette except talk. No games, no structured activities, no optional wagering. If you find unstructured stranger conversations awkward or prefer having something to do with your hands and attention during an encounter, Chatroulette provides no solution to that problem.</p>
     </section>
 
     <section id="pros-cons">
-      <h2>Pros and cons</h2>
-      <h3>Pros</h3>
-      <ul>
-        <li>Zero friction—no account required</li>
-        <li>Global user base = maximum matching pool size</li>
-        <li>Improved moderation vs. early years</li>
-        <li>Established brand, widely recognised</li>
-        <li>Free basic access</li>
-      </ul>
-      <h3>Cons</h3>
-      <ul>
-        <li>No games or structured activity layer</li>
-        <li>No hard age verification</li>
-        <li>Sessions have no arc—they're just "talk until you don't"</li>
-        <li>Bot activity reported by users</li>
-        <li>Inconsistent moderation despite improvements</li>
-        <li>No stake/wagering component for adults who want that</li>
-        <li>Premium features feel like friction on the free product</li>
-      </ul>
+      <h2>Pros and Cons</h2>
+      <div class="pros-cons-grid">
+        <div class="pros-col">
+          <h3>Pros</h3>
+          <ul>
+            <li>Zero friction — no account required for basic use</li>
+            <li>Global user base — maximum matching pool size</li>
+            <li>AI moderation substantially better than early years</li>
+            <li>Established brand, widely recognized and trusted at a surface level</li>
+            <li>Free basic access indefinitely</li>
+            <li>Fast connection matching — low latency to next session</li>
+            <li>No geographic restriction for basic access</li>
+            <li>Text chat alongside video for added communication options</li>
+          </ul>
+        </div>
+        <div class="cons-col">
+          <h3>Cons</h3>
+          <ul>
+            <li>No games or structured activity layer whatsoever</li>
+            <li>No hard age verification for anonymous access</li>
+            <li>Session arc is entirely user-created — high friction for low-confidence socializers</li>
+            <li>Bot activity reported consistently by users</li>
+            <li>Moderation is inconsistent, especially during high-traffic periods</li>
+            <li>Premium features are paywalled in a way that feels like friction on free use</li>
+            <li>No wagering or token system for adults who want stakes</li>
+            <li>No persistent account features (history, favorites, preferences) on free tier</li>
+            <li>Reputation baggage still exists, even if the product has improved</li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <section id="vs-shitbox">
-      <h2>How Chatroulette compares to Shitbox Shuffle</h2>
-      <p>The two platforms serve different use cases:</p>
-      <ul>
-        <li><strong>Chatroulette:</strong> Global, anonymous, unstructured, free entry, no games, no stakes</li>
-        <li><strong>Shitbox Shuffle:</strong> US-only, age-verified, structured (games built in), token wagering optional, account required</li>
-      </ul>
-      <p>If you're a US adult who wants to do something during a stranger encounter—play a game, put something on the line—Chatroulette doesn't offer that. Shitbox Shuffle does. If you want instant global random encounters without friction, Chatroulette is faster to access than any account-required platform.</p>
-      <p>They're not really competing for the same user in most cases.</p>
+      <h2>Feature-by-Feature vs. Shitbox Shuffle</h2>
+      <p>The two platforms serve fundamentally different use cases, but many users searching for a Chatroulette alternative in 2026 will encounter Shitbox Shuffle. Here is a direct comparison across the dimensions that matter most to adults.</p>
+
+      <div class="compare-table-wrap">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Chatroulette</th>
+              <th class="highlight-col">Shitbox Shuffle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feature-label">Age verification</td>
+              <td><span class="cross">✗</span> Self-declared only</td>
+              <td class="highlight-col"><span class="check">✓</span> Hard ID verification</td>
+            </tr>
+            <tr>
+              <td class="feature-label">Account required</td>
+              <td><span class="partial">~</span> Optional (free tier)</td>
+              <td class="highlight-col"><span class="check">✓</span> Required</td>
+            </tr>
+            <tr>
+              <td class="feature-label">Built-in games</td>
+              <td><span class="cross">✗</span> None</td>
+              <td class="highlight-col"><span class="check">✓</span> Multiple games</td>
+            </tr>
+            <tr>
+              <td class="feature-label">Token wagering</td>
+              <td><span class="cross">✗</span> None</td>
+              <td class="highlight-col"><span class="check">✓</span> Optional in-session</td>
+            </tr>
+            <tr>
+              <td class="feature-label">Geographic availability</td>
+              <td><span class="check">✓</span> Global</td>
+              <td class="highlight-col"><span class="partial">~</span> US only</td>
+            </tr>
+            <tr>
+              <td class="feature-label">Free basic access</td>
+              <td><span class="check">✓</span> Yes</td>
+              <td class="highlight-col"><span class="partial">~</span> Free tier available</td>
+            </tr>
+            <tr>
+              <td class="feature-label">AI content moderation</td>
+              <td><span class="partial">~</span> Active but imperfect</td>
+              <td class="highlight-col"><span class="check">✓</span> Active</td>
+            </tr>
+            <tr>
+              <td class="feature-label">Matching pool accountability</td>
+              <td><span class="cross">✗</span> Anonymous users</td>
+              <td class="highlight-col"><span class="check">✓</span> Verified adults only</td>
+            </tr>
+            <tr>
+              <td class="feature-label">Session structure</td>
+              <td><span class="cross">✗</span> Fully unstructured</td>
+              <td class="highlight-col"><span class="check">✓</span> Game-driven structure</td>
+            </tr>
+            <tr>
+              <td class="feature-label">Mobile app</td>
+              <td><span class="partial">~</span> Variable availability</td>
+              <td class="highlight-col"><span class="partial">~</span> Browser-based</td>
+            </tr>
+            <tr>
+              <td class="feature-label">International access</td>
+              <td><span class="check">✓</span> Unrestricted</td>
+              <td class="highlight-col"><span class="cross">✗</span> US only</td>
+            </tr>
+            <tr>
+              <td class="feature-label">Responsible gaming tools</td>
+              <td><span class="cross">✗</span> Not applicable</td>
+              <td class="highlight-col"><span class="check">✓</span> Limits, self-exclusion</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The pattern in the table is clear: Chatroulette wins on global reach and zero-friction access. Shitbox Shuffle wins on every accountability and structure dimension. These are not competing for the same user in the same moment. A US adult who wants to play a game with optional stakes against a verified stranger does not have a meaningful reason to use Chatroulette. A non-US user who wants instant anonymous random video has no choice but to use something else anyway, since Shitbox Shuffle is US-only.</p>
+    </section>
+
+    <section id="alternatives">
+      <h2>Other Alternatives in 2026</h2>
+      <p>The random video chat space has consolidated significantly since Omegle's 2023 shutdown. The main platforms that absorb searches for "Chatroulette alternative" in 2026 are:</p>
+
+      <h3>OmeTV</h3>
+      <p>OmeTV positions itself as a safer Chatroulette alternative with gender filtering available on its free tier (a point of differentiation). Moderation quality is comparable to Chatroulette. The platform has invested more heavily in mobile with an app that has consistent App Store and Google Play availability. Global reach similar to Chatroulette. No games. No age verification beyond self-declaration.</p>
+
+      <h3>Azar</h3>
+      <p>Azar emphasizes global connection with language pairing features. The platform has a larger user base in Asia and Europe than North America. Has implemented more robust identity features than Chatroulette. Translation features are genuinely useful for cross-language encounters. No games or wagering.</p>
+
+      <h3>Monkey</h3>
+      <p>Monkey markets itself as a video chat app with a younger demographic positioning. Has been App Store featured. The random video format plus add-friend functionality creates a different session dynamic than pure Chatroulette-style encounters. Worth noting for its approach to post-session connection.</p>
+
+      <h3>Shitbox Shuffle</h3>
+      <p>The most distinct alternative: US only, verified adult users, games built into every session, optional token wagering. The use case is fundamentally different from the above platforms—not global random chat, but adult-verified game-driven stranger encounters with optional stakes. If this sounds like what you want rather than unstructured global chat, <a href="https://shitboxshuffle.com">Shitbox Shuffle</a> is purpose-built for that.</p>
+
+      <p>See our full comparison: <a href="shitbox-shuffle-vs-chatroulette-vs-ometv.html">Shitbox Shuffle vs Chatroulette vs OmeTV</a>.</p>
     </section>
 
     <section id="verdict">
       <h2>Verdict</h2>
-      <p>Chatroulette is a reliable, improved version of its original self—still the best product for global, zero-friction stranger encounters. It is not, however, suitable as a primary platform for adults who want structure, accountability, or stakes in their sessions.</p>
-      <p>For US adults specifically, the choice between Chatroulette (global, anonymous, no games) and Shitbox Shuffle (US, verified, games + stakes) is really a question of what you're looking for. Both platforms exist for a reason. They just serve different intentions.</p>
+      <div class="verdict-box">
+        <div class="verdict-label">Bottom Line</div>
+        <p>Chatroulette is a reliable, substantially improved version of its original self—still the best product for global, zero-friction stranger video encounters in 2026. It is not, however, suitable as a primary platform for adults who want structure, accountability, guaranteed age verification, or any form of stakes in their sessions.</p>
+      </div>
+
+      <p>The platform has genuinely improved its moderation story from its nadir a decade ago. AI content detection works. The face requirement reduces one specific category of abuse. The reporting system exists. But the structural fact of anonymous access—no account required, no ID check—means that improvement has limits that cannot be overcome without changing the core access model.</p>
+
+      <p>For US adults specifically, the decision between Chatroulette and Shitbox Shuffle is not really a close call if you care about knowing the person you're matched with is a verified adult. Chatroulette cannot make that guarantee. If you don't care about that—you just want fast global randomness with maximum spontaneity—Chatroulette is the right tool.</p>
+
+      <p>The honest summary for 2026: Chatroulette is worth using if it fits your use case. Understand the limitations before you start, use the report function freely, and don't share personal information. It remains one of the most interesting products in the random video chat space, even if "interesting" sometimes means "unpredictable."</p>
+
+      <p>For adults who want something built specifically around structure, age verification, and the option to put something on the line, the platform to try is <a href="https://shitboxshuffle.com">Shitbox Shuffle</a>.</p>
     </section>
 
     <section id="faq">
       <h2>FAQ</h2>
       <div class="faq-item">
+        <h3>Is Chatroulette still active in 2026?</h3>
+        <p>Yes. Chatroulette relaunched with improved moderation in the early 2020s and remains one of the most visited random video chat platforms globally. It absorbed significant traffic after Omegle's shutdown in late 2023 and as of 2026 is processing millions of connections daily.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Is Chatroulette safe?</h3>
+        <p>Safer than its early reputation, but not safe in the way a fully verified platform is. AI content detection has reduced explicit content substantially. However, anonymous access means anyone can connect, the actual age distribution is unverified, and bot activity persists. Use it with realistic expectations about the matching pool.</p>
+      </div>
+      <div class="faq-item">
         <h3>Is Chatroulette free?</h3>
-        <p>Basic access is free with no account required. Premium features (filters, face filters, gender/country selection) require an account and subscription.</p>
+        <p>Basic access is free with no account required. Premium features—including gender and country filters, face filters, and other customization options—require a paid subscription account. Check the current site for pricing, which can change.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Does Chatroulette have games?</h3>
+        <p>No. Chatroulette does not offer built-in games, structured activities, or any interactive game layer. Sessions are purely unstructured video conversations. Platforms like Shitbox Shuffle are purpose-built to add games and optional wagering to stranger video encounters.</p>
+      </div>
+      <div class="faq-item">
+        <h3>What is the best Chatroulette alternative in 2026?</h3>
+        <p>It depends on what you want. For US adults who want structured games and optional token wagering with verified adult strangers, Shitbox Shuffle is the most distinct alternative. For global random video with slightly better moderation than early Chatroulette, OmeTV is the most commonly cited. For cross-language encounters, Azar. See our <a href="best-omegle-alternatives-2026.html">full alternatives guide</a>.</p>
       </div>
       <div class="faq-item">
         <h3>How do I stay safe on Chatroulette?</h3>
-        <p>Follow standard random video chat safety practices: don't share personal information, treat anything on-camera as potentially recorded, use the report function for bad actors. See our <a href="random-video-chat-safety-privacy-guide.html">full safety guide</a>.</p>
+        <p>Follow standard random video chat safety: don't share personal information (real name, city, employer, social handles), assume anything on camera can be recorded and act accordingly, use the in-session report function for bad actors, and trust your instincts. If a session feels off, skip without obligation. See our <a href="random-video-chat-safety-privacy-guide.html">full safety guide</a>.</p>
       </div>
       <div class="faq-item">
-        <h3>Is there a Chatroulette app?</h3>
-        <p>Chatroulette has had mobile apps at various points. Check the App Store or Google Play for current availability—app availability can change.</p>
+        <h3>Is there a Chatroulette mobile app?</h3>
+        <p>Chatroulette has had mobile apps at various points, with availability changing over time due to App Store and Play Store policy compliance requirements. Check the App Store and Google Play for current availability—this changes more frequently than desktop access.</p>
       </div>
     </section>
 
     <div class="article-cta">
-      <p>Want games and stakes with your stranger encounter? <a href="../shitboxshuffle.html" class="btn-primary">Try Shitbox Shuffle — 18+ US adults only</a></p>
+      <p>Want games and stakes with your stranger encounter? Join the only platform built for verified US adults who want to put something on the line.</p>
+      <a href="https://shitboxshuffle.com" class="btn-primary">Try Shitbox Shuffle — 18+ US Adults Only</a>
     </div>
 
-    <nav class="article-nav-links" aria-label="Related articles">
-      <h3>Related reading</h3>
-      <ul>
-        <li><a href="shitbox-shuffle-vs-chatroulette-vs-ometv.html">Shitbox Shuffle vs Chatroulette vs OmeTV: full comparison</a></li>
-        <li><a href="ometv-review-2026.html">OmeTV Review 2026</a></li>
-        <li><a href="best-omegle-alternatives-2026.html">Best Omegle alternatives 2026</a></li>
-        <li><a href="random-video-chat-safety-privacy-guide.html">Random video chat safety guide</a></li>
-      </ul>
-    </nav>
+    <div class="disclaimer">
+      Must be 18+. If you or someone you know has a gambling problem, call 1-800-522-4700.
+    </div>
+
+    <div class="continue-reading">
+      <h3>Continue Reading</h3>
+      <div class="continue-cards">
+        <a class="continue-card" href="shitbox-shuffle-vs-chatroulette-vs-ometv.html">
+          <div class="continue-card-label">Platform Comparison</div>
+          <div class="continue-card-title">Shitbox Shuffle vs Chatroulette vs OmeTV: Full 2026 Comparison</div>
+        </a>
+        <a class="continue-card" href="best-omegle-alternatives-2026.html">
+          <div class="continue-card-label">Alternatives Guide</div>
+          <div class="continue-card-title">Best Omegle Alternatives in 2026</div>
+        </a>
+        <a class="continue-card" href="random-video-chat-safety-privacy-guide.html">
+          <div class="continue-card-label">Safety Guide</div>
+          <div class="continue-card-title">Random Video Chat Safety and Privacy: Complete Guide</div>
+        </a>
+      </div>
+    </div>
   </article>
 </div>
 
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-links footer-links-row">
+    <div class="footer-links">
       <a href="../terms.html">Terms</a>
       <a href="../privacy.html">Privacy</a>
       <a href="../responsible-gaming.html">Responsible Gaming</a>
       <a href="../support.html">Support</a>
       <a href="index.html">Blog</a>
     </div>
-    <p class="footer-copy">© 2025 Shitbox Shuffle. For entertainment. US adults 18+ only.</p>
+    <p class="footer-copy">© 2026 Shitbox Shuffle. For entertainment. US adults 18+ only.</p>
   </div>
 </footer>
 </body>
