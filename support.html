@@ -375,14 +375,32 @@ footer {
 }
 
 @media (max-width: 768px) {
-  nav { height: 60px; }
-  .nav-logo { padding: 0 20px; }
-  .nav-enter { padding: 0 24px; font-size: 12px; }
-  .page-wrap { padding: 110px 24px 80px; }
+  nav { height: 52px; }
+  .nav-logo { padding: 0 14px; }
+  .logo-text { font-size: clamp(11px, 3vw, 15px); letter-spacing: 0.1em; }
+  .nav-enter { padding: 0 16px; font-size: 11px; letter-spacing: 0.14em; }
+  .page-wrap { padding: 88px clamp(12px, 3.5vw, 20px) 56px; max-width: 100%; }
+  .page-overline { font-size: 9px; letter-spacing: 0.38em; margin-bottom: 14px; gap: 10px; }
+  .page-overline::before { width: 28px; }
+  h1 { font-size: clamp(28px, 8vw, 48px); margin-bottom: 12px; }
+  .page-sub { font-size: 14px; margin-bottom: 36px; padding-bottom: 28px; line-height: 1.65; }
+  .gold-divider { margin-bottom: 36px; }
+  .faq-question { font-size: 14px; padding: 18px 0; gap: 12px; }
+  .faq-answer p { font-size: 13px; padding-bottom: 18px; line-height: 1.75; }
+  .contact-block { padding: 22px clamp(14px, 3vw, 20px); margin-top: 48px; }
+  .contact-block h2 { font-size: 22px; letter-spacing: 0.12em; }
+  .contact-block p { font-size: 13px; margin-bottom: 20px; }
+  .form-group input, .form-group select, .form-group textarea { font-size: 13px; padding: 12px 14px; }
+  .btn-submit { padding: 14px 32px; font-size: 13px; letter-spacing: 0.16em; }
   .form-row { grid-template-columns: 1fr; }
-  .contact-block { padding: 28px 24px; }
-  footer { flex-direction: column; text-align: center; padding: 32px 24px; }
-  .footer-links { justify-content: center; }
+  footer { flex-direction: column; text-align: center; padding: 24px clamp(12px, 3.5vw, 20px); gap: 12px; }
+  .footer-links { justify-content: center; flex-wrap: wrap; gap: 12px 20px; }
+}
+
+@media (max-width: 480px) {
+  .page-wrap { padding: 80px 10px 48px; }
+  h1 { font-size: clamp(24px, 7.5vw, 36px); }
+  .page-sub { font-size: 13px; margin-bottom: 28px; }
 }
 </style>
 
