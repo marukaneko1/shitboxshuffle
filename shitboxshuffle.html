@@ -100,7 +100,11 @@ nav {
   will-change: width; z-index: 10;
 }
 /* Inner stays 420px wide while panel width is 0 — overflow can sit over the hero and steal all clicks */
-.member-panel:not(.is-open) { pointer-events: none; }
+/* Parent pointer-events:none does not block descendants — closed sidebar inner (420px) can still steal clicks over the hero */
+.member-panel:not(.is-open),
+.member-panel:not(.is-open) * {
+  pointer-events: none !important;
+}
 .member-panel.is-open { pointer-events: auto; border-right-color: var(--border); }
 .member-panel-inner {
   width: var(--sidebar-w); min-width: var(--sidebar-w);
@@ -181,6 +185,8 @@ nav {
   overflow: hidden; background: rgba(8,7,10,0.95);
   border-bottom: 1px solid var(--border);
   will-change: height;
+  /* Sticky + full-height stacks above .games-section; without this, the hero captures all clicks on the deck below */
+  pointer-events: none;
 }
 .suit-background { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 .suit-grid {
@@ -227,6 +233,7 @@ nav {
   position: relative; z-index: 3;
   display: flex; flex-direction: column;
   flex: 1; min-height: 0;
+  pointer-events: auto;
 }
 
 
@@ -370,7 +377,12 @@ nav {
 .chip-stats .stat-sep { color: rgba(201,162,39,0.2); }
 
 /* ── GAME CARDS ────────────────────────────── */
-.games-section { background: var(--surface); border-bottom: 1px solid var(--border); }
+.games-section {
+  position: relative;
+  z-index: 6;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
 .games-header { display: flex; justify-content: space-between; align-items: baseline; padding: 40px 64px 24px; }
 .games-title { font-family: 'Cormorant Garamond',serif; font-size: 28px; font-weight: 700; color: var(--ivory); }
 .games-count { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-dim); }
@@ -542,7 +554,16 @@ nav {
 .login-tab:focus-visible { outline:1px solid rgba(201,162,39,0.4);outline-offset:2px; }
 
 /* ── FOOTER ──────────────────────────────── */
-footer { border-top: 1px solid var(--border); padding: 18px 64px; display: flex; align-items: center; justify-content: space-between; background: rgba(14,13,18,0.98); }
+footer {
+  position: relative;
+  z-index: 6;
+  border-top: 1px solid var(--border);
+  padding: 18px 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(14,13,18,0.98);
+}
 .footer-copy { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ivory-20); }
 .footer-links { display: flex; }
 .footer-links a { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ivory-20); text-decoration: none; padding: 0 18px; border-right: 1px solid var(--border); transition: color 0.25s; }
