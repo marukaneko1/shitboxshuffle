@@ -83,7 +83,7 @@ nav {
 .marquee-item .suit { color: var(--gold); font-size: 11px; opacity: 0.7; }
 .marquee-item.accent { color: var(--gold); opacity: 0.8; }
 .nav-actions { display: flex; align-items: stretch; flex-shrink: 0; position: relative; z-index: 3; pointer-events: auto; }
-.nav-btn { display: flex; align-items: center; padding: 0 34px; font-family: 'Bebas Neue',sans-serif; font-size: 15px; letter-spacing: 0.12em; cursor: pointer; border: none; transition: all 0.25s; border-left: 1px solid var(--border); }
+.nav-btn { display: flex; align-items: center; padding: 0 34px; font-family: 'Bebas Neue',sans-serif; font-size: 15px; letter-spacing: 0.12em; cursor: pointer; border: none; transition: all 0.25s; border-left: 1px solid var(--border); touch-action: manipulation; -webkit-tap-highlight-color: rgba(201,162,39,0.15); pointer-events: auto; position: relative; z-index: 4; }
 .nav-btn.ghost { background: transparent; color: var(--ivory-40); }
 .nav-btn.ghost:hover { background: var(--ivory-05); color: var(--ivory); }
 .nav-btn.solid { background: var(--gold); color: var(--void); }
@@ -98,14 +98,10 @@ nav {
   position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h));
   border-right: 1px solid transparent; background: rgba(14,13,18,0.98);
   will-change: width; z-index: 10;
+  contain: paint;
+  pointer-events: none;
 }
-/* Inner stays 420px wide while panel width is 0 — overflow can sit over the hero and steal all clicks */
-/* Parent pointer-events:none does not block descendants — closed sidebar inner (420px) can still steal clicks over the hero */
-.member-panel:not(.is-open),
-.member-panel:not(.is-open) * {
-  pointer-events: none !important;
-}
-.member-panel.is-open { pointer-events: auto; border-right-color: var(--border); }
+.member-panel.is-open { pointer-events: auto; border-right-color: var(--border); contain: none; }
 .member-panel-inner {
   width: var(--sidebar-w); min-width: var(--sidebar-w);
   display: flex; flex-direction: column; height: 100%;
@@ -150,7 +146,7 @@ nav {
 .tile-value.active { color: #34d399; text-shadow: 0 0 10px rgba(52,211,153,0.6); }
 
 .cta-section { padding: 0 24px 20px; position: relative; z-index: 1; }
-.cta-button { width: 100%; padding: 16px; border: none; border-radius: 6px; background: var(--gold); color: var(--void); font-family: 'Bebas Neue',sans-serif; font-size: 16px; letter-spacing: 0.15em; cursor: pointer; transition: all 0.3s; }
+.cta-button { width: 100%; padding: 16px; border: none; border-radius: 6px; background: var(--gold); color: var(--void); font-family: 'Bebas Neue',sans-serif; font-size: 16px; letter-spacing: 0.15em; cursor: pointer; transition: all 0.3s; touch-action: manipulation; }
 .cta-button:hover { background: var(--gold-light); box-shadow: 0 0 30px rgba(201,162,39,0.25); }
 .cta-subtext { text-align: center; font-size: 11px; color: var(--ivory-20); margin-top: 10px; }
 
@@ -342,6 +338,8 @@ nav {
     inset 0 1px 0 rgba(255,255,255,0.2),inset 0 -2px 0 rgba(0,0,0,0.15);
   animation: chipIdle 8s ease-in-out infinite;
   transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), box-shadow 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(201,162,39,0.2);
 }
 @keyframes chipIdle { 0%,100%{transform:rotateY(0) rotateX(0)}15%{transform:rotateY(0) rotateX(0)}25%{transform:rotateY(180deg) rotateX(5deg)}35%{transform:rotateY(360deg) rotateX(0)}50%,100%{transform:rotateY(360deg) rotateX(0)} }
 .chip-button-dash::before { content: ''; position: absolute; inset: 14px; border-radius: 50%; border: 1px dashed rgba(8,7,10,0.25); pointer-events: none; transition: border-color 0.35s ease; }
@@ -439,7 +437,7 @@ nav {
 .gate-step-name { font-size: 15px; font-weight: 500; color: var(--ivory-80); margin-bottom: 2px; }
 .gate-step.completed .gate-step-name { text-decoration: line-through; color: var(--ivory-40); }
 .gate-step-desc { font-size: 12px; color: var(--ivory-40); }
-.gate-step-action { font-family: 'Bebas Neue',sans-serif; font-size: 13px; letter-spacing: 0.12em; color: var(--gold); padding: 6px 18px; border: 1px solid rgba(201,162,39,0.2); border-radius: 3px; cursor: pointer; background: transparent; transition: all 0.25s; flex-shrink: 0; }
+.gate-step-action { font-family: 'Bebas Neue',sans-serif; font-size: 13px; letter-spacing: 0.12em; color: var(--gold); padding: 6px 18px; border: 1px solid rgba(201,162,39,0.2); border-radius: 3px; cursor: pointer; background: transparent; transition: all 0.25s; flex-shrink: 0; touch-action: manipulation; }
 .gate-step-action:hover { background: rgba(201,162,39,0.08); border-color: rgba(201,162,39,0.35); }
 .gate-footer { padding: 16px 32px 24px; text-align: center; border-top: 1px solid var(--border); }
 .gate-footer-text { font-size: 12px; color: var(--ivory-20); }
@@ -642,14 +640,16 @@ footer {
 
 /* ── Room / Shuffle hero — consistent small screens (stack arena, scroll if needed) ── */
 @media (max-width: 960px) {
+  body::before, body::after { display: none; }
   .shuffle-hero {
+    position: relative;
+    top: auto;
     height: auto;
     min-height: calc(100dvh - var(--nav-h));
     min-height: calc(100svh - var(--nav-h));
     max-height: none;
     overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow-y: visible;
   }
   .arena-content {
     flex-direction: column;
@@ -874,8 +874,8 @@ footer {
     <div class="marquee-item"><span class="suit">♠</span> Shuffle Live <span class="suit">♠</span></div><div class="marquee-item accent">The House Is Open</div><div class="marquee-item"><span class="suit">♦</span> 7 Games at the Table <span class="suit">♦</span></div><div class="marquee-item">18 &amp; Over · US Only</div><div class="marquee-item accent"><span class="suit">♣</span> Random 1:1 Matching <span class="suit">♣</span></div><div class="marquee-item">Game Lobby · Open Rooms</div><div class="marquee-item"><span class="suit">♥</span> Shuffle Live <span class="suit">♥</span></div>
   </div></div>
   <div class="nav-actions">
-    <button class="nav-btn ghost" id="navAuthBtn">Log In</button>
-    <button class="nav-btn solid" id="navSignUpBtn">Sign Up</button>
+    <button class="nav-btn ghost" id="navAuthBtn" onclick="if(typeof openLoginModal==='function')openLoginModal()">Log In</button>
+    <button class="nav-btn solid" id="navSignUpBtn" onclick="if(typeof openLoginModal==='function'){openLoginModal();switchTab('register')}">Sign Up</button>
   </div>
 </nav>
 
@@ -1458,21 +1458,33 @@ function expand(){
   if(isExpanded||tweening)return;tweening=true;isExpanded=true;
   panel.classList.add('is-open');
   const tH=Math.max(compactH(),420);
-  const tl=gsap.timeline({onComplete:()=>{tweening=false}});
-  tl.to(panel,{width:420,duration:.5,ease:'power3.inOut'},0);
-  tl.to(panelInner,{opacity:1,duration:.35,ease:'power2.out'},.2);
-  tl.to(hero,{height:tH,duration:.5,ease:'power3.inOut'},0);
-  tl.to(heroWatermark,{fontSize:'180px',duration:.5,ease:'power3.inOut'},0);
+  try {
+    const tl=gsap.timeline({onComplete:()=>{tweening=false}});
+    tl.to(panel,{width:420,duration:.5,ease:'power3.inOut'},0);
+    tl.to(panelInner,{opacity:1,duration:.35,ease:'power2.out'},.2);
+    tl.to(hero,{height:tH,duration:.5,ease:'power3.inOut'},0);
+    tl.to(heroWatermark,{fontSize:'180px',duration:.5,ease:'power3.inOut'},0);
+  } catch(e) {
+    panel.style.width='420px';panelInner.style.opacity='1';
+    hero.style.height=tH+'px';heroWatermark.style.fontSize='180px';
+    tweening=false;
+  }
 }
 
 function collapse(){
   if(!isExpanded||tweening)return;tweening=true;isExpanded=false;
   const fH=window.innerHeight-96;
-  const tl=gsap.timeline({onComplete:()=>{tweening=false;panel.classList.remove('is-open')}});
-  tl.to(panelInner,{opacity:0,duration:.2,ease:'power2.in'},0);
-  tl.to(panel,{width:0,duration:.45,ease:'power3.inOut'},.08);
-  tl.to(hero,{height:fH,duration:.45,ease:'power3.inOut'},.08);
-  tl.to(heroWatermark,{fontSize:'320px',duration:.45,ease:'power3.inOut'},.08);
+  try {
+    const tl=gsap.timeline({onComplete:()=>{tweening=false;panel.classList.remove('is-open')}});
+    tl.to(panelInner,{opacity:0,duration:.2,ease:'power2.in'},0);
+    tl.to(panel,{width:0,duration:.45,ease:'power3.inOut'},.08);
+    tl.to(hero,{height:fH,duration:.45,ease:'power3.inOut'},.08);
+    tl.to(heroWatermark,{fontSize:'320px',duration:.45,ease:'power3.inOut'},.08);
+  } catch(e) {
+    panelInner.style.opacity='0';panel.style.width='0';
+    hero.style.height=fH+'px';heroWatermark.style.fontSize='320px';
+    panel.classList.remove('is-open');tweening=false;
+  }
 }
 
 window.addEventListener('scroll',()=>{const y=window.scrollY;if(y>30&&!isExpanded)expand();else if(y<=5&&isExpanded)collapse()},{passive:true});
