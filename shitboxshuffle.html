@@ -185,8 +185,6 @@ nav {
   overflow: hidden; background: rgba(8,7,10,0.95);
   border-bottom: 1px solid var(--border);
   will-change: height;
-  /* Sticky + full-height stacks above .games-section; without this, the hero captures all clicks on the deck below */
-  pointer-events: none;
 }
 .suit-background { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 .suit-grid {
@@ -233,7 +231,6 @@ nav {
   position: relative; z-index: 3;
   display: flex; flex-direction: column;
   flex: 1; min-height: 0;
-  pointer-events: auto;
 }
 
 
