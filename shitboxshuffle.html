@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="theme-color" content="#08070a">
+<meta name="app-version" content="2026-03-20-v2">
 <title>Shitbox Shuffle — The Room</title>
 <meta name="description" content="Shuffle Live: random 1:1 video matching with games, token play, and your camera. US adults 18+ only. Sign in, place your bet, and match — an Omegle-style experience with real stakes.">
 <link rel="canonical" href="https://shitboxshuffle.com/shitboxshuffle.html">
@@ -424,8 +428,8 @@ nav {
 .masks-anim{position:relative;width:70px;height:44px}.mask{position:absolute;font-size:32px;top:50%;transform:translateY(-50%)}.mask-happy{left:4px;animation:maskSwapHappy 6s ease-in-out infinite}.mask-sad{right:4px;animation:maskSwapSad 6s ease-in-out infinite}@keyframes maskSwapHappy{0%,25%{transform:translateY(-50%) translateX(0)}35%,65%{transform:translateY(-50%) translateX(32px)}75%,100%{transform:translateY(-50%) translateX(0)}}@keyframes maskSwapSad{0%,25%{transform:translateY(-50%) translateX(0)}35%,65%{transform:translateY(-50%) translateX(-32px)}75%,100%{transform:translateY(-50%) translateX(0)}}
 
 /* ── GATE + TOAST ──────────────────────────── */
-.gate-overlay { position: fixed; inset: 0; z-index: 9900; background: rgba(8,7,10,0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s; }
-.gate-overlay.active { opacity: 1; pointer-events: auto; visibility: visible; }
+.gate-overlay { position: fixed; inset: 0; z-index: 9900; background: rgba(8,7,10,0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none !important; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s; }
+.gate-overlay.active { opacity: 1; pointer-events: auto !important; visibility: visible; }
 .gate-card { width: 440px; max-width: 92vw; background: var(--surface-elevated); border: 1px solid rgba(201,162,39,0.12); border-radius: 10px; overflow: hidden; position: relative; transform: translateY(24px) scale(0.97); transition: transform 0.4s cubic-bezier(0.23,1,0.32,1); }
 .gate-overlay.active .gate-card { transform: translateY(0) scale(1); }
 .gate-header { padding: 32px 36px 20px; text-align: center; border-bottom: 1px solid var(--border); }
@@ -455,9 +459,9 @@ nav {
 
 /* ── LOGIN MODAL ─────────────────────────── */
 /* Blur/dim on a separate layer — backdrop-filter on the flex overlay breaks hit-testing on inputs (clicks only register on part of the field) in WebKit/Firefox */
-.login-overlay { position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity 0.35s ease,visibility 0.35s;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(20px,env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch;box-sizing:border-box; }
-.login-overlay.active { opacity:1;pointer-events:auto;visibility:visible; }
-.login-backdrop { position:absolute;inset:0;background:rgba(8,7,10,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:0; }
+.login-overlay { position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none !important;visibility:hidden;transition:opacity 0.35s ease,visibility 0.35s;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(20px,env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch;box-sizing:border-box; }
+.login-overlay.active { opacity:1;pointer-events:auto !important;visibility:visible; }
+.login-backdrop { position:absolute;inset:0;background:rgba(8,7,10,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:0;pointer-events:none; }
 .login-overlay.active .login-backdrop { pointer-events:auto; }
 .login-card {
   width:420px;max-width:92vw;
@@ -473,6 +477,7 @@ nav {
 .login-overlay.active .login-card {
   transform:translateY(0) scale(1) translateZ(0);
   -webkit-transform:translateY(0) scale(1) translateZ(0);
+  pointer-events:auto;
 }
 .login-card::before {
   content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
@@ -571,8 +576,8 @@ footer {
 .footer-links a:hover { color: var(--gold); }
 
 /* ── SHOP MODAL ─────────────────────────────────── */
-.shop-overlay { position:fixed;inset:0;z-index:10200;background:rgba(8,7,10,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity 0.4s ease,visibility 0.4s; }
-.shop-overlay.active { opacity:1;pointer-events:auto;visibility:visible; }
+.shop-overlay { position:fixed;inset:0;z-index:10200;background:rgba(8,7,10,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none !important;visibility:hidden;transition:opacity 0.4s ease,visibility 0.4s; }
+.shop-overlay.active { opacity:1;pointer-events:auto !important;visibility:visible; }
 .shop-modal { width:700px;max-width:96vw;max-height:92vh;overflow-y:auto;background:var(--surface-elevated);border:1px solid rgba(201,162,39,0.14);border-radius:14px;position:relative;transform:translateY(32px) scale(0.96);transition:transform 0.45s cubic-bezier(0.23,1,0.32,1);scrollbar-width:none; }
 .shop-modal::-webkit-scrollbar { display:none; }
 .shop-overlay.active .shop-modal { transform:translateY(0) scale(1); }
@@ -691,8 +696,8 @@ footer {
 }
 
 /* ── SETTINGS MODAL ─────────────────────────── */
-.settings-overlay { position:fixed;inset:0;z-index:10200;background:rgba(8,7,10,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity 0.4s ease,visibility 0.4s; }
-.settings-overlay.active { opacity:1;pointer-events:auto;visibility:visible; }
+.settings-overlay { position:fixed;inset:0;z-index:10200;background:rgba(8,7,10,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none !important;visibility:hidden;transition:opacity 0.4s ease,visibility 0.4s; }
+.settings-overlay.active { opacity:1;pointer-events:auto !important;visibility:visible; }
 .settings-modal { width:660px;max-width:96vw;max-height:90vh;display:flex;background:var(--surface-elevated);border:1px solid rgba(201,162,39,0.14);border-radius:14px;overflow:hidden;position:relative;transform:translateY(32px) scale(0.96);transition:transform 0.45s cubic-bezier(0.23,1,0.32,1); }
 .settings-overlay.active .settings-modal { transform:translateY(0) scale(1); }
 .settings-modal::before { content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,0.25),rgba(232,212,138,0.15),rgba(201,162,39,0.25),transparent);pointer-events:none;z-index:2; }
@@ -1432,6 +1437,21 @@ footer {
 
 <div class="toast" id="toast"></div>
 
+<script>
+window._diagClickBlock=function(x,y){
+  if(x===undefined){var nb=document.querySelector('.nav-btn');if(nb){var r=nb.getBoundingClientRect();x=r.left+r.width/2;y=r.top+r.height/2}else{x=window.innerWidth-80;y=48}}
+  var els=document.elementsFromPoint(x,y);
+  console.log('%c[DIAG] Elements at ('+Math.round(x)+','+Math.round(y)+'):','color:#c9a227;font-weight:bold');
+  els.forEach(function(el,i){
+    var cs=getComputedStyle(el);
+    var pe=cs.pointerEvents,vis=cs.visibility,op=cs.opacity,zi=cs.zIndex,pos=cs.position;
+    var blocks=(pe!=='none'&&vis!=='hidden'&&op!=='0');
+    console.log((blocks?'🚫':'✅')+' ['+i+'] <'+el.tagName.toLowerCase()+(el.id?'#'+el.id:'')+(el.className?' .'+String(el.className).split(' ')[0]:'')+'> z:'+zi+' pe:'+pe+' vis:'+vis+' op:'+op+' pos:'+pos);
+  });
+  return els;
+};
+console.log('%c[Shuffle] Version: 2026-03-20-v2 | Run _diagClickBlock() in console to check for click-blocking layers','color:#c9a227');
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -1977,6 +1997,7 @@ const loginOverlay=document.getElementById('loginOverlay');
 let currentTab='login';
 
 function openLoginModal(){
+  console.log('[Shuffle] openLoginModal called');
   loginOverlay.classList.add('active');
   setTimeout(()=>{ const e=document.getElementById('loginEmail'); if(e) e.focus(); },50);
 }
@@ -2331,6 +2352,17 @@ let toastTimer;function showToast(h,d){d=d||2400;const t=document.getElementById
     if (deckAnim) { cancelAnimationFrame(deckAnim); deckAnim = null; }
     setOffset(offsetX - e.deltaX);
   }, { passive: false });
+})();
+
+// Safety: on page load, force all overlays to inactive state
+(function(){
+  ['loginOverlay','gateOverlay','shopOverlay','settingsOverlay'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el&&el.classList.contains('active')){
+      console.warn('[Shuffle] Overlay #'+id+' was unexpectedly active on load — removing');
+      el.classList.remove('active');
+    }
+  });
 })();
 
 // Safety net: if isMatching is somehow stuck true with no active socket, reset after 5s
