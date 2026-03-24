@@ -257,12 +257,17 @@ nav {
 
 .camera-feed { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; display: none; transform: scaleX(-1); }
 .camera-feed.active { display: block; }
-.camera-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; cursor: pointer; transition: background 0.3s ease; }
+.camera-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; cursor: pointer; transition: background 0.3s ease; touch-action: manipulation; }
 .camera-placeholder:hover { background: rgba(201,162,39,0.04); }
 .camera-placeholder.hidden { display: none; }
 .camera-icon { width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--border-hover); display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--ivory-40); transition: all 0.3s ease; }
 .camera-placeholder:hover .camera-icon { border-color: var(--gold-dim); color: var(--gold); box-shadow: 0 0 32px rgba(201,162,39,0.15); }
 .camera-prompt { font-size: 12px; letter-spacing: 0.08em; color: var(--ivory-40); }
+.media-controls { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 6; display: none; gap: 8px; }
+.media-controls.active { display: flex; }
+.media-ctrl-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: rgba(8,7,10,0.7); backdrop-filter: blur(8px); color: var(--ivory-60); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.25s; touch-action: manipulation; }
+.media-ctrl-btn:hover { border-color: var(--border-hover); color: var(--ivory); background: rgba(8,7,10,0.85); }
+.media-ctrl-btn.muted { border-color: rgba(212,69,58,0.4); color: rgba(212,69,58,0.8); }
 
 /* Opponent */
 .opponent-content { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
@@ -924,7 +929,11 @@ footer {
             <div class="video-slot slot-user">
               <div class="slot-label"><div class="slot-label-dot active"></div>You</div>
               <video class="camera-feed" id="cameraFeed" autoplay playsinline muted></video>
-              <div class="camera-placeholder" id="cameraPlaceholder"><div class="camera-icon">📷</div><span class="camera-prompt">Enable camera</span></div>
+              <div class="camera-placeholder" id="cameraPlaceholder"><div class="camera-icon">📷</div><span class="camera-prompt">Enable camera &amp; mic</span></div>
+              <div class="media-controls" id="mediaControls">
+                <button class="media-ctrl-btn" id="micToggleBtn" title="Toggle microphone" onclick="toggleMic()">🎤</button>
+                <button class="media-ctrl-btn" id="camToggleBtn" title="Toggle camera" onclick="toggleCam()">📷</button>
+              </div>
             </div>
             <div class="video-slot slot-opponent">
               <div class="slot-label"><div class="slot-label-dot waiting"></div>Opponent</div>
@@ -1057,7 +1066,7 @@ footer {
     <div class="gate-steps">
       <div class="gate-step" id="gateSubscribe"><div class="gate-step-num">1</div><div class="gate-step-info"><div class="gate-step-name">Subscribe</div><div class="gate-step-desc">$1.99/mo · Basic access to play and join rooms</div></div><button class="gate-step-action" id="unlockBtn">Unlock</button></div>
       <div class="gate-step" id="gateVerify"><div class="gate-step-num">2</div><div class="gate-step-info"><div class="gate-step-name">Age Verification</div><div class="gate-step-desc">18+ required to play</div></div><button class="gate-step-action" id="verifyBtn">Verify</button></div>
-      <div class="gate-step" id="gateCamera"><div class="gate-step-num">3</div><div class="gate-step-info"><div class="gate-step-name">Camera Access <span style="font-size:10px;letter-spacing:0.1em;color:var(--ivory-40);font-weight:400;">(Optional)</span></div><div class="gate-step-desc">Recommended for video matching — you can skip this</div></div><button class="gate-step-action" id="gateCameraBtn">Enable</button></div>
+      <div class="gate-step" id="gateCamera"><div class="gate-step-num">3</div><div class="gate-step-info"><div class="gate-step-name">Camera &amp; Mic <span style="font-size:10px;letter-spacing:0.1em;color:var(--ivory-40);font-weight:400;">(Optional)</span></div><div class="gate-step-desc">Recommended for video matching — you can skip this</div></div><button class="gate-step-action" id="gateCameraBtn">Enable</button></div>
     </div>
     <div class="gate-footer"><div class="gate-footer-text" id="gateProgress">0 of 3 steps complete</div></div>
   </div>
@@ -1499,9 +1508,74 @@ const API_URL = _IS_LOCAL ? 'http://localhost:3001' : PROD_API_URL;
 const WS_URL  = API_URL;
 const APP_URL = _IS_LOCAL ? 'http://localhost:8080' : PROD_APP_URL;
 
-// ═══ CAMERA ═══
-const cameraPlaceholder=document.getElementById('cameraPlaceholder'),cameraFeed=document.getElementById('cameraFeed');let cameraEnabled=false;
-async function enableCamera(){try{const s=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:720},facingMode:'user'},audio:false});cameraFeed.srcObject=s;cameraFeed.classList.add('active');cameraPlaceholder.classList.add('hidden');cameraEnabled=true;showToast('📷 <span class="toast-accent">Camera enabled</span> — Looking good')}catch(e){showToast('📷 <span class="toast-accent">Camera blocked</span> — Check browser permissions')}}
+// ═══ CAMERA & AUDIO ═══
+const cameraPlaceholder=document.getElementById('cameraPlaceholder'),cameraFeed=document.getElementById('cameraFeed');
+const mediaControls=document.getElementById('mediaControls'),micToggleBtn=document.getElementById('micToggleBtn'),camToggleBtn=document.getElementById('camToggleBtn');
+let cameraEnabled=false,localStream=null,micMuted=false,camOff=false;
+
+async function enableCamera(){
+  if(cameraEnabled&&localStream) return;
+  if(!window.isSecureContext){
+    console.error('[media] not a secure context — getUserMedia unavailable');
+    showToast('📷 <span class="toast-accent">Secure connection required</span> — Use HTTPS to enable camera');
+    return;
+  }
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    console.error('[media] navigator.mediaDevices.getUserMedia not available');
+    showToast('📷 <span class="toast-accent">Browser unsupported</span> — Try Chrome, Firefox, or Safari');
+    return;
+  }
+  try{
+    const s=await navigator.mediaDevices.getUserMedia({
+      video:{width:{ideal:1280},height:{ideal:720},facingMode:'user'},
+      audio:true
+    });
+    localStream=s;
+    cameraFeed.srcObject=s;
+    cameraFeed.classList.add('active');
+    cameraPlaceholder.classList.add('hidden');
+    mediaControls.classList.add('active');
+    cameraEnabled=true;
+    micMuted=false;camOff=false;
+    micToggleBtn.classList.remove('muted');micToggleBtn.textContent='🎤';
+    camToggleBtn.classList.remove('muted');camToggleBtn.textContent='📷';
+    showToast('📷 <span class="toast-accent">Camera & mic enabled</span> — Looking good');
+  }catch(e){
+    console.error('[media] getUserMedia failed:',e.name,e.message);
+    if(e.name==='NotAllowedError'||e.name==='PermissionDeniedError'){
+      showToast('📷 <span class="toast-accent">Permission denied</span> — Allow camera & mic in your browser');
+    }else if(e.name==='NotFoundError'||e.name==='DevicesNotFoundError'){
+      showToast('📷 <span class="toast-accent">No camera found</span> — Check your device');
+    }else if(e.name==='NotReadableError'||e.name==='TrackStartError'){
+      showToast('📷 <span class="toast-accent">Camera in use</span> — Close other apps using your camera');
+    }else{
+      showToast('📷 <span class="toast-accent">Camera failed</span> — '+e.message);
+    }
+  }
+}
+
+function toggleMic(){
+  if(!localStream)return;
+  const tracks=localStream.getAudioTracks();
+  if(!tracks.length){showToast('🎤 <span class="toast-accent">No mic found</span>');return;}
+  micMuted=!micMuted;
+  tracks.forEach(t=>{t.enabled=!micMuted;});
+  micToggleBtn.classList.toggle('muted',micMuted);
+  micToggleBtn.textContent=micMuted?'🔇':'🎤';
+  showToast(micMuted?'🎤 <span class="toast-accent">Mic muted</span>':'🎤 <span class="toast-accent">Mic on</span>');
+}
+
+function toggleCam(){
+  if(!localStream)return;
+  const tracks=localStream.getVideoTracks();
+  if(!tracks.length)return;
+  camOff=!camOff;
+  tracks.forEach(t=>{t.enabled=!camOff;});
+  camToggleBtn.classList.toggle('muted',camOff);
+  camToggleBtn.textContent=camOff?'🚫':'📷';
+  showToast(camOff?'📷 <span class="toast-accent">Camera off</span>':'📷 <span class="toast-accent">Camera on</span>');
+}
+
 cameraPlaceholder.addEventListener('click',enableCamera);
 document.getElementById('gateCameraBtn').addEventListener('click',e=>{e.stopPropagation();enableCamera()});
 
