@@ -292,7 +292,7 @@ nav.scrolled {
 .hero-content {
   position: absolute;
   left: 80px;
-  right: 60%;
+  right: 55%;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
@@ -329,10 +329,10 @@ nav.scrolled {
 .hero-title {
   font-family: 'Playfair Display', serif;
   font-weight: 900;
-  font-size: clamp(48px, 8vw, 110px);
-  line-height: 1.05;
+  font-size: clamp(48px, 7vw, 100px);
+  line-height: 1.1;
   letter-spacing: -0.03em;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 .title-line {
@@ -430,7 +430,7 @@ nav.scrolled {
 .hero-frame-container {
   position: absolute;
   z-index: 10;
-  left: 42%;
+  left: 47%;
   right: 40px;
   top: 50%;
   transform: translateY(-50%);
@@ -1964,6 +1964,30 @@ footer {
 .footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ghost); }
 
 /* ═══ RESPONSIVE ═══ */
+
+/* Laptops — 1280-1440px (MacBook 13/14/15") */
+@media (max-width: 1440px) {
+  .hero-content { left: 60px; right: 52%; }
+  .hero-title { font-size: clamp(48px, 5.5vw, 80px); }
+  .hero-frame-container { left: 50%; right: 32px; }
+  .hero-sub { font-size: clamp(13px, 1.3vw, 16px); margin-bottom: 32px; }
+  .hero-overline { margin-bottom: 20px; font-size: 10px; }
+  nav { height: 60px; }
+  .nav-logo { padding: 0 24px; }
+  .nav-enter { padding: 0 28px; font-size: 13px; }
+  .hero-floating-chips { opacity: 0.6; }
+}
+
+/* Small laptops — ~1024-1280px */
+@media (max-width: 1280px) {
+  .hero-content { left: 48px; right: 50%; }
+  .hero-title { font-size: clamp(40px, 5vw, 68px); }
+  .hero-frame-container { left: 52%; right: 24px; }
+  .hero-sub { font-size: 14px; max-width: 380px; }
+  .hero-floating-chips { display: none; }
+  .hero { padding: 80px 40px 100px; }
+}
+
 @media (max-width: 1024px) {
   .stakes-content { grid-template-columns: 1fr; gap: 60px; }
   .stakes-visual { order: -1; }
@@ -1973,37 +1997,22 @@ footer {
   .ritual-step-card { max-width: 280px; }
   .rsc1, .rsc4 { left: 24px; }
   .rsc2, .rsc3 { right: 24px; }
-}
 
-@media (max-width: 1024px) {
-  .hero {
-    padding: 120px 40px 140px;
-  }
+  .hero { padding: 100px 40px 120px; }
   .hero-content {
-    left: 40px;
-    right: 40px;
-    text-align: center;
-    position: relative;
-    top: auto;
-    transform: none;
-    margin-bottom: 40px;
+    left: 40px; right: 40px;
+    text-align: center; position: relative;
+    top: auto; transform: none; margin-bottom: 40px;
   }
+  .hero-title { font-size: clamp(36px, 5.5vw, 56px); line-height: 1.1; }
   .hero-overline { justify-content: center; }
   .hero-overline::before { display: none; }
   .hero-cta { justify-content: center; }
   .hero-frame-container {
-    position: relative;
-    left: auto;
-    right: auto;
-    top: auto;
-    transform: none;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
+    position: relative; left: auto; right: auto; top: auto; transform: none;
+    width: 100%; max-width: 600px; margin: 0 auto;
   }
-  .hero-video-frame {
-    transform: rotateY(0) rotateX(4deg);
-  }
+  .hero-video-frame { transform: rotateY(0) rotateX(4deg); }
   .hero-floating-chips { display: none; }
 }
 
@@ -2834,7 +2843,7 @@ footer.sticky-footer {
         <span class="title-line"><span><em>Stranger.</em></span></span>
         <span class="title-line hero-phrase-line" id="heroPhraseLine"><span><span class="hero-cycle-wrap"><span class="hero-cycle-text" id="heroCycleText">Play a Game.</span></span></span></span>
       </h1>
-      <p class="hero-sub" id="heroSub">Random 1:1 video matching meets real-money wagering. The house never tells you what's on the other side of the table.</p>
+      <p class="hero-sub" id="heroSub">Random 1-on-1 video matching meets real multiplayer games. You never know who's on the other side of the table.</p>
       <div class="hero-cta" id="heroCta">
         <div class="magnetic-wrap" data-magnetic>
           <button class="btn-shuffle" onclick="transitionTo('shitboxshuffle.html')" aria-label="Start shuffling - enter the game room"><span>START SHUFFLING</span></button>
